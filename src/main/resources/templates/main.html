@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Dshinghis Khan</title>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="/media/DataTables/Bootstrap-4-4.0.0/css/bootstrap.min.css"/>
+    <script src="/media/jQuery-2.1.4/jquery-2.1.4.js"></script>
+    <script src="/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js"></script>
+</head>
+<body>
+<div class="container-fluid" sec:authorize='hasAuthority("ADMIN")' >
+    <div class="row">
+        <div class="col-11"></div>
+        <div class="col-1"><span id="data-role" data-role='ADMIN' sec:authentication="role"></span></div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+package ru.configuration;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import ru.configuration.authentication.CustomAuthenticationManager;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private CustomAuthenticationManager customAuthenticationManager;
+
+
+
+    @Autowired
+    public SecurityConfig(CustomAuthenticationManager customAuthenticationManager) {
+        this.customAuthenticationManager = customAuthenticationManager;
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/main").authenticated()
+                .antMatchers("/api").authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .failureUrl("/login-error")
+                .defaultSuccessUrl("/main")
+                .successForwardUrl("/main");
+    }
+
+    @Override
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return customAuthenticationManager;
+    }
+}

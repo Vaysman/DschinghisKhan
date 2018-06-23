@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    username: Khan
+    url: jdbc:mysql://localhost:3306/dshinghis_khan?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    password: Diogenes-412
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    rest:
+      base-path: /api
+  thymeleaf:
+    cache: false
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+#    show-sql: true
+logging:
+  path: /Users/Roman 1/Desktop/exchange/logs
