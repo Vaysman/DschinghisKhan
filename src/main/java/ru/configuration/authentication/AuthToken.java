@@ -3,7 +3,7 @@ package ru.configuration.authentication;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
-import ru.dao.entities.User;
+import ru.dao.entity.User;
 
 import java.util.Collection;
 
@@ -83,7 +83,7 @@ public class AuthToken extends AbstractAuthenticationToken {
         return name;
     }
 
-    public String getRoleRusName() {
+    public String getRoleName() {
         return roleName;
     }
 

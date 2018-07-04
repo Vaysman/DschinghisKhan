@@ -8,14 +8,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.DigestUtils;
-import ru.dao.entities.User;
+import ru.dao.entity.User;
 import ru.dao.repository.UserRepository;
 
 import java.util.Collections;
 
 @Configuration
 public class CustomAuthenticationManager implements AuthenticationManager {
-    UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     public CustomAuthenticationManager(UserRepository userRepository) {

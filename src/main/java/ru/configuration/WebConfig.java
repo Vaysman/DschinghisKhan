@@ -1,4 +1,4 @@
-package configuration;
+package ru.configuration;
 
 
 import com.fasterxml.jackson.databind.SerializationFeature;

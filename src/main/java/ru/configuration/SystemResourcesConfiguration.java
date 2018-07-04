@@ -1,4 +1,4 @@
-package configuration;
+package ru.configuration;
 
 import lombok.Getter;
 import org.slf4j.Logger;

@@ -1,18 +1,257 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Dshinghis Khan</title>
+    <title>DKhan</title>
     <meta charset="UTF-8"/>
     <link rel="stylesheet" type="text/css" href="/media/DataTables/Bootstrap-4-4.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/Selectize/css/selectize.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/DataTables/Editor-1.7.3/css/editor.bootstrap4.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/FieldType-Selectize/editor.selectize.min.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="media/datatables/datatables.css"/>-->
+    <!--z-index:999-->
+    <link rel="stylesheet" type="text/css" href="/media/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/DataTables/Select-1.2.5/css/select.bootstrap4.css"/>
+    <link rel="stylesheet" type="text/css" href="/main/css/main.css" th:href="@{/main/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/common/css/logist-styling.css}">
+    <!--<link rel="stylesheet" type="text/css" th:href="@{/common/css/dropdown.css}">-->
+
     <script src="/media/jQuery-2.1.4/jquery-2.1.4.js"></script>
     <script src="/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js"></script>
+    <script src="/media/jquery-mask/dist/jquery.mask.min.js"></script>
+    <script src="/media/Selectize/js/standalone/selectize.min.js"></script>
+    <script src="/media/DataTables/datatables.js"></script>
+    <script src="/media/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.js"></script>
+    <script src="/media/DataTables/Buttons-1.5.1/js/buttons.bootstrap.js"></script>
+    <script src="/media/DataTables/Editor-1.7.3/js/dataTables.editor.js"></script>
+    <script src="/media/DataTables/Editor-1.7.3/js/editor.bootstrap4.js"></script>
+    <script src="/media/FieldType-Mask/editor.mask.min.js"></script>
+    <script src="/media/FieldType-Selectize/editor.selectize.min.js"></script>
+    <script src="/media/DataTables/Select-1.2.5/js/dataTables.select.js"></script>
+
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        var currentUser = /*[[${currentUser}]]*/;
+        var loadingTypes = /*[[${loadingTypes}]]*/;
+        var loadingTypeOptions = [];
+        loadingTypes.forEach(function (x) {
+            loadingTypeOptions.push({value: x, label: x});
+        });
+        var vehicleTypes = /*[[${vehicleTypes}]]*/;
+        var vehicleTypeOptions = [];
+        vehicleTypes.forEach(function (x) {
+            vehicleTypeOptions.push({value: x, label: x});
+        });
+        var companyTypes = /*[[${companyTypes}]]*/;
+        var companyTypeOptions = [];
+        companyTypes.forEach(function (x) {
+            companyTypeOptions.push({value: x, label: x});
+        });
+        var userRoles = /*[[${userRoles}]]*/;
+        var userRoleOptions = [];
+        userRoles.forEach(function (x) {
+            userRoleOptions.push({value: x, label: x});
+        });
+
+
+        console.log(currentUser);
+
+        /*]]>*/
+    </script>
+
+    <script src="/localization/localizeEditor.js"></script>
+    <script src="/main/js/users.js" sec:authorize='hasAnyAuthority("ADMIN","DISPATCHER")'></script>
+    <script src="/main/js/transportCompanies.js" sec:authorize='hasAnyAuthority("ADMIN","DISPATCHER")'></script>
+    <script src="/main/js/points.js"></script>
+    <script src="/main/js/routes.js"></script>
+
+
 </head>
-<body>
-<div class="container-fluid" sec:authorize='hasAuthority("ADMIN")' >
-    <div class="row">
-        <div class="col-11"></div>
-        <div class="col-1"><span id="data-role" data-role='ADMIN' sec:authentication="role"></span></div>
+<body class="grey">
+<header class="navbar navbar-expand navbar-dark flex-column flex-md-row logist-navbar">
+    <!--<ul class="navbar-nav-scroll">-->
+    <!--<a href="#">Fgsfdds</a>-->
+
+    <!--</ul>-->
+    <ul class="navbar-nav flex-row">
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-th-list" aria-hidden="true"></i>
+            Заявки</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск
+            маршрутов</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/main" target="_self"><i class="fa fa-cog"
+                                                                                       aria-hidden="true"></i>
+            Админка</a></li>
+        <li class="nav-item" sec:authorize='hasAnyAuthority("ADMIN","DISPATCHER")'><a class="nav-link"
+                                                                                      href="/swagger-ui.html"
+                                                                                      target="_blank"><i
+                class="fa fa-code" aria-hidden="true"></i> API</a></li>
+    </ul>
+
+    <ul class="navbar-nav ml-md-auto d-none flex-row d-md-flex">
+        <li class="nav-item dropdown">
+            <a class="nav-item nav-link  dropdown-toggle" id="userDropdown"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span sec:authentication="name"></span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></i> Выход</a>
+            </div>
+        </li>
+    </ul>
+</header>
+<nav class="logist-tabs">
+    <div>
+        <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
+            <!--style="width: 200px; float: left">-->
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-companies"><i
+                        class="fa fa-truck" aria-hidden="true"></i> Организации</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" aria-selected="true" href="#tab-routes"><i
+                        class="fa fa-compass" aria-hidden="true"></i> Маршруты</a></li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-users"><i class="fa fa-users"
+                                                                                                 aria-hidden="true"></i> Пользователи</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-points"><i class="fa fa-map"
+                                                                                                  aria-hidden="true"></i> Пункты</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="tab-content" id="tabContent">
+
+    <div id="tab-companies" class="tab-pane in active container-fluid">
+        <div class="spaced-container white container-fluid">
+            <h4>Транспортные компании</h4>
+            <div>
+                <table class="table  table-striped " id="transportCompaniesTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Название</th>
+                        <th>Краткое название</th>
+                        <th>Пункт</th>
+                        <th>Пользователь</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="spaced-container white container-fluid">
+            <h4>vehicleTypes</h4>
+            <div th:text="${vehicleTypes}">
+
+
+            </div>
+            <h4>loadingTypes</h4>
+            <div th:text="${loadingTypes}">
+
+
+            </div>
+            <h4>companyTypes</h4>
+            <div th:text="${companyTypes}">
+
+
+            </div>
+            <h4>userRoles</h4>
+            <div th:text="${userRole}">
+
+
+            </div>
+            <h4>user</h4>
+            <div th:text="${currentUser}">
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <div id="tab-routes" class="tab-pane container-fluid">
+        <div class=" container-fluid spaced-container white">
+            <h4>Маршруты</h4>
+            <div>
+                <table class="table  table-striped " id="routesTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Название</th>
+                        <th>ТК</th>
+                        <th>Ст. за маршрут</th>
+                        <th>₽/км</th>
+                        <th>₽/коробка</th>
+                        <th>₽/паллета</th>
+                        <th>Темп. режим</th>
+                        <th>Тип кузова</th>
+                        <th>Объем</th>
+                        <th>Тоннаж</th>
+                        <th>Погрузка</th>
+                        <th>Комментарий</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="container-fluid spaced-container white">
+            <h4>Точки маршрута</h4>
+            <div>
+                <table class="table  table-striped " id="routePointsTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Пункт</th>
+                        <th>Расстояние</th>
+                        <th>Стоимость</th>
+                        <th>Порядковый номер</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-users" class="tab-pane container-fluid">
+        <div class=" container-fluid spaced-container white">
+            <h4>Пользователи</h4>
+            <div>
+                <table class="table  table-striped " id="usersTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Имя</th>
+                        <th>Логин</th>
+                        <!--<th>Пароль</th>-->
+                        <th>Роль</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-points" class="tab-pane container-fluid">
+        <div class=" container-fluid spaced-container white">
+            <h4>Пункты</h4>
+            <div>
+                <table class="table  table-striped " id="pointsTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Название</th>
+                        <th>Адрес</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 </body>

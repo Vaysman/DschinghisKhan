@@ -1,0 +1,125 @@
+@font-face {
+    font-family: "Gerbera Light";
+    src: url("../../media/Gerbera-Light.otf") format("opentype");
+}
+
+@font-face {
+    font-family: "Gerbera Medium";
+    src: url("../../media/Gerbera-Medium.otf") format("opentype");
+}
+
+body{
+    font-family: "Gerbera Light", serif;
+    color: rgba(26, 43, 109, 1);
+}
+
+input.form-control:matches([type=text], [type=password]){
+    border: none;
+    border-radius: 0;
+    border-bottom: 2px solid rgba(26, 43, 109, 1);
+}
+
+div.selectize-input{
+    border: none;
+    border-radius: 0;
+    border-bottom: 2px solid rgba(26, 43, 109, 1);
+    box-shadow: none;
+}
+
+/*input{*/
+    /*border: none;*/
+    /*border-radius: 0;*/
+    /*border-bottom: 2px solid rgba(26, 43, 109, 1);*/
+/*}*/
+
+.accent{
+    color: #D41317;
+}
+
+.grey{
+    background: rgb(239,239,239);
+}
+
+.spaced-container {
+    margin: 10px;
+    height: 93%;
+    padding: 20px;
+    display: inline-block;
+}
+
+.card{
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.col-6, .col-12{
+    /*background: white;*/
+    /*background-position: center;*/
+    /*padding: 20px;*/
+}
+
+.logist-navbar{
+    background: rgba(26, 43, 109, 1);
+}
+
+.logist-tabs{
+    background: rgba(26, 43, 109, 1);
+    border-bottom: none;
+}
+
+.logist-tabs .nav-link{
+    color: rgb(239,239,239);
+}
+
+.logist-tabs .nav-link.active{
+    background: rgb(239,239,239);
+    color: rgba(26, 43, 109, 1);
+}
+
+.logist-navbar .navbar-nav .nav-link:hover{
+    color: rgb(239,239,239);;
+}
+
+.btn-default {
+    font-family: "Gerbera Medium", serif;
+    color: #fff;
+    font-size: 14px;
+    /*font-weight: bold;*/
+    background-color: inherit;
+    color: rgba(26, 43, 109, 1);
+    border: none;
+    /*border-color: #ccc;*/
+}
+
+.btn-default:not(.disabled):hover{
+    color: #D41317;
+}
+
+.btn-default{
+    color: rgba(26, 43, 109, 1);
+    background: transparent;
+    border: none;
+}
+
+.btn-default.disabled{
+    background: transparent;
+    color: rgba(26, 43, 109, 1);
+    border:none;
+}
+
+.btn-default:not(:disabled):not(.disabled):hover{
+    color: #D41317;
+    background: transparent;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.10);
+    transition: all 100ms ease-out;
+}
+.btn-default:not(:disabled):not(.disabled):active{
+    background: transparent;
+    color: #D41317;
+}
+
+.white{
+    background: white;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.10);
+
+}

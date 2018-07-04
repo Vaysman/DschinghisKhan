@@ -1,0 +1,392 @@
+$(document).ready(function () {
+    let routeEditor = null;
+    routeEditor = new $.fn.dataTable.Editor({
+        ajax: {
+            create: {
+                type: 'POST',
+                contentType: 'application/json',
+                url: 'api/routes',
+                data: function (d) {
+                    let newdata;
+                    $.each(d.data, function (key, value) {
+                        newdata = JSON.stringify(value);
+                    });
+                    return newdata;
+                },
+                success: function (response) {
+                    routeDataTable.draw();
+                    routeEditor.close();
+                    // alert(response.responseText);
+                },
+                error: function (jqXHR, exception) {
+                    alert(response.responseText);
+                }
+            },
+            edit: {
+                contentType: 'application/json',
+                type: 'PATCH',
+                url: 'api/routes/_id_',
+                data: function (d) {
+                    let newdata;
+                    $.each(d.data, function (key, value) {
+                        if (value['company'] == "") {
+                            delete value['company'];
+                        }
+                        newdata = JSON.stringify(value);
+                    });
+                    console.log(newdata);
+                    return newdata;
+                },
+                success: function (response) {
+                    routeDataTable.draw();
+                    routeEditor.close();
+                },
+                error: function (jqXHR, exception) {
+                    alert(response.responseText);
+                }
+            }
+            ,
+            remove: {
+                type: 'DELETE',
+                contentType: 'application/json',
+                url: 'api/routes/_id_',
+                data: function (d) {
+                    return '';
+                }
+            }
+        },
+        table: '#routesTable',
+        idSrc: 'id',
+
+        fields: [
+            {label: 'Название', name: 'name', type: 'text'},
+            {
+                label: 'ТК',
+                name: 'company',
+                type: 'selectize',
+                options: [],
+                opts: {searchField: "label", create: false,
+                load: function (query, callback) {
+                    $.get(`api/transportCompanies/search/findTop10ByNameContaining/?name=${query}`,
+                        function (data) {
+                            var transportCompanyOptions = [];
+                            data._embedded.transportCompanies.forEach(function (entry) {
+                                transportCompanyOptions.push({"label": entry.name, "value": entry._links.self.href});
+                            });
+                                callback(transportCompanyOptions);
+                        }
+                    );
+
+                }}
+            },
+            {label: 'Стоимость за маршрут', name: 'totalCost', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Стоимость за маршрут + НДС', name: 'totalCostNds', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Стоимость за километр', name: 'costPerKilometer', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Стоимость за километр+НДС', name: 'costPerKilometerNds', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Стоимость за паллету', name: 'costPerPrr', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Стоимость за паллету+НДС', name: 'costPerPrrNds', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Стоимость за коробку', name: 'costPerBox', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Стоимость за коробку+НДС', name: 'costPerBoxNds', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Температура (От)', name: 'tempFrom', type: "mask", mask: "000",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Темература (До)', name: 'tempTo', type: "mask", mask: "000",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Объем м<sup>3</sup>', name: 'volume', type: "mask", mask: "000",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Тоннаж<sup>Т.</sup>', name: 'tonnage', type: "mask", mask: "000",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Тип погрузки', name: 'loadingType', type: "selectize", options: loadingTypeOptions},
+            {label: 'Тип транспорта', name: 'vehicleType', type: "selectize", options: vehicleTypeOptions},
+            {label: 'Комментарий', name: 'comment', type: "textarea"},
+
+        ]
+    });
+
+
+
+    var routeDataTable = $("#routesTable").DataTable({
+            processing: true,
+            serverSide: true,
+            searchDelay: 800,
+            ajax: {
+                contentType: 'application/json',
+                processing: true,
+                data: function (d) {
+                    return JSON.stringify(d);
+                },
+                url: "dataTables/routes", // json datasource
+                type: "post"  // method  , by default get
+            },
+            dom: 'Btp',
+            language: {
+                url: '/localization/dataTablesRus.json'
+            },
+            select: {
+                style: 'single'
+            },
+            "buttons": [
+                {
+                    extend: "create",
+                    editor: routeEditor
+                },
+                {
+                    extend: "edit",
+                    editor: routeEditor
+                },
+                {
+                    extend: "remove",
+                    editor: routeEditor
+                }
+            ],
+            "paging": 10,
+            "columnDefs": [
+                {"name": "id", "data": "id", "targets": 0, visible: false},
+                {"name": "name", "data": "name", "targets": 1},
+                {"name": "company.name", "data": "company.name", searchable:false, orderable: false, "targets": 2, defaultContent: ""},
+                {"name": "totalCost", "data": null, "targets": 3, searchable:false, orderable: false,render: function (data, type, full) {
+                    console.log(data);
+                        return (data.totalCost!==null&&data.totalCostNds!==null) ? `${data.totalCost}₽/${data.totalCostNds}₽` : "";
+                    }},
+                {"name": "costPerKilometer", "data": null, "targets": 4,searchable:false, orderable: false,render: function (data, type, full) {
+                        return (data.costPerKilometer!==null&&data.costPerKilometerNds!==null) ?  `${data.costPerKilometer}₽/${data.costPerKilometerNds}₽` : "";
+                    }},
+                {"name": "costPerBox", "data": null, "targets": 5,searchable:false, orderable: false,render: function (data, type, full) {
+                        return (data.costPerBox!==null&&data.costPerBoxNds!==null) ? `${data.costPerBox}₽/${data.costPerBoxNds}₽`: "";
+                    }},
+                {"name": "costPerPrr", "data": null, searchable:false, orderable: false, "targets": 6,render: function (data, type, full) {
+                        return (data.costPerPrr!==null&&data.costPerPrrNds!==null) ? `${data.costPerPrr}₽/${data.costPerPrrNds}₽` : "";
+                    }},
+                {"name": "tempTo", "data": null, searchable:false, orderable: false, "targets": 7,render: function (data, type, full) {
+                        return (data.tempTo!==null&&data.tempFrom!==null) ?  `${data.tempFrom}º-${data.tempTo}º` : "";
+                    }},
+                {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, "targets": 8,defaultContent: ""},
+                {"name": "volume", "data": "volume", searchable:false, orderable: false, "targets": 9,defaultContent: "" , render: function (data, type, row, meta) {
+                        return (data!==null) ? `${data}м<sup>3</sup>` : "";
+                    }},
+                {"name": "tonnage", "data": "tonnage", searchable:false, orderable: false, "targets": 10,defaultContent: "", render: function (data, type, row, meta) {
+                        return (data!==null) ? `${data}т` : "";
+                    }},
+                {"name": "loadingType", "data": "loadingType", searchable:false, orderable: false, "targets": 11,defaultContent: ""},
+                {"name": "comment", "data": "comment", searchable:false, orderable: false, "targets": 12,defaultContent: ""},
+            ]
+        }
+    );
+
+
+    routeDataTable.on('select', function (e, dt, type, indexes) {
+        if (type === 'row') {
+            var data = routeDataTable.rows(indexes).data('id');
+            reInitRoutePointTable(data[0].id);
+        }
+    });
+
+
+    function reInitRoutePointTable(routeId) {
+        $.get(`api/routes/${routeId}`).success(function (routeData) {
+            routeHref = routeData._links.self.href;
+
+            let routePointEditor = new $.fn.dataTable.Editor({
+                ajax: {
+                    create: {
+                        type: 'POST',
+                        contentType: 'application/json',
+                        url: 'api/routePoints',
+                        data: function (d) {
+                            let newdata;
+                            $.each(d.data, function (key, value) {
+                                value["route"] = routeHref;
+                                newdata = JSON.stringify(value);
+                            });
+                            return newdata;
+                        },
+                        success: function (response) {
+                            routePointDataTable.draw();
+                            routePointEditor.close();
+                            // alert(response.responseText);
+                        },
+                        error: function (jqXHR, exception) {
+                            alert(response.responseText);
+                        }
+                    },
+                    edit: {
+                        contentType: 'application/json',
+                        type: 'PATCH',
+                        url: 'api/routePoints/_id_',
+                        data: function (d) {
+                            let newdata;
+                            $.each(d.data, function (key, value) {
+                                if (value['point'] == "") {
+                                    delete value['point'];
+                                }
+                                newdata = JSON.stringify(value);
+                            });
+                            console.log(newdata);
+                            return newdata;
+                        },
+                        success: function (response) {
+                            routePointDataTable.draw();
+                            routePointEditor.close();
+                        },
+                        error: function (jqXHR, exception) {
+                            alert(response.responseText);
+                        }
+                    }
+                    ,
+                    remove: {
+                        type: 'DELETE',
+                        contentType: 'application/json',
+                        url: 'api/routePoints/_id_',
+                        data: function (d) {
+                            return '';
+                        }
+                    }
+                },
+                table: '#routePointsTable',
+                idSrc: 'id',
+
+                fields: [
+                    {label: 'Расстояние', name: 'distance', type: 'mask', mask: "#",
+                        maskOptions: {
+                            reverse: true,
+                            placeholder: ""
+                        }},
+                    {label: 'Стоимость', name: 'cost', type: 'mask', mask: "#",
+                        maskOptions: {
+                            reverse: true,
+                            placeholder: ""
+                        }},
+                    {label: 'Порядковый номер', name: 'queueNumber', type: 'mask', mask: "#",
+                        maskOptions: {
+                            reverse: true,
+                            placeholder: ""
+                        }},
+                    {
+                        label: 'Пункт', name: 'point', type: 'selectize', options: [], opts: {
+                            searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                            load: function (query, callback) {
+                                $.get(`api/points/search/findTop10ByNameContaining/?name=${query}`,
+                                    function (data) {
+                                        let pointOptions = [];
+                                        data._embedded.points.forEach(function (entry) {
+                                            pointOptions.push({"label": entry.name, "value": entry._links.self.href});
+                                        });
+                                        callback(pointOptions);
+                                    }
+                                )
+                            },
+                            loadThrottle: 500
+                        }
+                    }
+                ]
+            });
+
+
+            // routePointEditor.field('point').input().on('keyup', function (e, d) {
+            //     var namePart = $(this).val();
+            // });
+
+            // routePointEditor.on('initEdit',function () {
+            //     console.log(routePointDataTable.rows());
+            //         console.log(routePointEditor.field('point').inst().$control_input.prop('placeholder',routePointDataTable.rows()[routePointEditor.modifier()].data().point.name));
+            //     });
+
+            let routePointDataTable = $("#routePointsTable").DataTable({
+                processing: true,
+                serverSide: true,
+                aaSortingFixed: [[4, 'asc']],
+                destroy: true,
+                searchDelay: 800,
+                ajax: {
+                    contentType: 'application/json',
+                    processing: true,
+                    data: function (d) {
+                        return JSON.stringify(d);
+                    },
+                    url: `/dataTables/routePoints/routePointsForRoute/${routeId}`, // json datasource
+                    type: "post"  // method  , by default get
+                },
+                dom: 'Btp',
+                language: {
+                    url: '/localization/dataTablesRus.json'
+                },
+                select: {
+                    style: 'single'
+                },
+                "buttons": [
+                    {
+                        extend: "create",
+                        editor: routePointEditor
+                    },
+                    {
+                        extend: "edit",
+                        editor: routePointEditor
+                    },
+                    {
+                        extend: "remove",
+                        editor: routePointEditor
+                    }
+                ],
+                "paging": 10,
+                "columnDefs": [
+                    {"name": "id", "data": "id", "targets": 0, visible: false},
+                    {"name": "point.name", "data": "point.name", "targets": 1, defaultContent: ""},
+                    {"name": "distance", "data": "distance", "targets": 2, render: function (data) {
+                            return (data!==null) ? `${data}км` : "";
+                        }},
+                    {"name": "cost", "data": "cost", "targets": 3, render: function (data) {
+                            return (data!==null) ? `${data}₽` : "";
+                        }},
+                    {"name": "queueNumber", "data": "queueNumber", "targets": 4, render: function (data) {
+                            return (data!==null) ? `№${data}` : "";
+                        }},
+                ]
+            });
+        });
+    }
+
+
+});
