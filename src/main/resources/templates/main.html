@@ -64,8 +64,8 @@
     </script>
 
     <script src="/localization/localizeEditor.js"></script>
-    <script src="/main/js/users.js" sec:authorize='hasAnyAuthority("ADMIN","DISPATCHER")'></script>
-    <script src="/main/js/transportCompanies.js" sec:authorize='hasAnyAuthority("ADMIN","DISPATCHER")'></script>
+    <script src="/main/js/users.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
+    <script src="/main/js/transportCompanies.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
     <script src="/main/js/points.js"></script>
     <script src="/main/js/routes.js"></script>
 
@@ -78,7 +78,7 @@
 
     <!--</ul>-->
     <ul class="navbar-nav flex-row">
-        <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-th-list" aria-hidden="true"></i>
+        <li class="nav-item"><a class="nav-link" href="/orders"><i class="fa fa-th-list" aria-hidden="true"></i>
             Заявки</a>
         </li>
         <li class="nav-item"><a class="nav-link" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск
@@ -86,7 +86,7 @@
         <li class="nav-item"><a class="nav-link active" href="/main" target="_self"><i class="fa fa-cog"
                                                                                        aria-hidden="true"></i>
             Админка</a></li>
-        <li class="nav-item" sec:authorize='hasAnyAuthority("ADMIN","DISPATCHER")'><a class="nav-link"
+        <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link"
                                                                                       href="/swagger-ui.html"
                                                                                       target="_blank"><i
                 class="fa fa-code" aria-hidden="true"></i> API</a></li>
@@ -189,6 +189,7 @@
                         <th>Ст. за маршрут</th>
                         <th>₽/км</th>
                         <th>₽/коробка</th>
+                        <th>₽/ПРР</th>
                         <th>₽/паллета</th>
                         <th>Темп. режим</th>
                         <th>Тип кузова</th>
@@ -211,6 +212,7 @@
                         <th>Пункт</th>
                         <th>Расстояние</th>
                         <th>Стоимость</th>
+                        <th>Время разгрузки</th>
                         <th>Порядковый номер</th>
                     </tr>
                     </thead>

@@ -117,6 +117,7 @@ CREATE TABLE contacts
   phone varchar(16),
   number_of_transports int,
   transport_company_id int,
+  name varchar(64),
   CONSTRAINT contacts_transport_companies_id_fk FOREIGN KEY (transport_company_id) REFERENCES transport_companies (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE INDEX contacts_transport_company_id_index ON contacts (transport_company_id);
@@ -153,3 +154,38 @@ ALTER TABLE routes ADD originator int NULL;
 ALTER TABLE transport_companies ADD originator int NULL;
 
 ALTER TABLE users ADD originator int NULL;
+
+ALTER TABLE points ADD originator int NULL;
+
+CREATE INDEX users_originator_index ON users (originator);
+CREATE INDEX transport_companies_originator_index ON transport_companies (originator);
+CREATE INDEX routes_originator_index ON routes (originator);
+ALTER TABLE contacts ADD originator int NULL;
+CREATE INDEX contacts_originator_index ON contacts (originator);
+ALTER TABLE route_points ADD loading_time int NULL;
+
+ALTER TABLE orders ADD requirements VARCHAR(512) NULL;
+ALTER TABLE orders ADD cargo TEXT NULL;
+ALTER TABLE orders ADD payment_date DATE NULL;
+ALTER TABLE orders ADD document_return_date DATE NULL;
+ALTER TABLE orders ADD rating int NULL;
+ALTER TABLE orders ADD order_obligation VARCHAR(16) NULL;
+ALTER TABLE orders ADD originator int NULL;
+
+CREATE TABLE cargo_types
+(
+  id int PRIMARY KEY NOT NULL,
+  name VARCHAR(128) NOT NULL
+);
+CREATE UNIQUE INDEX cargo_types_id_uindex ON cargo_types (id);
+CREATE UNIQUE INDEX cargo_types_name_uindex ON cargo_types (name);
+
+CREATE TABLE drop_points
+(
+  order_id int NOT NULL,
+  point_id int,
+  CONSTRAINT drop_points_orders_id_fk FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT drop_points_points_id_fk FOREIGN KEY (point_id) REFERENCES points (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE INDEX drop_points_order_id_index ON drop_points (order_id);
+CREATE INDEX drop_points_point_id_index ON drop_points (point_id);

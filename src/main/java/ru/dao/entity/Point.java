@@ -31,4 +31,7 @@ public class Point {
     @Column
     @JsonView(DataTablesOutput.View.class)
     private String address;
+
+    @Column
+    private Integer originator;
 }

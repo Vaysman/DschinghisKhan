@@ -14,4 +14,6 @@ public interface UserRepository extends DataTablesRepository<User, Integer> {
 
 
     List<User> findDistinctByUsernameContaining(@Param("username") String username);
+
+    List<User> findTop10ByUsernameContainingAndOriginator(@Param("username") String username, @Param("originator") Integer originator);
 }

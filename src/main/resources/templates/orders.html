@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.springframework.org/schema/data/jaxb">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>O R D E R S</title>
@@ -13,29 +13,105 @@
     <!--z-index:999-->
     <link rel="stylesheet" type="text/css" href="/media/font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" href="/media/DataTables/Select-1.2.5/css/select.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" href="/main/css/main.css" th:href="@{/main/css/main.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/common/css/logist-styling.css}">
 
     <script src="/media/jQuery-2.1.4/jquery-2.1.4.js"></script>
     <script src="/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js"></script>
-    <!--<script src="/media/jquery-mask/dist/jquery.mask.min.js"></script>-->
+    <script src="/media/jquery-mask/dist/jquery.mask.min.js"></script>
     <script src="/media/Selectize/js/standalone/selectize.min.js"></script>
     <script src="/media/DataTables/datatables.js"></script>
     <script src="/media/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.js"></script>
     <script src="/media/DataTables/Buttons-1.5.1/js/buttons.bootstrap.js"></script>
     <script src="/media/DataTables/Editor-1.7.3/js/dataTables.editor.js"></script>
     <script src="/media/DataTables/Editor-1.7.3/js/editor.bootstrap4.js"></script>
-    <!--<script src="/media/FieldType-Mask/editor.mask.min.js"></script>-->
+    <script src="/media/FieldType-Mask/editor.mask.min.js"></script>
     <script src="/media/FieldType-Selectize/editor.selectize.min.js"></script>
     <script src="/media/DataTables/Select-1.2.5/js/dataTables.select.js"></script>
+    <script src="/media/DataTables/moment.js"></script>
 
     <script src="/localization/localizeEditor.js"></script>
-    <script src="/main/js/users.js"></script>
-    <script src="/main/js/transportCompanies.js"></script>
-    <script src="/main/js/points.js"></script>
-    <script src="/main/js/routes.js"></script>
-</head>
-<body>
 
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        var currentUser = /*[[${currentUser}]]*/;
+
+        var orderRequirements = /*[[${requirements}]]*/;
+        var requirementOptions = [];
+        orderRequirements.forEach(function (x) {
+            requirementOptions.push({value: x, label: x});
+        });
+
+        var orderObligations = /*[[${orderObligations}]]*/;
+        var obligationOptions = [];
+        orderObligations.forEach(function (x) {
+            obligationOptions.push({value: x, label: x});
+        });
+
+        console.log(currentUser);
+
+        /*]]>*/
+    </script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/orders.js"></script>
+</head>
+<body class="grey">
+<header class="navbar navbar-expand navbar-dark flex-column flex-md-row logist-navbar">
+    <!--<ul class="navbar-nav-scroll">-->
+    <!--<a href="#">Fgsfdds</a>-->
+
+    <!--</ul>-->
+    <ul class="navbar-nav flex-row">
+        <li class="nav-item"><a class="nav-link active" href="#"><i class="fa fa-th-list" aria-hidden="true"></i>
+            Заявки</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск
+            маршрутов</a></li>
+        <li class="nav-item"><a class="nav-link" href="/main" target="_self"><i class="fa fa-cog"
+                                                                                aria-hidden="true"></i>
+            Админка</a></li>
+        <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link"
+                                                                                                href="/swagger-ui.html"
+                                                                                                target="_blank"><i
+                class="fa fa-code" aria-hidden="true"></i> API</a></li>
+    </ul>
+
+    <ul class="navbar-nav ml-md-auto d-none flex-row d-md-flex">
+        <li class="nav-item dropdown">
+            <a class="nav-item nav-link  dropdown-toggle" id="userDropdown"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span sec:authentication="name"></span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></i> Выход</a>
+            </div>
+        </li>
+    </ul>
+</header>
+<div class="container-fluid">
+    <div class="spaced-container white container-fluid">
+        <h4>Заявки</h4>
+        <div>
+            <table class="table  table-striped " id="orderTable">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Номер</th>
+                    <th>Статус</th>
+                    <th>Маршрут</th>
+                    <th>ТК</th>
+                    <th>Пункт отправки</th>
+                    <th>Пункт доставки</th>
+                    <th>Требования</th>
+                    <th>Груз</th>
+                    <th>Дата оплаты</th>
+                    <th>Дата возврата документов</th>
+                    <th>Рейтинг</th>
+                    <th>Обязательность</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
 </body>
 </html>

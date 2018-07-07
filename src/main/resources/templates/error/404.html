@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>404</title>
+    <link rel="stylesheet" type="text/css" href="/media/DataTables/Bootstrap-4-4.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/common/css/logist-styling.css}">
+    <script src="/media/jQuery-2.1.4/jquery-2.1.4.js"></script>
+    <script src="/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js"></script>
+
+</head>
+<body class="grey" style="text-align: center">
+<div class="container">
+    <div class="spaced-container white">
+        <div class="main">
+            <h3>404 - Страница не найдена</h3>
+            <img th:src="@{/error/images/notFound.jpg}"><br>
+
+        </div>
+
+
+    </div>
+    <br>
+    <a th:href="@{/main}">На главную</a>
+
+</div>
+</body>
+</html>
+

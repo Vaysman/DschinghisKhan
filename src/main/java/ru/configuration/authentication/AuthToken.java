@@ -3,6 +3,8 @@ package ru.configuration.authentication;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import ru.dao.entity.User;
 
 import java.util.Collection;
@@ -102,4 +104,9 @@ public class AuthToken extends AbstractAuthenticationToken {
         credentials = null;
     }
 
+
+    public static AuthToken getCurrentAuthToken(){
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return (AuthToken)securityContext.getAuthentication();
+    }
 }

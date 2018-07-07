@@ -1,21 +1,22 @@
 $(document).ready(function () {
-    let transportCompanyEditor = null;
-    transportCompanyEditor = new $.fn.dataTable.Editor({
+
+    let companyEditor = new $.fn.dataTable.Editor({
         ajax: {
             create: {
                 type: 'POST',
                 contentType: 'application/json',
-                url: 'api/transportCompanies',
+                url: 'api/companies',
                 data: function (d) {
                     let newdata;
                     $.each(d.data, function (key, value) {
+                        value.originator = currentUser.id;
                         newdata = JSON.stringify(value);
                     });
                     return newdata;
                 },
                 success: function (response) {
-                    transportCompanyDataTable.draw();
-                    transportCompanyEditor.close();
+                    companiesTable.draw();
+                    companyEditor.close();
                     // alert(response.responseText);
                 },
                 error: function (jqXHR, exception) {
@@ -25,7 +26,7 @@ $(document).ready(function () {
             edit: {
                 contentType: 'application/json',
                 type: 'PATCH',
-                url: 'api/transportCompanies/_id_',
+                url: 'api/companies/_id_',
                 data: function (d) {
                     let newdata;
                     $.each(d.data, function (key, value) {
@@ -38,8 +39,8 @@ $(document).ready(function () {
                     return newdata;
                 },
                 success: function (response) {
-                    transportCompanyDataTable.draw();
-                    transportCompanyEditor.close();
+                    companiesTable.draw();
+                    companyEditor.close();
                 },
                 error: function (jqXHR, exception) {
                     alert(response.responseText);
@@ -49,7 +50,7 @@ $(document).ready(function () {
             remove: {
                 type: 'DELETE',
                 contentType: 'application/json',
-                url: 'api/transportCompanies/_id_',
+                url: 'api/companies/_id_',
                 data: function (d) {
                     return '';
                 }
@@ -65,7 +66,7 @@ $(document).ready(function () {
                     searchField: "label",
                     loadThrottle: 400,
                     load: function(query, callback){
-                        $.get( `api/points/search/findTop10ByNameContaining/?name=${query}`,
+                        $.get( `api/points/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
                             function (data) {
                                 console.log(data);
                                 let pointOptions = [];
@@ -82,7 +83,7 @@ $(document).ready(function () {
         ]
     });
 
-    var transportCompanyDataTable = $("#transportCompaniesTable").DataTable({
+    var companiesTable = $("#transportCompaniesTable").DataTable({
             processing: true,
             serverSide: true,
             searchDelay: 800,
@@ -92,7 +93,7 @@ $(document).ready(function () {
                 data: function (d) {
                     return JSON.stringify(d);
                 },
-                url: "dataTables/transportCompanies", // json datasource
+                url: "dataTables/companiesForUser", // json datasource
                 type: "post"  // method  , by default get
             },
             dom: 'Bfrtip',
@@ -105,15 +106,15 @@ $(document).ready(function () {
             "buttons": [
                 {
                     extend: "create",
-                    editor: transportCompanyEditor
+                    editor: companyEditor
                 },
                 {
                     extend: "edit",
-                    editor: transportCompanyEditor
+                    editor: companyEditor
                 },
                 {
                     extend: "remove",
-                    editor: transportCompanyEditor
+                    editor: companyEditor
                 }
             ],
             "paging": 10,

@@ -18,7 +18,8 @@ import java.util.List;
 @Table(name = "transport_companies", indexes = {
         @Index(name = "transport_companies_id_index", columnList = "id"),
         @Index(name = "transport_companies_point_id_index", columnList = "point_id"),
-        @Index(name = "transport_companies_user_id_index", columnList = "user_id")
+        @Index(name = "transport_companies_user_id_index", columnList = "user_id"),
+        @Index(name = "transport_companies_originator_index", columnList = "originator")
 })
 public class Company {
     @Id
@@ -93,4 +94,7 @@ public class Company {
                     @Index(name = "pending_orders_transport_company_id_index", columnList = "transport_company_id")}
     )
     private List<Order> pendingOrders = new ArrayList<>();
+
 }
+
+

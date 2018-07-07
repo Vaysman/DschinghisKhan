@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let userRoleOptions = [];
 
         // console.log(JSON.stringify(userRoles));
         let usersEditor = new $.fn.dataTable.Editor({
@@ -68,12 +67,19 @@ $(document).ready(function () {
 
 
             fields: [
-                {label: 'Имя', name: 'username', type: 'text'},
-                {label: 'Логин', name: 'login', type: 'text'},
-                {label: 'Пароль', name: 'passAndSalt', type: 'password', def:"dummy"},
+                {label: 'Имя', name: 'username', type: 'text',compare: function ( a, b ) {
+                        return (a===b);
+                    }},
+                {label: 'Логин', name: 'login', type: 'text',compare: function ( a, b ) {
+                        return (a===b);
+                    }},
+                {label: 'Пароль', name: 'passAndSalt', type: 'password',compare: function ( a, b ) {
+                        return (a===b);
+                    }},
                 {
-                    label: 'Роль', name: 'userRole', type: 'selectize', options: userRoleOptions, opts:{
-
+                    label: 'Роль', name: 'userRole', type: 'selectize', options: userRoleOptions
+                    ,compare: function ( a, b ) {
+                        return (a===b);
                     }}
             ]
         });
@@ -93,8 +99,7 @@ $(document).ready(function () {
                 if(!login.val()){
                     login.error("Логин должен быть указан")
                 }
-                if(!passAndSalt.val() || passAndSalt.val()==="dummy"){
-
+                if(action!=='edit'&&(!passAndSalt.val() || passAndSalt.val()==="dummy") ){
                     passAndSalt.error("Пароль должен быть указан")
                 }
                 if(!userRole.val()){
@@ -120,7 +125,7 @@ $(document).ready(function () {
                     data: function (d) {
                         return JSON.stringify(d);
                     },
-                    url: "dataTables/users", // json datasource
+                    url: "dataTables/usersForUser", // json datasource
                     type: "post"  // method  , by default get
                 },
                 dom: 'Bfrtip',
@@ -149,10 +154,10 @@ $(document).ready(function () {
                     {"name": "id", "data": "id", "targets": 0, visible: false},
                     {"name": "username", "data": "username", "targets": 1},
                     {"name": "login", "data": "login", "targets": 2},
-                    {"name": "passAndSalt", "data":"passAndSalt", defaultContent:"dummy", mRender: function () {
-                            return "dummy";
-                        }, def: "dummy",
-                        "targets":3, visible:false},
+                    // {"name": "passAndSalt", "data":"passAndSalt", defaultContent:"dummy", mRender: function () {
+                    //         return "dummy";
+                    //     }, def: "dummy",
+                    //     "targets":3, visible:false},
                     {
                         "name": "userRole", "data": "userRole", "targets": 3
                     }

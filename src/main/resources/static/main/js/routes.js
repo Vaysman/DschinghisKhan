@@ -9,6 +9,7 @@ $(document).ready(function () {
                 data: function (d) {
                     let newdata;
                     $.each(d.data, function (key, value) {
+                        value.originator = currentUser.id;
                         newdata = JSON.stringify(value);
                     });
                     return newdata;
@@ -34,7 +35,6 @@ $(document).ready(function () {
                         }
                         newdata = JSON.stringify(value);
                     });
-                    console.log(newdata);
                     return newdata;
                 },
                 success: function (response) {
@@ -59,7 +59,7 @@ $(document).ready(function () {
         idSrc: 'id',
 
         fields: [
-            {label: 'Название', name: 'name', type: 'text'},
+            {label: 'Название', name: 'name', type: 'text',fieldInfo:"Краткая информация о маршруте, например: Москва-Рязань, 20т 15 000 рублей без НДС, тент"},
             {
                 label: 'ТК',
                 name: 'company',
@@ -67,13 +67,13 @@ $(document).ready(function () {
                 options: [],
                 opts: {searchField: "label", create: false,
                 load: function (query, callback) {
-                    $.get(`api/transportCompanies/search/findTop10ByNameContaining/?name=${query}`,
+                    $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
                         function (data) {
-                            var transportCompanyOptions = [];
-                            data._embedded.transportCompanies.forEach(function (entry) {
-                                transportCompanyOptions.push({"label": entry.name, "value": entry._links.self.href});
+                            var companyOptions = [];
+                            data._embedded.companies.forEach(function (entry) {
+                                companyOptions.push({"label": entry.name, "value": entry._links.self.href});
                             });
-                                callback(transportCompanyOptions);
+                                callback(companyOptions);
                         }
                     );
 
@@ -99,12 +99,22 @@ $(document).ready(function () {
                     reverse: true,
                     placeholder: ""
                 }},
-            {label: 'Стоимость за паллету', name: 'costPerPrr', type: "mask", mask: "#",
+            {label: 'Стоимость за ПРР', name: 'costPerPrr', type: "mask", mask: "#",
                 maskOptions: {
                     reverse: true,
                     placeholder: ""
                 }},
-            {label: 'Стоимость за паллету+НДС', name: 'costPerPrrNds', type: "mask", mask: "#",
+            {label: 'Стоимость за ПРР+НДС', name: 'costPerPrrNds', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Стоимость за паллету', name: 'costPerPallet', type: "mask", mask: "#",
+                maskOptions: {
+                    reverse: true,
+                    placeholder: ""
+                }},
+            {label: 'Стоимость за паллету+НДС', name: 'costPerPalletNds', type: "mask", mask: "#",
                 maskOptions: {
                     reverse: true,
                     placeholder: ""
@@ -158,7 +168,7 @@ $(document).ready(function () {
                 data: function (d) {
                     return JSON.stringify(d);
                 },
-                url: "dataTables/routes", // json datasource
+                url: "dataTables/routesForUser", // json datasource
                 type: "post"  // method  , by default get
             },
             dom: 'Btp',
@@ -185,10 +195,9 @@ $(document).ready(function () {
             "paging": 10,
             "columnDefs": [
                 {"name": "id", "data": "id", "targets": 0, visible: false},
-                {"name": "name", "data": "name", "targets": 1},
+                {"name": "name", "data": "name", "targets": 1,},
                 {"name": "company.name", "data": "company.name", searchable:false, orderable: false, "targets": 2, defaultContent: ""},
                 {"name": "totalCost", "data": null, "targets": 3, searchable:false, orderable: false,render: function (data, type, full) {
-                    console.log(data);
                         return (data.totalCost!==null&&data.totalCostNds!==null) ? `${data.totalCost}₽/${data.totalCostNds}₽` : "";
                     }},
                 {"name": "costPerKilometer", "data": null, "targets": 4,searchable:false, orderable: false,render: function (data, type, full) {
@@ -200,18 +209,21 @@ $(document).ready(function () {
                 {"name": "costPerPrr", "data": null, searchable:false, orderable: false, "targets": 6,render: function (data, type, full) {
                         return (data.costPerPrr!==null&&data.costPerPrrNds!==null) ? `${data.costPerPrr}₽/${data.costPerPrrNds}₽` : "";
                     }},
-                {"name": "tempTo", "data": null, searchable:false, orderable: false, "targets": 7,render: function (data, type, full) {
+                {"name": "costPerPallet", "data": null, searchable:false, orderable: false, "targets": 7,render: function (data, type, full) {
+                        return (data.costPerPallet!==null&&data.costPerPalletNds!==null) ? `${data.costPerPallet}₽/${data.costPerPalletNds}₽` : "";
+                    }},
+                {"name": "tempTo", "data": null, searchable:false, orderable: false, "targets": 8,render: function (data, type, full) {
                         return (data.tempTo!==null&&data.tempFrom!==null) ?  `${data.tempFrom}º-${data.tempTo}º` : "";
                     }},
-                {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, "targets": 8,defaultContent: ""},
-                {"name": "volume", "data": "volume", searchable:false, orderable: false, "targets": 9,defaultContent: "" , render: function (data, type, row, meta) {
+                {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, "targets": 9,defaultContent: ""},
+                {"name": "volume", "data": "volume", searchable:false, orderable: false, "targets": 10,defaultContent: "" , render: function (data, type, row, meta) {
                         return (data!==null) ? `${data}м<sup>3</sup>` : "";
                     }},
-                {"name": "tonnage", "data": "tonnage", searchable:false, orderable: false, "targets": 10,defaultContent: "", render: function (data, type, row, meta) {
+                {"name": "tonnage", "data": "tonnage", searchable:false, orderable: false, "targets": 11,defaultContent: "", render: function (data, type, row, meta) {
                         return (data!==null) ? `${data}т` : "";
                     }},
-                {"name": "loadingType", "data": "loadingType", searchable:false, orderable: false, "targets": 11,defaultContent: ""},
-                {"name": "comment", "data": "comment", searchable:false, orderable: false, "targets": 12,defaultContent: ""},
+                {"name": "loadingType", "data": "loadingType", searchable:false, orderable: false, "targets": 12,defaultContent: ""},
+                {"name": "comment", "data": "comment", searchable:false, orderable: false, "targets": 13,defaultContent: ""},
             ]
         }
     );
@@ -264,7 +276,6 @@ $(document).ready(function () {
                                 }
                                 newdata = JSON.stringify(value);
                             });
-                            console.log(newdata);
                             return newdata;
                         },
                         success: function (response) {
@@ -299,6 +310,11 @@ $(document).ready(function () {
                             reverse: true,
                             placeholder: ""
                         }},
+                    {label: 'Время разгрузки', name: 'loadingTime', type: 'mask', mask: "#",
+                        maskOptions: {
+                            reverse: true,
+                            placeholder: ""
+                        }},
                     {label: 'Порядковый номер', name: 'queueNumber', type: 'mask', mask: "#",
                         maskOptions: {
                             reverse: true,
@@ -308,7 +324,7 @@ $(document).ready(function () {
                         label: 'Пункт', name: 'point', type: 'selectize', options: [], opts: {
                             searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
                             load: function (query, callback) {
-                                $.get(`api/points/search/findTop10ByNameContaining/?name=${query}`,
+                                $.get(`api/points/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
                                     function (data) {
                                         let pointOptions = [];
                                         data._embedded.points.forEach(function (entry) {
@@ -337,7 +353,7 @@ $(document).ready(function () {
             let routePointDataTable = $("#routePointsTable").DataTable({
                 processing: true,
                 serverSide: true,
-                aaSortingFixed: [[4, 'asc']],
+                aaSortingFixed: [[5, 'asc']],
                 destroy: true,
                 searchDelay: 800,
                 ajax: {
@@ -372,17 +388,20 @@ $(document).ready(function () {
                 ],
                 "paging": 10,
                 "columnDefs": [
-                    {"name": "id", "data": "id", "targets": 0, visible: false},
-                    {"name": "point.name", "data": "point.name", "targets": 1, defaultContent: ""},
-                    {"name": "distance", "data": "distance", "targets": 2, render: function (data) {
+                    {"name": "id", "data": "id", searchable:false, orderable:false, "targets": 0, visible: false},
+                    {"name": "point.name", "data": "point.name","targets": 1, defaultContent: ""},
+                    {"name": "distance", "data": "distance", "targets": 2,searchable:false,orderable:false, render: function (data) {
                             return (data!==null) ? `${data}км` : "";
                         }},
-                    {"name": "cost", "data": "cost", "targets": 3, render: function (data) {
+                    {"name": "cost", "data": "cost", "targets": 3,searchable:false,orderable:false, render: function (data) {
                             return (data!==null) ? `${data}₽` : "";
                         }},
-                    {"name": "queueNumber", "data": "queueNumber", "targets": 4, render: function (data) {
-                            return (data!==null) ? `№${data}` : "";
+                    {"name": "loadingTime", data:"loadingTime", "targets": 4, searchable:false,orderable:false,render: function (data) {
+                            return (data!==null) ? `${data}м` : "";
                         }},
+                    {"name": "queueNumber", "data": "queueNumber", "targets": 5, render: function (data) {
+                            return (data!==null) ? `№${data}` : "";
+                        }}
                 ]
             });
         });

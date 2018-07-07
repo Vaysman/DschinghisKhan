@@ -14,4 +14,5 @@ public interface CompanyRepository extends DataTablesRepository<Company, Integer
     DataTablesOutput<Company> findAll(DataTablesInput input, Specification<Company> additionalSpecification);
 
     List<Company> findTop10ByNameContaining(@Param("name") String name);
+    List<Company> findTop10ByNameContainingAndOriginator(@Param("name") String name, @Param("originator") Integer originator);
 }

@@ -2,7 +2,6 @@ package ru.configuration;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 
 class HibernateAwareObjectMapper extends ObjectMapper {
@@ -11,7 +10,7 @@ class HibernateAwareObjectMapper extends ObjectMapper {
         module.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
         this.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         this.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-        this.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+//        this.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         this.registerModule(module);
     }
 }

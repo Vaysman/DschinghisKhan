@@ -13,7 +13,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
 @Table(name = "contacts", indexes = {
-        @Index(name = "contacts_transport_company_id_index", columnList = "transport_company_id")
+        @Index(name = "contacts_transport_company_id_index", columnList = "transport_company_id"),
+        @Index(name = "contacts_originator_index", columnList = "originator")
 })
 public class Contact {
     @Id
@@ -46,4 +47,7 @@ public class Contact {
     @JoinColumn(name = "transport_company_id")
     @JsonView(DataTablesOutput.View.class)
     private Company company;
+
+    @Column
+    private Integer originator;
 }

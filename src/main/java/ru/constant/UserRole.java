@@ -5,11 +5,11 @@ import lombok.Getter;
 
 public enum UserRole {
     @JsonProperty("Админ")
-    ADMIN("Админ"),
+    ROLE_ADMIN("Админ"),
     @JsonProperty("ТЭК")
-    TRANSPORT_COMPANY("ТЭК"),
+    ROLE_TRANSPORT_COMPANY("ТЭК"),
     @JsonProperty("Диспетчер")
-    DISPATCHER("Диспетчер");
+    ROLE_DISPATCHER("Диспетчер");
 
     @Getter
     private final String roleName;
