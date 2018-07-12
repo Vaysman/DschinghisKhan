@@ -8,24 +8,21 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.OrderObligation;
 import ru.constant.OrderStatus;
-import ru.dao.entity.converter.StringArrayToStringConverter;
+import ru.dao.entity.converter.StringSetToStringConverter;
 import ru.util.generator.RandomIntGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
 @Entity
 @Table(name = "orders",indexes = {
-        @Index(name = "orders_drop_point_id_index", columnList = "drop_point_id"),
         @Index(name = "orders_number_uindex", columnList = "number", unique = true),
-        @Index(name = "orders_pickup_point_id_index", columnList = "pickup_point_id"),
-        @Index(name = "orders_drop_point_id_index", columnList = "drop_point_id", unique = true),
         @Index(name = "orders_transport_company_id_index", columnList = "transport_company_id"),
+        @Index(name = "orders_driver_id_index", columnList = "driver_id"),
+        @Index(name = "orders_transport_id_index", columnList = "transport_id"),
         @Index(name = "orders_route_id_index", columnList = "route_id"),
 })
 public class Order {
@@ -56,15 +53,16 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonView(DataTablesOutput.View.class)
-    @JoinColumn(name = "PICKUP_POINT_ID", referencedColumnName = "ID")
-    private Point pickupPoint;
+    @JoinColumn(name = "DRIVER_ID", referencedColumnName = "ID")
+    private Driver driver;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonView(DataTablesOutput.View.class)
-    @JoinColumn(name = "DROP_POINT_ID", referencedColumnName = "ID")
-    private Point dropPoint;
+    @JoinColumn(name = "TRANSPORT_ID", referencedColumnName = "ID")
+    private Transport transport;
 
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
+    @JsonView(DataTablesOutput.View.class)
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "drop_points",
             joinColumns = { @JoinColumn(name = "order_id") },
@@ -72,18 +70,18 @@ public class Order {
             indexes = {@Index(name = "drop_points_order_id_index", columnList = "order_id"),
                     @Index(name = "drop_points_point_id_index", columnList = "point_id")}
     )
-    private List<Point> dropPoints = new ArrayList<>();
+    private Set<Point> dropPoints = new HashSet<>();
 
 
     @Column(name = "requirements")
-    @Convert(converter = StringArrayToStringConverter.class)
+    @Convert(converter = StringSetToStringConverter.class)
     @JsonView(DataTablesOutput.View.class)
-    private List<String> requirements = new ArrayList<>();
+    private Set<String> requirements = new HashSet<>();
 
     @Column(name = "cargo")
-    @Convert(converter = StringArrayToStringConverter.class)
+    @Convert(converter = StringSetToStringConverter.class)
     @JsonView(DataTablesOutput.View.class)
-    private List<String> cargo = new ArrayList<>();
+    private Set<String> cargo = new HashSet<>();
 
     @Column
     @JsonFormat(pattern = "d/M/yyyy")
@@ -107,7 +105,10 @@ public class Order {
     @Column
     private Integer originator;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+
+
+
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "pending_orders",
             joinColumns = { @JoinColumn(name = "order_id") },

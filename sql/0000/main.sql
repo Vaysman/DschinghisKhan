@@ -107,6 +107,7 @@ ALTER TABLE transport_companies ADD ocved VARCHAR(64) NULL;
 ALTER TABLE transport_companies ADD ocpo varchar(64) NULL;
 ALTER TABLE transport_companies ADD ogrn varchar(64) NULL;
 ALTER TABLE transport_companies ADD type VARCHAR(10) NULL;
+ALTER TABLE transport_companies ADD email VARCHAR(64) NULL;
 
 CREATE TABLE contacts
 (
@@ -114,11 +115,9 @@ CREATE TABLE contacts
   taxation varchar(64),
   address varchar(128),
   fact_address varchar(128),
-  phone varchar(16),
+  phone varchar(20),
   number_of_transports int,
-  transport_company_id int,
-  name varchar(64),
-  CONSTRAINT contacts_transport_companies_id_fk FOREIGN KEY (transport_company_id) REFERENCES transport_companies (id) ON DELETE CASCADE ON UPDATE CASCADE
+  name varchar(64)
 );
 CREATE INDEX contacts_transport_company_id_index ON contacts (transport_company_id);
 
@@ -189,3 +188,54 @@ CREATE TABLE drop_points
 );
 CREATE INDEX drop_points_order_id_index ON drop_points (order_id);
 CREATE INDEX drop_points_point_id_index ON drop_points (point_id);
+ALTER TABLE users ADD emai VARCHAR(64) NULL;
+
+CREATE TABLE transports
+(
+  id int PRIMARY KEY AUTO_INCREMENT,
+  number VARCHAR(16) NOT NULL,
+  is_gps boolean,
+  type varchar(16),
+  body_type varchar(16),
+  tonnage int,
+  volume int,
+  loading_type VARCHAR(128),
+  conics boolean,
+  comment varchar(512),
+  hydrobort boolean,
+  originator int,
+  CONSTRAINT transports_users_id_fk FOREIGN KEY (originator) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE UNIQUE INDEX transports_id_uindex ON transports (id);
+CREATE INDEX transports_number_index ON transports (number);
+CREATE INDEX transports_originator_index ON transports (originator);
+
+CREATE TABLE drivers
+(
+  id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  name varchar(64),
+  phone varchar(20),
+  passport_number VARCHAR(16),
+  license_number VARCHAR(16),
+  rating int,
+  has_mobile_app boolean,
+  is_tracked boolean,
+  is_hired boolean,
+  payment_type varchar(16),
+  originator int,
+  CONSTRAINT drivers_users_id_fk FOREIGN KEY (originator) REFERENCES users (id) ON DELETE SET NULL ON UPDATE SET NULL
+);
+CREATE UNIQUE INDEX drivers_id_uindex ON drivers (id);
+CREATE INDEX drivers_name_index ON drivers (name);
+CREATE INDEX drivers_originator_index ON drivers (originator);
+
+ALTER TABLE orders ADD driver_id int NULL;
+ALTER TABLE orders
+  ADD CONSTRAINT orders_drivers_id_fk
+FOREIGN KEY (driver_id) REFERENCES drivers (id) ON DELETE SET NULL ON UPDATE SET NULL;
+ALTER TABLE orders ADD transport_id int NULL;
+ALTER TABLE orders
+  ADD CONSTRAINT orders_transports_id_fk
+FOREIGN KEY (transport_id) REFERENCES transports (id) ON DELETE SET NULL ON UPDATE SET NULL;
+ALTER TABLE orders DROP pickup_point_id;
+ALTER TABLE orders DROP drop_point_id;

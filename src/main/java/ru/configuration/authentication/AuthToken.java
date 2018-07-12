@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import ru.dao.entity.Company;
 import ru.dao.entity.User;
 
 import java.util.Collection;
@@ -22,6 +23,7 @@ public class AuthToken extends AbstractAuthenticationToken {
     private String name;
     private String roleName;
     private User user;
+    private Integer companyId;
 
     // ~ Constructors
     // ===================================================================================================
@@ -50,7 +52,7 @@ public class AuthToken extends AbstractAuthenticationToken {
      * @param credentials
      * @param authorities
      */
-    public AuthToken(User user, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    public AuthToken(User user, Company company, Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = user.getLogin();
         this.credentials = credentials;
@@ -58,6 +60,7 @@ public class AuthToken extends AbstractAuthenticationToken {
         this.role = user.getUserRole().name();
         this.roleName = user.getUserRole().getRoleName();
         this.user = user;
+        this.companyId = (company!=null) ? company.getId() : null;
         super.setAuthenticated(true); // must use super, as we override
     }
 
@@ -87,6 +90,10 @@ public class AuthToken extends AbstractAuthenticationToken {
 
     public String getRoleName() {
         return roleName;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
     }
 
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {

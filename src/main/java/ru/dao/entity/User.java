@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import ru.constant.UserRole;
 import ru.util.generator.RandomStringGenerator;
@@ -19,6 +20,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @AllArgsConstructor(suppressConstructorProperties = true)
 @NoArgsConstructor
+@Transactional
 @Table(name = "users",indexes = {
         @Index(name = "users_id_index", columnList = "id"),
         @Index(name = "users_login_index", columnList = "login"),
@@ -52,14 +54,23 @@ public class User {
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)
 //    @JsonView(DataTablesOutput.View.class)
-    private UserRole userRole;
+    private UserRole userRole = UserRole.ROLE_TRANSPORT_COMPANY;
 
     @Column
     private Integer originator;
 
+    @Column(name = "email")
+    private String email;
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "ORIGINATOR", referencedColumnName = "ID", insertable = false, updatable = false)
 //    private User owner;
+
+    //This doesn't work well with Views apparently
+//    @OneToMany(cascade = CascadeType.ALL,
+//            fetch = FetchType.LAZY,
+//            mappedBy = "user")
+//    private List<Company> companies = new ArrayList<>();
 
 
     @PrePersist
@@ -69,8 +80,6 @@ public class User {
             this.salt = RandomStringGenerator.randomAlphaNumeric(16);
             this.passAndSalt = DigestUtils.md5DigestAsHex((encodedPassword+this.salt).getBytes());
         }
-        if (userRole==null) this.userRole=UserRole.ROLE_TRANSPORT_COMPANY;
-        System.out.println("prePersist called");
     }
 
     @PreUpdate
@@ -80,7 +89,6 @@ public class User {
             this.salt = RandomStringGenerator.randomAlphaNumeric(16);
             this.passAndSalt = DigestUtils.md5DigestAsHex((encodedPassword+this.salt).getBytes());
         }
-        System.out.println("preUpdate called");
     }
 
 

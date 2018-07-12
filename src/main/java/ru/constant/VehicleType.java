@@ -3,18 +3,16 @@ package ru.constant;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum VehicleType {
-    @JsonProperty("Термос")
-    THERMOS("Термос"),
-    @JsonProperty("Тент")
-    TENT("Тент"),
-    @JsonProperty("Рефрижератор")
-    REFRIGERATOR("Рефрижератор"),
-    @JsonProperty("Борт")
-    BORT("Борт");
+    @JsonProperty("Тягач")
+    MOVER("Тягач"),
+    @JsonProperty("Полуприцеп/Прицеп")
+    CONTAINER("Полуприцеп/Прицеп"),
+    @JsonProperty("Транспорт")
+    TRANSPORT("Транспорт");
 
-    private String typeName;
+    private String name;
 
-    VehicleType(String typeName) {
-        this.typeName = typeName;
+    VehicleType(String name) {
+        this.name = name;
     }
 }

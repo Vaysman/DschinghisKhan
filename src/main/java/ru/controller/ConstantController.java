@@ -25,6 +25,9 @@ public class ConstantController {
         return OrderStatus.values();
     }
 
+
+
+
     @GetMapping(value = "/requirements", produces = "application/json; charset=UTF-8")
     public String[] getRequirements(){
         return new String[]{"Медицинская карта",

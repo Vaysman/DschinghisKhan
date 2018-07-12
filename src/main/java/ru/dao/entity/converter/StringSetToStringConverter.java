@@ -4,24 +4,23 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Converter
-public class StringArrayToStringConverter implements AttributeConverter<List<String>,String> {
+public class StringSetToStringConverter implements AttributeConverter<Set<String>,String> {
     @Override
-    public String convertToDatabaseColumn(List<String> attribute) {
+    public String convertToDatabaseColumn(Set<String> attribute) {
         //Using @ instead of comma, because comma occurs sometimes
         return attribute == null ? null : StringUtils.join(attribute,"@");
     }
 
     @Override
-    public List<String> convertToEntityAttribute(String dbData) {
+    public Set<String> convertToEntityAttribute(String dbData) {
         if (StringUtils.isBlank(dbData)){
-            return new ArrayList<>();
+            return new HashSet<>();
         } else {
-            return Arrays.asList(StringUtils.split(dbData,"@"));
+            return Arrays.stream(StringUtils.split(dbData, "@")).collect(Collectors.toSet());
         }
     }
 }

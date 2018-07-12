@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -34,4 +35,21 @@ public class Point {
 
     @Column
     private Integer originator;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return Objects.equals(id, point.id) &&
+                Objects.equals(name, point.name) &&
+                Objects.equals(address, point.address) &&
+                Objects.equals(originator, point.originator);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name, address, originator);
+    }
 }

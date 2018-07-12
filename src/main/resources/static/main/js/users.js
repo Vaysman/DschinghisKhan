@@ -73,14 +73,17 @@ $(document).ready(function () {
                 {label: 'Логин', name: 'login', type: 'text',compare: function ( a, b ) {
                         return (a===b);
                     }},
-                {label: 'Пароль', name: 'passAndSalt', type: 'password',compare: function ( a, b ) {
+                {label: 'Пароль', name: 'passAndSalt', type: 'password',data: function () {
+                        return "dummy";
+                    },compare: function ( a, b ) {
                         return (a===b);
                     }},
                 {
                     label: 'Роль', name: 'userRole', type: 'selectize', options: userRoleOptions
                     ,compare: function ( a, b ) {
                         return (a===b);
-                    }}
+                    }},
+                {label: 'E-Mail', name: 'email', type: 'text'},
             ]
         });
 
@@ -154,13 +157,14 @@ $(document).ready(function () {
                     {"name": "id", "data": "id", "targets": 0, visible: false},
                     {"name": "username", "data": "username", "targets": 1},
                     {"name": "login", "data": "login", "targets": 2},
-                    // {"name": "passAndSalt", "data":"passAndSalt", defaultContent:"dummy", mRender: function () {
-                    //         return "dummy";
-                    //     }, def: "dummy",
-                    //     "targets":3, visible:false},
+                    {"name": "passAndSalt", "data":"passAndSalt", defaultContent:"dummy", mRender: function () {
+                            return "dummy";
+                        }, def: "dummy",
+                        "targets":3, visible:false},
                     {
-                        "name": "userRole", "data": "userRole", "targets": 3
-                    }
+                        "name": "userRole", "data": "userRole", "targets": 4
+                    },
+                    {"name": "email", "data": "email", "targets": 5},
                 ]
             }
         );

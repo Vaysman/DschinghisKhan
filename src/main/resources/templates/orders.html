@@ -3,33 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>O R D E R S</title>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/Bootstrap-4-4.0.0/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/Selectize/css/selectize.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/Editor-1.7.3/css/editor.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/FieldType-Selectize/editor.selectize.min.css"/>
-    <!--<link rel="stylesheet" type="text/css" href="media/datatables/datatables.css"/>-->
-    <!--z-index:999-->
-    <link rel="stylesheet" type="text/css" href="/media/font-awesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/Select-1.2.5/css/select.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/common/css/logist-styling.css}">
+    <th:block th:include="/fragments/header :: scripts"></th:block>
 
-    <script src="/media/jQuery-2.1.4/jquery-2.1.4.js"></script>
-    <script src="/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js"></script>
-    <script src="/media/jquery-mask/dist/jquery.mask.min.js"></script>
-    <script src="/media/Selectize/js/standalone/selectize.min.js"></script>
-    <script src="/media/DataTables/datatables.js"></script>
-    <script src="/media/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.js"></script>
-    <script src="/media/DataTables/Buttons-1.5.1/js/buttons.bootstrap.js"></script>
-    <script src="/media/DataTables/Editor-1.7.3/js/dataTables.editor.js"></script>
-    <script src="/media/DataTables/Editor-1.7.3/js/editor.bootstrap4.js"></script>
-    <script src="/media/FieldType-Mask/editor.mask.min.js"></script>
-    <script src="/media/FieldType-Selectize/editor.selectize.min.js"></script>
-    <script src="/media/DataTables/Select-1.2.5/js/dataTables.select.js"></script>
-    <script src="/media/DataTables/moment.js"></script>
-
-    <script src="/localization/localizeEditor.js"></script>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -55,56 +30,26 @@
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/orders.js"></script>
 </head>
 <body class="grey">
-<header class="navbar navbar-expand navbar-dark flex-column flex-md-row logist-navbar">
-    <!--<ul class="navbar-nav-scroll">-->
-    <!--<a href="#">Fgsfdds</a>-->
-
-    <!--</ul>-->
-    <ul class="navbar-nav flex-row">
-        <li class="nav-item"><a class="nav-link active" href="#"><i class="fa fa-th-list" aria-hidden="true"></i>
-            Заявки</a>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск
-            маршрутов</a></li>
-        <li class="nav-item"><a class="nav-link" href="/main" target="_self"><i class="fa fa-cog"
-                                                                                aria-hidden="true"></i>
-            Админка</a></li>
-        <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link"
-                                                                                                href="/swagger-ui.html"
-                                                                                                target="_blank"><i
-                class="fa fa-code" aria-hidden="true"></i> API</a></li>
-    </ul>
-
-    <ul class="navbar-nav ml-md-auto d-none flex-row d-md-flex">
-        <li class="nav-item dropdown">
-            <a class="nav-item nav-link  dropdown-toggle" id="userDropdown"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span sec:authentication="name"></span>
-            </a>
-            <div class="dropdown-menu" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></i> Выход</a>
-            </div>
-        </li>
-    </ul>
-</header>
+<div th:insert="fragments/header :: header('orders')"></div>
 <div class="container-fluid">
     <div class="spaced-container white container-fluid">
         <h4>Заявки</h4>
         <div>
-            <table class="table  table-striped " id="orderTable">
+            <table class="table table-sm table-striped " id="orderTable">
                 <thead>
                 <tr>
                     <th>id</th>
                     <th>Номер</th>
                     <th>Статус</th>
                     <th>Маршрут</th>
+                    <th>Пункты<br>доставки</th>
                     <th>ТК</th>
-                    <th>Пункт отправки</th>
-                    <th>Пункт доставки</th>
+                    <th>Транспорт</th>
+                    <th>Водитель</th>
                     <th>Требования</th>
                     <th>Груз</th>
-                    <th>Дата оплаты</th>
-                    <th>Дата возврата документов</th>
+                    <th>Дата<br>оплаты</th>
+                    <th>Дата<br>возврата<br>документов</th>
                     <th>Рейтинг</th>
                     <th>Обязательность</th>
                 </tr>
@@ -113,5 +58,6 @@
         </div>
     </div>
 </div>
+<div th:insert="fragments/header :: footer"></div>
 </body>
 </html>

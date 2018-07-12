@@ -1,75 +1,5 @@
 $(document).ready(function () {
 
-    let orderAssignEditor = new $.fn.dataTable.Editor({
-        table: '#orderTable',
-        idSrc: 'id',
-        ajax: {
-            edit: {
-                contentType: 'application/json',
-                type: 'PATCH',
-                url: 'api/orders/_id_',
-                data: function (d) {
-                    let newdata;
-                    $.each(d.data, function (key, value) {
-                        value.status = "Назначено";
-                        newdata = JSON.stringify(value);
-                    });
-                    return newdata;
-                },
-                success: function (response) {
-                    alert("Заявка назначена успешно. \n Назначенные компании получат уведомление в личном кабинете.");
-                    orderDataTable.draw();
-                    orderEditor.close();
-                },
-                error: function (jqXHR, exception) {
-                    alert(response.responseText);
-                }
-            }
-        },
-        fields: [
-            {
-                label: 'Маршрут', name: 'route', type: 'selectize',
-                options: [],
-                opts: {
-                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
-                    load: function (query, callback) {
-                        $.get(`api/routes/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
-                            function (data) {
-                                var routeOptions = [];
-                                data._embedded.routes.forEach(function (entry) {
-                                    routeOptions.push({"label": entry.name, "value": entry._links.self.href});
-                                });
-                                callback(routeOptions);
-                            }
-                        );
-
-                    }
-                },
-                fieldInfo:"Найти подходящий маршрут можно <a href='/routes'>здесь</a>"
-            },
-            {
-                label: 'Компании', name: 'assignedCompanies', type: 'selectize',
-                options: [],
-                opts: {
-                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить", maxItems: 10,
-                    load: function (query, callback) {
-                        $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
-                            function (data) {
-                                var companyOptions = [];
-                                data._embedded.companies.forEach(function (entry) {
-                                    companyOptions.push({"label": entry.name, "value": entry._links.self.href});
-                                });
-                                callback(companyOptions);
-                            }
-                        );
-
-                    }
-                },
-                fieldInfo:"Можно указать до 10 компаний. Если заявка обязательная - то только 1."
-            }
-            ]
-    });
-
     let orderEditor = new $.fn.dataTable.Editor({
         ajax: {
             create: {
@@ -102,19 +32,20 @@ $(document).ready(function () {
                     let newdata;
                     $.each(d.data, function (key, value) {
                         if (value['route'] == "") {
-                            delete value['company'];
+                            delete value['route'];
                         }
-                        if (value['company'] == "") {
-                            delete value['company'];
+                        if (value['dropPoints'].length===0) {
+                            delete value['dropPoints'];
                         }
-                        if (value['dropPoint'] == "") {
-                            delete value['dropPoint'];
+                        if (value['assignedCompanies'].length===0) {
+                            delete value['assignedCompanies'];
                         }
-                        if (value['pickupPoint'] == "") {
-                            delete value['pickupPoint'];
-                        }
+                        if(value['requirements'].length===0){
                             delete value['requirements'];
+                        }
+                        if(value['cargo'].length===0){
                             delete value['cargo'];
+                        }
 
                         newdata = JSON.stringify(value);
                     });
@@ -143,33 +74,32 @@ $(document).ready(function () {
 
         fields: [
             {
-                label: 'Точка погрузки',
-                name: 'pickupPoint',
-                type: 'selectize',
+                label: 'Маршрут', name: 'route', type: 'selectize',
                 options: [],
                 opts: {
                     searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
                     load: function (query, callback) {
-                        $.get(`api/points/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
+                        $.get(`api/routes/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
                             function (data) {
-                                var pointOptions = [];
-                                data._embedded.points.forEach(function (entry) {
-                                    pointOptions.push({"label": entry.name, "value": entry._links.self.href});
+                                var routeOptions = [];
+                                data._embedded.routes.forEach(function (entry) {
+                                    routeOptions.push({"label": entry.name, "value": entry._links.self.href});
                                 });
-                                callback(pointOptions);
+                                callback(routeOptions);
                             }
                         );
 
                     }
-                }
+                },
+                fieldInfo:"Найти подходящий маршрут можно <a href='/routes'>здесь</a>"
             },
             {
-                label: 'Точка разгрузки',
-                name: 'dropPoint',
+                label: 'Точки разгрузки',
+                name: 'dropPoints',
                 type: 'selectize',
                 options: [],
                 opts: {
-                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить", maxItems: 10,
                     load: function (query, callback) {
                         $.get(`api/points/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
                             function (data) {
@@ -184,6 +114,28 @@ $(document).ready(function () {
                     }
                 }
             },
+            {label: 'Обязательность заявки', name: 'orderObligation', type: "selectize", options: obligationOptions},
+            {
+                label: 'Компании', name: 'assignedCompanies', type: 'selectize', placeholder: "Нажмите, чтобы изменить",
+                options: [],
+                opts: {
+                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить", maxItems: 10,
+                    load: function (query, callback) {
+                        $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
+                            function (data) {
+                                var companyOptions = [];
+                                data._embedded.companies.forEach(function (entry) {
+                                    companyOptions.push({"label": entry.name, "value": entry._links.self.href});
+                                });
+                                callback(companyOptions);
+                            }
+                        );
+
+                    }
+                },
+                fieldInfo:"Можно указать до 10 компаний. Если заявка обязательная - то только 1."
+            },
+
             {
                 label: 'Груз',
                 name: 'cargo',
@@ -227,7 +179,7 @@ $(document).ready(function () {
                     placeholder: "1000"
                 }
             },
-            {label: 'Обязательность заявки', name: 'orderObligation', type: "selectize", options: obligationOptions},
+
 
         ]
     });
@@ -265,10 +217,6 @@ $(document).ready(function () {
                 {
                     extend: "remove",
                     editor: orderEditor
-                },{
-                    extend: "edit",
-                    text: "Назначить маршрут и компании",
-                    editor: orderAssignEditor
                 }
             ],
             "paging": 10,
@@ -285,33 +233,41 @@ $(document).ready(function () {
                     defaultContent: ""
                 },
                 {
+                    "name": "dropPoints",
+                    "data": "dropPoints[, ].name",
+                    "targets": 4,
+                    searchable: false,
+                    orderable: false,
+                    defaultContent: ""
+                },
+                {
                     "name": "company.name",
                     "data": "company.name",
                     searchable: false,
                     orderable: false,
-                    "targets": 4,
-                    defaultContent: ""
-                },
-                {
-                    "name": "pickupPoint.name",
-                    "data": "pickupPoint.name",
                     "targets": 5,
-                    searchable: false,
-                    orderable: false,
                     defaultContent: ""
                 },
                 {
-                    "name": "dropPoint.name",
-                    "data": "dropPoint.name",
-                    "targets": 6,
+                    "name": "transport.number",
+                    "data": "transport.number",
                     searchable: false,
                     orderable: false,
+                    "targets": 6,
+                    defaultContent: ""
+                },
+                {
+                    "name": "driver.name",
+                    "data": "driver.name",
+                    searchable: false,
+                    orderable: false,
+                    "targets": 7,
                     defaultContent: ""
                 },
                 {
                     "name": "requirements",
                     "data": "requirements[, ]",
-                    "targets": 7,
+                    "targets": 8,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -319,7 +275,7 @@ $(document).ready(function () {
                 {
                     "name": "cargo",
                     "data": "cargo[, ]",
-                    "targets": 8,
+                    "targets": 9,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -327,7 +283,7 @@ $(document).ready(function () {
                 {
                     "name": "paymentDate",
                     "data": "paymentDate",
-                    "targets": 9,
+                    "targets": 10,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -335,7 +291,7 @@ $(document).ready(function () {
                 {
                     "name": "documentReturnDate",
                     "data": "documentReturnDate",
-                    "targets": 10,
+                    "targets": 11,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -343,7 +299,7 @@ $(document).ready(function () {
                 {
                     "name": "rating",
                     "data": "rating",
-                    "targets": 11,
+                    "targets": 12,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -351,7 +307,7 @@ $(document).ready(function () {
                 {
                     "name": "orderObligation",
                     "data": "orderObligation",
-                    "targets": 12,
+                    "targets": 13,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -368,11 +324,5 @@ $(document).ready(function () {
             ]
         }
     );
-    
-    orderDataTable.on('select', function (e, dt, type, indexes) {
-        if(orderDataTable.rows(indexes[0]).data.status!=="Создано"){
-            orderDataTable.button(3).disable();
-        }
-        console.log(indexes);
-    });
+
 });

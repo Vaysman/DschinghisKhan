@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.LoadingType;
-import ru.constant.VehicleType;
+import ru.constant.VehicleBodyType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -97,7 +97,7 @@ public class Route {
     @Column
     @Enumerated(EnumType.STRING)
 //    @JsonView(DataTablesOutput.View.class)
-    private VehicleType vehicleType;
+    private VehicleBodyType vehicleType;
 
     @Column
 //    @JsonView(DataTablesOutput.View.class)
@@ -110,7 +110,7 @@ public class Route {
     @JoinColumn(name = "TRANSPORT_COMPANY_ID", referencedColumnName = "ID")
     private Company company;
 
-    @OneToMany(mappedBy = "route", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "route", fetch = FetchType.LAZY, cascade = { CascadeType.ALL})
     private List<RoutePoint> routePoints = new ArrayList<>();
 
 

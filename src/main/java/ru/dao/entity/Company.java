@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.CompanyType;
+import ru.dao.entity.listener.CompanyListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.List;
         @Index(name = "transport_companies_user_id_index", columnList = "user_id"),
         @Index(name = "transport_companies_originator_index", columnList = "originator")
 })
+@EntityListeners(CompanyListener.class)
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,9 +85,13 @@ public class Company {
     private CompanyType type;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String email;
+
+    @Column
     private Integer originator;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST })
     @JoinTable(
             name = "pending_orders",
             joinColumns = { @JoinColumn(name = "transport_company_id") },

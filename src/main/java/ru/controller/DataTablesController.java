@@ -17,23 +17,36 @@ import javax.validation.Valid;
 @RequestMapping("/dataTables")
 public class DataTablesController {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+
+    private final UserRepository userRepository;
+
+    private final PointRepository pointRepository;
+
+    private final CompanyRepository companyRepository;
+
+    private final RoutePointRepository routePointRepository;
+
+    private final RouteRepository routeRepository;
+
+    private final ContactRepository contactRepository;
+
+    private final TransportRepository transportRepository;
+
+    private final DriverRepository driverRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PointRepository pointRepository;
-
-    @Autowired
-    private CompanyRepository companyRepository;
-
-    @Autowired
-    private RoutePointRepository routePointRepository;
-
-    @Autowired
-    private RouteRepository routeRepository;
+    public DataTablesController(OrderRepository orderRepository, UserRepository userRepository, PointRepository pointRepository, CompanyRepository companyRepository, RoutePointRepository routePointRepository, RouteRepository routeRepository, ContactRepository contactRepository, TransportRepository transportRepository, DriverRepository driverRepository) {
+        this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
+        this.pointRepository = pointRepository;
+        this.companyRepository = companyRepository;
+        this.routePointRepository = routePointRepository;
+        this.routeRepository = routeRepository;
+        this.contactRepository = contactRepository;
+        this.transportRepository = transportRepository;
+        this.driverRepository = driverRepository;
+    }
 
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
@@ -96,6 +109,17 @@ public class DataTablesController {
     }
 
     @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/driversForUser", method = RequestMethod.POST)
+    public DataTablesOutput<Driver> driversForUser(@Valid @RequestBody DataTablesInput input) {
+        return driverRepository.findAll(input, Drivers.driversForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+    }
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/transportsForUser", method = RequestMethod.POST)
+    public DataTablesOutput<Transport> transportsForUser(@Valid @RequestBody DataTablesInput input) {
+        return transportRepository.findAll(input, Transports.transportsForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+    }
+
+    @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/ordersForUser", method = RequestMethod.POST)
     public DataTablesOutput<Order> getOrdersForUser(@Valid @RequestBody DataTablesInput input) {
         try {
@@ -106,6 +130,21 @@ public class DataTablesController {
             return null;
         }
     }
+
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/contactsForUser", method = RequestMethod.POST)
+    public DataTablesOutput<Contact> getContactsForUser(@Valid @RequestBody DataTablesInput input) {
+        try {
+
+            return contactRepository.findAll(input, Contacts.contactsForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/orders", method = RequestMethod.POST)
     public DataTablesOutput<Order> getOrders() {
