@@ -1,4 +1,4 @@
--- login as Khan@localhoset/Diogenes-412 executing this
+# login as Khan@localhoset/Diogenes-412 before executing this
 
 CREATE TABLE users
 (
@@ -184,7 +184,7 @@ CREATE TABLE drop_points
 );
 CREATE INDEX drop_points_order_id_index ON drop_points (order_id);
 CREATE INDEX drop_points_point_id_index ON drop_points (point_id);
-ALTER TABLE users ADD emai VARCHAR(64) NULL;
+ALTER TABLE users ADD email VARCHAR(64) NULL;
 
 CREATE TABLE transports
 (
@@ -250,8 +250,6 @@ ALTER TABLE routes DROP FOREIGN KEY routes_transport_companies_id_fk;
 ALTER TABLE routes
   ADD CONSTRAINT routes_transport_companies_id_fk
 FOREIGN KEY (transport_company_id) REFERENCES transport_companies (id) ON DELETE SET NULL ON UPDATE SET NULL;
-
-
 
 ALTER TABLE route_points DROP FOREIGN KEY route_points_points_id_fk;
 ALTER TABLE route_points DROP FOREIGN KEY route_points_routes_id_fk;
