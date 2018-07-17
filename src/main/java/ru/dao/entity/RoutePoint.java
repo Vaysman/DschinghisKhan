@@ -1,11 +1,9 @@
 package ru.dao.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
@@ -19,7 +17,8 @@ import javax.persistence.*;
         @Index(name = "route_points_id_index", columnList = "id", unique = false),
         @Index(name = "route_points_point_id_index", columnList = "point_id", unique = false)
 })
-public class RoutePoint {
+@EqualsAndHashCode(exclude = {"point","route"})
+public class RoutePoint implements Comparable<RoutePoint>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -48,9 +47,13 @@ public class RoutePoint {
     private Integer loadingTime;
 
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name="ROUTE_ID", referencedColumnName = "ID")
     private Route route;
 
+    @Override
+    public int compareTo(RoutePoint o) {
+        return this.queueNumber-o.queueNumber;
+    }
 }

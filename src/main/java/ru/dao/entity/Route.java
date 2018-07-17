@@ -10,8 +10,8 @@ import ru.constant.LoadingType;
 import ru.constant.VehicleBodyType;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Data
 @Entity
@@ -111,7 +111,8 @@ public class Route {
     private Company company;
 
     @OneToMany(mappedBy = "route", fetch = FetchType.LAZY, cascade = { CascadeType.ALL})
-    private List<RoutePoint> routePoints = new ArrayList<>();
+    @OrderBy("queueNumber ASC")
+    private SortedSet<RoutePoint> routePoints = new TreeSet<>();
 
 
     @Column

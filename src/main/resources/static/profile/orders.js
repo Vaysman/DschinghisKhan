@@ -3,33 +3,41 @@ function initReference(reference) {
 };
 
 
-
 Vue.component('pending-order-info', {
     props: ['order'],
     template:
-    '<div v-if="order" class="col-5" id="pendingOrderInfo">' +
+    '<div v-if="order" class="col-7" id="pendingOrderInfo">' +
     '<h5 class="red-first-letter">{{order.number}}</h5>' +
     '    <div class="row">' +
-    '      <div class="col-6">' +
+    '      <div class="col-4">' +
     '           Маршрут:<br>' +
     '           {{order.route.name}}<br>' +
     '       <br>' +
     '         Дата оплаты:<br>' +
     '         {{order.paymentDate}}<br><br>' +
     '         ' +
-    '         Требования:<br>' +
-    '           <span v-for="requirement in order.requirements">{{requirement}} <br></span><br>' +
+    '         Требования:' +
+    '         <ul>' +
+    '           <li v-for="requirement in order.requirements">{{requirement}}</li>' +
+    '         </ul>' +
     '<br>' +
-    '         Груз:<br>' +
-    '           <span v-for="cargoUnit in order.cargo">{{cargoUnit}} <br></span><br>' +
     '         </div>' +
-    '       <div class="col-6">' +
+    '       <div class="col-4">' +
     '           Обязательность:<br>{{order.orderObligation}}<br><br>' +
     '           Дата возврата документов:<br>' +
     '           {{order.documentReturnDate}} <br><br>' +
-    '           Пункты доставки:<br>' +
-    '           <span v-for="dropPoint in order.dropPoints">{{dropPoint.name}} <br>' +
-    '                            </span><br>' +
+    '         Груз:' +
+    '       <ul>' +
+    '           <li v-for="cargoUnit in order.cargo">{{cargoUnit}}</li><br>' +
+    '                            ' +
+    '       </ul>' +
+    '       </div>' +
+    '       <div class="col-4">' +
+
+    '           Пункты доставки:' +
+    '           <ol>' +
+    '           <li v-for="routePoint in order.route.routePoints">{{routePoint.point.name}} </li>' +
+    '           </ol>' +
     '              ' +
     '                        </div>' +
     '                    </div>' +
@@ -76,8 +84,8 @@ var orderList = new Vue({
                     }),
                 success: function (response) {
 
-                    that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id!==orderId);
-                    that.order=null;
+                    that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id !== orderId);
+                    that.order = null;
                     alert(response)
                 }
             })
@@ -91,8 +99,8 @@ var orderList = new Vue({
                 contentType: "application/json; charset=utf-8",
                 data: currentCompanyId,
                 success: function (response) {
-                    that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id!==that.orderId);
-                    that.order=null;
+                    that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id !== that.orderId);
+                    that.order = null;
                     alert(response)
                 }
             })
