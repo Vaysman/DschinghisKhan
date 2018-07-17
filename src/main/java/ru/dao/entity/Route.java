@@ -36,50 +36,50 @@ public class Route {
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double totalCost;
+    private Float totalCost;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double totalCostNds;
+    private Float totalCostNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerKilometer;
+    private Float costPerKilometer;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerKilometerNds;
+    private Float costPerKilometerNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerPrr;
+    private Float costPerPrr;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerPrrNds;
+    private Float costPerPrrNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerBox;
+    private Float costPerBox;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double tonnage;
+    private Float tonnage;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double volume;
+    private Float volume;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerBoxNds;
+    private Float costPerBoxNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerPallet;
+    private Float costPerPallet;
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerPalletNds;
+    private Float costPerPalletNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -100,7 +100,7 @@ public class Route {
     private VehicleBodyType vehicleType;
 
     @Column
-//    @JsonView(DataTablesOutput.View.class)
+    @JsonView(DataTablesOutput.View.class)
     private String comment;
 
 
@@ -154,11 +154,11 @@ public class Route {
         }
     }
 
-    private Double calculateNds(Double noNds){
-        return noNds*1.18;
+    private Float calculateNds(Float noNds){
+        return (float) (noNds*1.18);
     }
 
-    private Double calculateNoNds(Double nds){
-        return nds*0.82;
+    private Float calculateNoNds(Float nds){
+        return (float) (nds * 0.82);
     }
 }

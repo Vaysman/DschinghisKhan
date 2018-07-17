@@ -1,16 +1,18 @@
 package ru.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.CompanyType;
 import ru.dao.entity.listener.CompanyListener;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -19,9 +21,9 @@ import java.util.List;
 @Table(name = "transport_companies", indexes = {
         @Index(name = "transport_companies_id_index", columnList = "id"),
         @Index(name = "transport_companies_point_id_index", columnList = "point_id"),
-        @Index(name = "transport_companies_user_id_index", columnList = "user_id"),
         @Index(name = "transport_companies_originator_index", columnList = "originator")
 })
+@EqualsAndHashCode(exclude = {"users","point","pendingOrders"})
 @EntityListeners(CompanyListener.class)
 public class Company {
     @Id
@@ -42,14 +44,6 @@ public class Company {
     @JoinColumn(name = "POINT_ID")
     @JsonView(DataTablesOutput.View.class)
     private Point point;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
-    @JsonView(DataTablesOutput.View.class)
-    private User user;
-
-    @OneToMany(mappedBy = "company")
-    private List<Route> routes;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -99,7 +93,11 @@ public class Company {
             indexes = {@Index(name = "pending_orders_order_id_index", columnList = "order_id"),
                     @Index(name = "pending_orders_transport_company_id_index", columnList = "transport_company_id")}
     )
-    private List<Order> pendingOrders = new ArrayList<>();
+    private Set<Order> pendingOrders = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    Set<User> users;
 
 }
 

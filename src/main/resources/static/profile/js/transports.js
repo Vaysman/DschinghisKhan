@@ -209,6 +209,14 @@ $(document).ready(function () {
                     }
                 },
                 {
+                    "name": "wialonId",
+                    "data": "wialonId",
+                    "targets": 10,
+                    searchable: false,
+                    orderable: false,
+                    fieldInfo: "В случае, если есть отслеживание по GPS"
+                },
+                {
                     "name": "comment",
                     "data": "comment",
                     "targets": 10,

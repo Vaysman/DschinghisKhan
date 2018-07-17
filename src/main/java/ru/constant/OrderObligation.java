@@ -10,6 +10,10 @@ public enum OrderObligation {
 
     private String obligationName;
 
+    public String getObligationName() {
+        return obligationName;
+    }
+
     OrderObligation(String obligationName) {
         this.obligationName = obligationName;
     }

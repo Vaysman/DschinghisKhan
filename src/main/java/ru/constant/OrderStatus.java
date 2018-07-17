@@ -17,6 +17,10 @@ public enum  OrderStatus {
 
     private String statusName;
 
+    public String getStatusName() {
+        return statusName;
+    }
+
     OrderStatus(String statusName) {
         this.statusName = statusName;
     }

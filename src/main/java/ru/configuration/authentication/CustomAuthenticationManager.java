@@ -1,5 +1,6 @@
 package ru.configuration.authentication;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,13 +10,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-import ru.dao.entity.Company;
 import ru.dao.entity.User;
 import ru.dao.repository.CompanyRepository;
 import ru.dao.repository.UserRepository;
 
 import java.util.Collections;
-import java.util.List;
 
 @Configuration
 public class CustomAuthenticationManager implements AuthenticationManager {
@@ -39,13 +38,10 @@ public class CustomAuthenticationManager implements AuthenticationManager {
             final String encodedPassword = DigestUtils.md5DigestAsHex(authentication.getCredentials().toString().getBytes());
             final String encodedPasswordWithOldSalt = DigestUtils.md5DigestAsHex((encodedPassword + user.getSalt()).getBytes());
 
-            Company company = null;
-            List<Company> companyList = companyRepository.findAllByUser(user);
-            if (companyList.size()>0) company = companyList.get(0);
-
+            Hibernate.initialize(user.getCompany());
 
             if(user.getPassAndSalt().equals(encodedPasswordWithOldSalt)){
-                return new AuthToken(user, company, authentication, Collections.singletonList(new SimpleGrantedAuthority(user.getUserRole().name())));
+                return new AuthToken(user, authentication, Collections.singletonList(new SimpleGrantedAuthority(user.getUserRole().name())));
             } else {
                 throw new BadCredentialsException("Invalid username or password");
             }

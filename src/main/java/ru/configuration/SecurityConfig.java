@@ -31,6 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/routes").authenticated()
                 .antMatchers("/orders").authenticated()
                 .antMatchers("/profile").authenticated()
+                .antMatchers("/info").authenticated()
                 .antMatchers("/api").permitAll()
                 .and()
                 .formLogin()

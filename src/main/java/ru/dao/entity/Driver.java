@@ -57,6 +57,7 @@ public class Driver {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
+    //Company id
     @Column
     private Integer originator;
 }

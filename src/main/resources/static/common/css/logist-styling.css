@@ -157,3 +157,7 @@ div.selectize-dropdown {
 .modal-dialog{
     z-index: 3;
 }
+
+.red-first-letter::first-letter{
+    color: #D41317;
+}

@@ -6,41 +6,10 @@
     <meta charset="UTF-8"/>
     <th:block th:include="/fragments/header :: scripts"></th:block>
 
-
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-
-        var currentUser = /*[[${currentUser}]]*/;
-        var loadingTypes = /*[[${loadingTypes}]]*/;
-        var loadingTypeOptions = [];
-        loadingTypes.forEach(function (x) {
-            loadingTypeOptions.push({value: x, label: x});
-        });
-        var vehicleBodyTypes = /*[[${vehicleBodyTypes}]]*/;
-        var vehicleTypeOptions = [];
-        vehicleBodyTypes.forEach(function (x) {
-            vehicleTypeOptions.push({value: x, label: x});
-        });
-        var companyTypes = /*[[${companyTypes}]]*/;
-        var companyTypeOptions = [];
-        companyTypes.forEach(function (x) {
-            companyTypeOptions.push({value: x, label: x});
-        });
-        var userRoles = /*[[${userRoles}]]*/;
-        var userRoleOptions = [];
-        userRoles.forEach(function (x) {
-            userRoleOptions.push({value: x, label: x});
-        });
-
-
-        console.log(currentUser);
-
-        /*]]>*/
-    </script>
-
     <script src="/localization/localizeEditor.js"></script>
     <script src="/main/js/users.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
-    <script src="/main/js/transportCompanies.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
+    <script src="/main/js/transportCompanies.js"
+            sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
     <script src="/main/js/points.js"></script>
     <script src="/main/js/routes.js"></script>
     <script src="/main/js/contacts.js"></script>
@@ -65,11 +34,13 @@
                         class="fa fa-compass" aria-hidden="true"></i> Маршруты</a></li>
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-users"><i class="fa fa-users"
-                                                                                                 aria-hidden="true"></i> Пользователи</a>
+                                                                                                 aria-hidden="true"></i>
+                    Пользователи</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-points"><i class="fa fa-map"
-                                                                                                  aria-hidden="true"></i> Пункты</a>
+                                                                                                  aria-hidden="true"></i>
+                    Пункты</a>
             </li>
         </ul>
     </div>
@@ -107,7 +78,6 @@
                         <th>id</th>
                         <th>Название</th>
                         <th>Краткое название</th>
-                        <th>Пункт</th>
                         <th>Пользователь</th>
                         <th>ИНН</th>
                         <th>Кол-во ТС</th>
@@ -159,6 +129,7 @@
                     <tr>
                         <th>id</th>
                         <th>Пункт</th>
+                        <th>Адрес</th>
                         <th>Расстояние</th>
                         <th>Стоимость</th>
                         <th>Время разгрузки</th>

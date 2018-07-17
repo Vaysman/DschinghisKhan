@@ -9,7 +9,7 @@ $(document).ready(function () {
                     data: function (d) {
                         let newdata;
                         $.each(d.data, function (key, value) {
-                            value.originator = currentUser.id;
+                            value.originator = currentCompanyId;
                             newdata = JSON.stringify(value);
                         });
                         return newdata;

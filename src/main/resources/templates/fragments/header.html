@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
+    <th:block th:fragment="styling">
+        <link rel="stylesheet" type="text/css" th:href="@{/media/DataTables/Bootstrap-4-4.0.0/css/bootstrap.min.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/media/font-awesome/css/font-awesome.min.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/common/css/logist-styling.css}">
+        <script th:src="@{/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js}"></script>
+    </th:block>
     <th:block th:fragment="scripts">
         <link rel="stylesheet" type="text/css" href="/media/DataTables/Bootstrap-4-4.0.0/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="/media/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css"/>
@@ -31,6 +37,55 @@
         <script src="/media/DataTables/moment.js"></script>
 
         <script src="/localization/localizeEditor.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+
+            let currentUser = /*[[${currentUser}]]*/;
+            let pendingOrders = /*[[${pendingOrders}]]*/;
+            let currentCompanyId = /*[[${currentCompanyId}]]*/;
+            let loadingTypes = /*[[${loadingTypes}]]*/;
+            var loadingTypeOptions = [];
+            loadingTypes.forEach(function (x) {
+                loadingTypeOptions.push({value: x, label: x});
+            });
+            let vehicleTypes = /*[[${vehicleTypes}]]*/;
+            var vehicleTypeOptions = [];
+            vehicleTypes.forEach(function (x) {
+                vehicleTypeOptions.push({value: x, label: x});
+            });
+            let vehicleBodyTypes = /*[[${vehicleBodyTypes}]]*/;
+            var vehicleBodyTypeOptions = [];
+            vehicleBodyTypes.forEach(function (x) {
+                vehicleBodyTypeOptions.push({value: x, label: x});
+            });
+            let paymentTypes = /*[[${paymentTypes}]]*/;
+            var paymentTypeOptions = [];
+            paymentTypes.forEach(function (x) {
+                paymentTypeOptions.push({value: x, label: x});
+            });
+            var companyTypes = /*[[${companyTypes}]]*/;
+            var companyTypeOptions = [];
+            companyTypes.forEach(function (x) {
+                companyTypeOptions.push({value: x, label: x});
+            });
+            var userRoles = /*[[${userRoles}]]*/;
+            var userRoleOptions = [];
+            userRoles.forEach(function (x) {
+                userRoleOptions.push({value: x, label: x});
+            });
+            var orderRequirements = /*[[${requirements}]]*/;
+            var requirementOptions = [];
+            orderRequirements.forEach(function (x) {
+                requirementOptions.push({value: x, label: x});
+            });
+
+            var orderObligations = /*[[${orderObligations}]]*/;
+            var obligationOptions = [];
+            orderObligations.forEach(function (x) {
+                obligationOptions.push({value: x, label: x});
+            });
+            /*]]>*/
+        </script>
     </th:block>
     <meta charset="UTF-8">
     <title>header</title>

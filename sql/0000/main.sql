@@ -239,3 +239,22 @@ ALTER TABLE orders
 FOREIGN KEY (transport_id) REFERENCES transports (id) ON DELETE SET NULL ON UPDATE SET NULL;
 ALTER TABLE orders DROP pickup_point_id;
 ALTER TABLE orders DROP drop_point_id;
+ALTER TABLE transports ADD wialon_id VARCHAR(64) NULL;
+ALTER TABLE users ADD company_id int NULL;
+CREATE INDEX users_company_id_index ON users (company_id);
+ALTER TABLE orders ADD route_price DECIMAL(11,2) NULL;
+ALTER TABLE orders ADD dispatcher_price DECIMAL(11,2) NULL;
+ALTER TABLE orders ADD proposed_price DECIMAL(11,2) NULL;
+
+ALTER TABLE drivers DROP FOREIGN KEY drivers_transport_companies_id_fk;
+
+ALTER TABLE transports DROP FOREIGN KEY transports_users_id_fk;
+
+ALTER TABLE routes DROP FOREIGN KEY routes_transport_companies_id_fk;
+ALTER TABLE routes
+  ADD CONSTRAINT routes_transport_companies_id_fk
+FOREIGN KEY (transport_company_id) REFERENCES transport_companies (id) ON DELETE SET NULL ON UPDATE SET NULL;
+
+ALTER TABLE route_points DROP FOREIGN KEY route_points_points_id_fk;
+ALTER TABLE route_points DROP FOREIGN KEY route_points_routes_id_fk;
+ALTER TABLE contacts DROP FOREIGN KEY contacts_transport_companies_id_fk;

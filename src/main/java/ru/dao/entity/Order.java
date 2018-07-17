@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.OrderObligation;
@@ -12,7 +13,9 @@ import ru.dao.entity.converter.StringSetToStringConverter;
 import ru.util.generator.RandomIntGenerator;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -25,6 +28,7 @@ import java.util.*;
         @Index(name = "orders_transport_id_index", columnList = "transport_id"),
         @Index(name = "orders_route_id_index", columnList = "route_id"),
 })
+@EqualsAndHashCode(exclude = {"route","driver","transport","company","assignedCompanies"})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -98,6 +102,18 @@ public class Order {
     private Integer rating;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float routePrice;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float dispatcherPrice;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float proposedPrice;
+
+    @Column
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)
     private OrderObligation orderObligation;
@@ -116,9 +132,15 @@ public class Order {
             indexes = {@Index(name = "pending_orders_order_id_index", columnList = "order_id"),
                     @Index(name = "pending_orders_transport_company_id_index", columnList = "transport_company_id")}
     )
-    private List<Company> assignedCompanies = new ArrayList<>();
+    private Set<Company> assignedCompanies = new HashSet<>();
 
 
+
+    @PrePersist
+    private void setPricing(){
+        routePrice = route.getTotalCostNds();
+        if(dispatcherPrice==null) dispatcherPrice=routePrice;
+    }
 }
 
 

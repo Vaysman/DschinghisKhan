@@ -57,7 +57,7 @@ public class DataTablesController {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/usersForUser", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
     public DataTablesOutput<User> getRequestsForDispatcher(@Valid @RequestBody DataTablesInput input) {
-        return userRepository.findAll(input, Users.usersForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+        return userRepository.findAll(input, Users.usersForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
 
     @JsonView(DataTablesOutput.View.class)
@@ -69,7 +69,7 @@ public class DataTablesController {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/pointsForUser", method = RequestMethod.POST)
     public DataTablesOutput<Point> getPointsForUser(@Valid @RequestBody DataTablesInput input) {
-        return pointRepository.findAll(input, Points.pointsForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+        return pointRepository.findAll(input, Points.pointsForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
 
     @JsonView(DataTablesOutput.View.class)
@@ -81,7 +81,7 @@ public class DataTablesController {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/companiesForUser", method = RequestMethod.POST)
     public DataTablesOutput<Company> getCompaniesForUser(@Valid @RequestBody DataTablesInput input) {
-        return companyRepository.findAll(input,TransportCompanies.companiesForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+        return companyRepository.findAll(input,TransportCompanies.companiesForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
 
     @JsonView(DataTablesOutput.View.class)
@@ -105,26 +105,25 @@ public class DataTablesController {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/routesForUser", method = RequestMethod.POST)
     public DataTablesOutput<Route> getRoutesForUser(@Valid @RequestBody DataTablesInput input) {
-        return routeRepository.findAll(input, Routes.usersForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+        return routeRepository.findAll(input, Routes.usersForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
 
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/driversForUser", method = RequestMethod.POST)
     public DataTablesOutput<Driver> driversForUser(@Valid @RequestBody DataTablesInput input) {
-        return driverRepository.findAll(input, Drivers.driversForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+        return driverRepository.findAll(input, Drivers.driversForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/transportsForUser", method = RequestMethod.POST)
     public DataTablesOutput<Transport> transportsForUser(@Valid @RequestBody DataTablesInput input) {
-        return transportRepository.findAll(input, Transports.transportsForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+        return transportRepository.findAll(input, Transports.transportsForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
 
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/ordersForUser", method = RequestMethod.POST)
     public DataTablesOutput<Order> getOrdersForUser(@Valid @RequestBody DataTablesInput input) {
         try {
-
-            return orderRepository.findAll(input, Orders.ordersForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+            return orderRepository.findAll(input, Orders.ordersForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
         } catch (Exception e){
             e.printStackTrace();
             return null;
@@ -137,7 +136,7 @@ public class DataTablesController {
     public DataTablesOutput<Contact> getContactsForUser(@Valid @RequestBody DataTablesInput input) {
         try {
 
-            return contactRepository.findAll(input, Contacts.contactsForUser(AuthToken.getCurrentAuthToken().getUser().getId()));
+            return contactRepository.findAll(input, Contacts.contactsForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
         } catch (Exception e){
             e.printStackTrace();
             return null;

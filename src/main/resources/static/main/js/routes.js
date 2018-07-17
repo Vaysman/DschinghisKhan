@@ -9,7 +9,7 @@ $(document).ready(function () {
                 data: function (d) {
                     let newdata;
                     $.each(d.data, function (key, value) {
-                        value.originator = currentUser.id;
+                        value.originator = currentCompanyId;
                         newdata = JSON.stringify(value);
                     });
                     return newdata;
@@ -67,7 +67,7 @@ $(document).ready(function () {
                 options: [],
                 opts: {searchField: "label", create: false,
                 load: function (query, callback) {
-                    $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
+                    $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
                         function (data) {
                             var companyOptions = [];
                             data._embedded.companies.forEach(function (entry) {
@@ -324,7 +324,7 @@ $(document).ready(function () {
                         label: 'Пункт', name: 'point', type: 'selectize', options: [], opts: {
                             searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
                             load: function (query, callback) {
-                                $.get(`api/points/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
+                                $.get(`api/points/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
                                     function (data) {
                                         let pointOptions = [];
                                         data._embedded.points.forEach(function (entry) {
@@ -390,16 +390,17 @@ $(document).ready(function () {
                 "columnDefs": [
                     {"name": "id", "data": "id", searchable:false, orderable:false, "targets": 0, visible: false},
                     {"name": "point.name", "data": "point.name","targets": 1, defaultContent: ""},
-                    {"name": "distance", "data": "distance", "targets": 2,searchable:false,orderable:false, render: function (data) {
+                    {"name": "point.address", "data": "point.address","targets": 2, defaultContent: ""},
+                    {"name": "distance", "data": "distance", "targets": 3,searchable:false,orderable:false, render: function (data) {
                             return (data!==null) ? `${data}км` : "";
                         }},
-                    {"name": "cost", "data": "cost", "targets": 3,searchable:false,orderable:false, render: function (data) {
+                    {"name": "cost", "data": "cost", "targets": 4,searchable:false,orderable:false, render: function (data) {
                             return (data!==null) ? `${data}₽` : "";
                         }},
-                    {"name": "loadingTime", data:"loadingTime", "targets": 4, searchable:false,orderable:false,render: function (data) {
+                    {"name": "loadingTime", data:"loadingTime", "targets": 5, searchable:false,orderable:false,render: function (data) {
                             return (data!==null) ? `${data}м` : "";
                         }},
-                    {"name": "queueNumber", "data": "queueNumber", "targets": 5, render: function (data) {
+                    {"name": "queueNumber", "data": "queueNumber", "targets": 6, render: function (data) {
                             return (data!==null) ? `№${data}` : "";
                         }}
                 ]

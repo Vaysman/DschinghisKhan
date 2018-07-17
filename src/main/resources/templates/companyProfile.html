@@ -1,55 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:v-if="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Личный кабинет</title>
     <th:block th:include="/fragments/header :: scripts"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!--<script src="/media/vue.min.js"></script>-->
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-
-        let currentUser = /*[[${currentUser}]]*/;
-        let currentCompany;
-        let pendingOrders = /*[[${pendingOrders}]]*/;
-        let currentCompanyId = /*[[${currentCompanyId}]]*/;
-        let loadingTypes = /*[[${loadingTypes}]]*/;
-        var loadingTypeOptions = [];
-        loadingTypes.forEach(function (x) {
-            loadingTypeOptions.push({value: x, label: x});
-        });
-        let vehicleTypes = /*[[${vehicleTypes}]]*/;
-        var vehicleTypeOptions = [];
-        vehicleTypes.forEach(function (x) {
-            vehicleTypeOptions.push({value: x, label: x});
-        });
-        let vehicleBodyTypes = /*[[${vehicleBodyTypes}]]*/;
-        var vehicleBodyTypeOptions = [];
-        vehicleBodyTypes.forEach(function (x) {
-            vehicleBodyTypeOptions.push({value: x, label: x});
-        });
-        let paymentTypes = /*[[${paymentTypes}]]*/;
-        var paymentTypeOptions = [];
-        paymentTypes.forEach(function (x) {
-            paymentTypeOptions.push({value: x, label: x});
-        });
-
-        $.get(`/api/companies/${currentCompanyId}`).success(function (data) {
-            currentCompany = data;
-            console.log(currentCompany);
-        });
-        /*]]>*/
-    </script>
-    <script sec:authorize="hasAnyAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/orders.js"></script>
-    <script sec:authorize="hasAnyAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/transports.js"></script>
-    <script sec:authorize="hasAnyAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/drivers.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/transports.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/drivers.js"></script>
 
 
 </head>
 <body class="grey">
 <div th:insert="fragments/header :: header ('profile')"></div>
 
-<nav class="logist-tabs">
+<nav class="logist-tabs" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
     <div>
         <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
             <li class="nav-item">
@@ -57,7 +23,9 @@
                         class="fa fa-user" aria-hidden="true"></i> Профиль</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders"><span class="badge badge-light" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}" th:text="${#lists.size(pendingOrders)}"></span>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders"><span
+                        class="badge badge-light" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}"
+                        th:text="${#lists.size(pendingOrders)}"></span>
                     <i class="fa fa-th-list" aria-hidden="true"></i> Заявки </a>
             </li>
             <li class="nav-item">
@@ -66,7 +34,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-drivers"><i class="fa fa-users"
-                                                                                                 aria-hidden="true"></i> Водители</a>
+                                                                                                   aria-hidden="true"></i>
+                    Водители</a>
             </li>
         </ul>
     </div>
@@ -77,10 +46,12 @@
             <h4>Данные</h4>
             <form>
                 <div class="form-group">
-                    <label >Email address
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    <label>Email address
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                               placeholder="Enter email">
                     </label>
-                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.
+                    </small>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Password</label>
@@ -97,33 +68,38 @@
     <div id="tab-orders" class="tab-pane">
         <div class="spaced-container white container-fluid">
             <h4>Заявки</h4>
-            <div class="row" >
+            <div class="row" id="pendingOrders">
                 <div class="col-3">
 
-                    <div class="list-group" id="pendingOrders">
-                        <a href="#" v-for="pendingOrder in pendingOrders" @click="loadOrderInfo(pendingOrder.id)" class="list-group-item list-group-item-action">
+                    <div class="list-group">
+                        <a href="#" v-for="pendingOrder in pendingOrders" @click="loadOrderInfo(pendingOrder.id)"
+                           class="list-group-item list-group-item-action">
                             {{ pendingOrder.number }}
                         </a>
                     </div>
                 </div>
-                <div class="col-5" id="pendingOrderInfo">
-                    <h5>{{order.number}}</h5>
-                    <div class="row">
-                        <div class="col-6">
-                            Отправление:<br>
-                            <!--{{pickupPoint.name}}<br><br>-->
-                            Дата оплаты:<br>
-                            {{order.paymentDate}}
+                <pending-order-info :order="order"></pending-order-info>
+                <div class="col-4" id="pendingOrderAcceptForm" :hidden="(order==null)">
+                        <div class="form-group">
+                            <label>Транспорт
+                                <input  id="orderTransportSelect">
+                            </label>
                         </div>
-                        <div class="col-6">
-                            Доставка:<br>
-                            <!--{{dropPoint.name}}<br><br>-->
-                            Дата возврата документов:<br>
-                            {{order.documentReturnDate}}
+                        <div class="form-group">
+                            <label>Водитель
+                                <input id="orderDriverSelect">
+                            </label>
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label>Стоимость <span class="small"></span>
+                                <input class="form-control" v-model="proposedPrice" id="orderProposedPrice">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" @click="acceptOrder()" :disabled="(order==null||proposedPrice==null||driverId==null||transportId==null)">Принять</button>
+                            <button class="btn btn-warning" @click="rejectOrder()" :disabled="(order==null)">Отклонить</button>
+                        </div>
                 </div>
-                <div class="col-4"></div>
             </div>
         </div>
     </div>
@@ -181,4 +157,5 @@
 <div th:insert="fragments/header :: footer"></div>
 
 </body>
+<script sec:authorize="hasAnyAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/orders.js"></script>
 </html>

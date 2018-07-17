@@ -9,6 +9,7 @@ import ru.dao.entity.Company;
 import ru.dao.entity.User;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class AuthToken extends AbstractAuthenticationToken {
 
@@ -52,7 +53,7 @@ public class AuthToken extends AbstractAuthenticationToken {
      * @param credentials
      * @param authorities
      */
-    public AuthToken(User user, Company company, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    public AuthToken(User user, Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = user.getLogin();
         this.credentials = credentials;
@@ -60,7 +61,10 @@ public class AuthToken extends AbstractAuthenticationToken {
         this.role = user.getUserRole().name();
         this.roleName = user.getUserRole().getRoleName();
         this.user = user;
-        this.companyId = (company!=null) ? company.getId() : null;
+        this.companyId = Optional
+                .ofNullable(user.getCompany())
+                .map(Company::getId)
+                .orElse(null);
         super.setAuthenticated(true); // must use super, as we override
     }
 

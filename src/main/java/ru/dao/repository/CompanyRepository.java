@@ -6,7 +6,6 @@ import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.Param;
 import ru.dao.entity.Company;
-import ru.dao.entity.User;
 
 import java.util.List;
 
@@ -16,5 +15,4 @@ public interface CompanyRepository extends DataTablesRepository<Company, Integer
 
     List<Company> findTop10ByNameContaining(@Param("name") String name);
     List<Company> findTop10ByNameContainingAndOriginator(@Param("name") String name, @Param("originator") Integer originator);
-    List<Company> findAllByUser(User user);
 }

@@ -14,6 +14,8 @@ import ru.util.generator.RandomStringGenerator;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.PrePersist;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class CompanyListener {
@@ -31,14 +33,18 @@ public class CompanyListener {
     @PrePersist
     private void prePersist(Company company) throws MessagingException {
         String userPassword = RandomStringGenerator.randomAlphaNumeric(8);
-        User user = User.builder().login(company.getShortName())
+        User user = User.builder()
+                .login(company.getShortName())
                 .userRole(UserRole.ROLE_TRANSPORT_COMPANY)
                 .username(company.getShortName())
+                .company(company)
                 .originator(company.getOriginator())
                 .email(company.getEmail())
                 .passAndSalt(userPassword)
                 .build();
-        userRepository.save(user);
+        Set<User> userList = new HashSet<>();
+        userList.add(user);
+        company.setUsers(userList);
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, false);
         helper.setTo(company.getEmail());

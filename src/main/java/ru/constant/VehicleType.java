@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public enum VehicleType {
     @JsonProperty("Тягач")
     MOVER("Тягач"),
-    @JsonProperty("Полуприцеп/Прицеп")
-    CONTAINER("Полуприцеп/Прицеп"),
-    @JsonProperty("Транспорт")
-    TRANSPORT("Транспорт");
+    @JsonProperty("Прицеп")
+    CONTAINER("Прицеп"),
+    @JsonProperty("ТС")
+    TRANSPORT("ТС"),
+    @JsonProperty("Полуприцеп")
+    HALF_CONT("Полуприцеп");
 
     private String name;
 

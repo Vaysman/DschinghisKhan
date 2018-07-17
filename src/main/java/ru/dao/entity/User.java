@@ -1,6 +1,7 @@
 package ru.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -62,16 +63,12 @@ public class User {
     @Column(name = "email")
     private String email;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "ORIGINATOR", referencedColumnName = "ID", insertable = false, updatable = false)
-//    private User owner;
 
-    //This doesn't work well with Views apparently
-//    @OneToMany(cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            mappedBy = "user")
-//    private List<Company> companies = new ArrayList<>();
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonView(DataTablesOutput.View.class)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
+    @JoinColumn(name = "COMPANY_ID", referencedColumnName = "ID")
+    private Company company;
 
     @PrePersist
     private void prePersist(){

@@ -7,5 +7,5 @@ import ru.dao.entity.Transport;
 import java.util.List;
 
 public interface TransportRepository extends DataTablesRepository<Transport, Integer> {
-    List<Transport> findByNumberContainingAndOriginator(@Param("number") String number, @Param("originator") Integer originator);
+    List<Transport> findTop10ByNumberContainingAndOriginator(@Param("number") String number, @Param("originator") Integer originator);
 }

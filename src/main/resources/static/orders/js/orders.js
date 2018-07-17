@@ -9,7 +9,7 @@ $(document).ready(function () {
                 data: function (d) {
                     let newdata;
                     $.each(d.data, function (key, value) {
-                        value.originator = currentUser.id;
+                        value.originator = currentCompanyId;
                         newdata = JSON.stringify(value);
                     });
                     return newdata;
@@ -33,9 +33,6 @@ $(document).ready(function () {
                     $.each(d.data, function (key, value) {
                         if (value['route'] == "") {
                             delete value['route'];
-                        }
-                        if (value['dropPoints'].length===0) {
-                            delete value['dropPoints'];
                         }
                         if (value['assignedCompanies'].length===0) {
                             delete value['assignedCompanies'];
@@ -79,7 +76,7 @@ $(document).ready(function () {
                 opts: {
                     searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
                     load: function (query, callback) {
-                        $.get(`api/routes/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
+                        $.get(`api/routes/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
                             function (data) {
                                 var routeOptions = [];
                                 data._embedded.routes.forEach(function (entry) {
@@ -88,31 +85,9 @@ $(document).ready(function () {
                                 callback(routeOptions);
                             }
                         );
-
                     }
                 },
                 fieldInfo:"Найти подходящий маршрут можно <a href='/routes'>здесь</a>"
-            },
-            {
-                label: 'Точки разгрузки',
-                name: 'dropPoints',
-                type: 'selectize',
-                options: [],
-                opts: {
-                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить", maxItems: 10,
-                    load: function (query, callback) {
-                        $.get(`api/points/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
-                            function (data) {
-                                var pointOptions = [];
-                                data._embedded.points.forEach(function (entry) {
-                                    pointOptions.push({"label": entry.name, "value": entry._links.self.href});
-                                });
-                                callback(pointOptions);
-                            }
-                        );
-
-                    }
-                }
             },
             {label: 'Обязательность заявки', name: 'orderObligation', type: "selectize", options: obligationOptions},
             {
@@ -121,7 +96,7 @@ $(document).ready(function () {
                 opts: {
                     searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить", maxItems: 10,
                     load: function (query, callback) {
-                        $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentUser.id}`,
+                        $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
                             function (data) {
                                 var companyOptions = [];
                                 data._embedded.companies.forEach(function (entry) {
@@ -233,8 +208,8 @@ $(document).ready(function () {
                     defaultContent: ""
                 },
                 {
-                    "name": "dropPoints",
-                    "data": "dropPoints[, ].name",
+                    "name": "route.routePoints",
+                    "data": "route.routePoints[, ].name",
                     "targets": 4,
                     searchable: false,
                     orderable: false,

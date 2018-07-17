@@ -70,5 +70,8 @@ public class Transport {
     @Column
     private Integer originator;
 
+    @Column
+    private String wialonId;
+
 
 }
