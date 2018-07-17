@@ -251,6 +251,8 @@ ALTER TABLE routes
   ADD CONSTRAINT routes_transport_companies_id_fk
 FOREIGN KEY (transport_company_id) REFERENCES transport_companies (id) ON DELETE SET NULL ON UPDATE SET NULL;
 
+
+
 ALTER TABLE route_points DROP FOREIGN KEY route_points_points_id_fk;
 ALTER TABLE route_points DROP FOREIGN KEY route_points_routes_id_fk;
 ALTER TABLE contacts DROP FOREIGN KEY contacts_transport_companies_id_fk;

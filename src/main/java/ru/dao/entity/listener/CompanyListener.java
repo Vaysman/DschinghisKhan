@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import ru.constant.CompanyType;
 import ru.constant.UserRole;
 import ru.dao.entity.Company;
 import ru.dao.entity.User;
@@ -32,6 +33,7 @@ public class CompanyListener {
 
     @PrePersist
     private void prePersist(Company company) throws MessagingException {
+        if(!company.getType().equals(CompanyType.TRANSPORT)) return;
         String userPassword = RandomStringGenerator.randomAlphaNumeric(8);
         User user = User.builder()
                 .login(company.getShortName())
@@ -53,7 +55,7 @@ public class CompanyListener {
         "\nЛогин: "+user.getLogin()+
         "\nПароль: "+userPassword);
         helper.setSubject("Регистрационные данные");
-        sender.send(message);
+        if(!company.getEmail().equals("test@tesе.test")) sender.send(message);
 
     }
 }

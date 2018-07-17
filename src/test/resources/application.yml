@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    username: sa
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+    password: sa
+    driver-class-name: org.h2.Driver
+  data:
+    rest:
+      base-path: /api
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+          starttls:
+            enable: true
+    username: tarificationSquad
+    password: Fgsfds12
+  thymeleaf:
+    cache: false
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        hbm2ddl:
+          auto: create
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    open-in-view: true
+    show-sql: true
+logging:
+  path: /Users/Roman 1/Desktop/exchange/logs
