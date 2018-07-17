@@ -2,6 +2,7 @@ package ru.configuration;
 
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Configuration
 @ComponentScan
+@AutoConfigureBefore(MainConnectionConfiguration.class)
 public class WebConfig implements WebMvcConfigurer {
 
     @Override

@@ -1,5 +1,6 @@
 package ru.configuration.authentication;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,8 +8,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import ru.dao.entity.User;
+import ru.dao.repository.CompanyRepository;
 import ru.dao.repository.UserRepository;
 
 import java.util.Collections;
@@ -19,17 +22,24 @@ public class CustomAuthenticationManager implements AuthenticationManager {
     private UserRepository userRepository;
 
     @Autowired
+    private CompanyRepository companyRepository;
+
+    @Autowired
     public CustomAuthenticationManager(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
+    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         authentication.getCredentials();
         final User user = userRepository.findByLogin((String) authentication.getPrincipal()).orElse(null);
         if(user!=null){
             final String encodedPassword = DigestUtils.md5DigestAsHex(authentication.getCredentials().toString().getBytes());
             final String encodedPasswordWithOldSalt = DigestUtils.md5DigestAsHex((encodedPassword + user.getSalt()).getBytes());
+
+            Hibernate.initialize(user.getCompany());
+
             if(user.getPassAndSalt().equals(encodedPasswordWithOldSalt)){
                 return new AuthToken(user, authentication, Collections.singletonList(new SimpleGrantedAuthority(user.getUserRole().name())));
             } else {

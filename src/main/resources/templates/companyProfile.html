@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:v-if="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+    <th:block th:include="/fragments/header :: scripts"></th:block>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!--<script src="/media/vue.min.js"></script>-->
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/transports.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/drivers.js"></script>
+
+
+</head>
+<body class="grey">
+<div th:insert="fragments/header :: header ('profile')"></div>
+
+<nav class="logist-tabs" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
+    <div>
+        <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-info"><i
+                        class="fa fa-user" aria-hidden="true"></i> Профиль</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders"><span
+                        class="badge badge-light" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}"
+                        th:text="${#lists.size(pendingOrders)}"></span>
+                    <i class="fa fa-th-list" aria-hidden="true"></i> Заявки </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-transports"><i
+                        class="fa fa-truck" aria-hidden="true"></i> Транспортные средства</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-drivers"><i class="fa fa-users"
+                                                                                                   aria-hidden="true"></i>
+                    Водители</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="tab-content" id="tabContent">
+    <div id="tab-info" class="tab-pane in active">
+        <div class="spaced-container white container-fluid">
+            <h4>Данные</h4>
+            <form>
+                <div class="form-group">
+                    <label>Email address
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                               placeholder="Enter email">
+                    </label>
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Обновить</button>
+            </form>
+        </div>
+    </div>
+    <div id="tab-orders" class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Заявки</h4>
+            <div class="row" id="pendingOrders">
+                <div class="col-3">
+
+                    <div class="list-group">
+                        <a href="#" v-for="pendingOrder in pendingOrders" @click="loadOrderInfo(pendingOrder.id)"
+                           class="list-group-item list-group-item-action">
+                            {{ pendingOrder.number }}
+                        </a>
+                    </div>
+                </div>
+                <pending-order-info :order="order"></pending-order-info>
+                <div class="col-4" id="pendingOrderAcceptForm" :hidden="(order==null)">
+                        <div class="form-group">
+                            <label>Транспорт
+                                <input  id="orderTransportSelect">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Водитель
+                                <input id="orderDriverSelect">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Стоимость <span class="small"></span>
+                                <input class="form-control" v-model="proposedPrice" id="orderProposedPrice">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" @click="acceptOrder()" :disabled="(order==null||proposedPrice==null||driverId==null||transportId==null)">Принять</button>
+                            <button class="btn btn-warning" @click="rejectOrder()" :disabled="(order==null)">Отклонить</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tab-transports" class="tab-pane">
+
+        <div class="container-fluid spaced-container white">
+            <h4>Транспортные средства</h4>
+            <div>
+                <table class="table  table table-striped table-bordered" id="transportDataTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Номер</th>
+                        <th>Тип</th>
+                        <th>Кузов</th>
+                        <th>Погрузка</th>
+                        <th>Тоннаж</th>
+                        <th>Объем</th>
+                        <th>Коники</th>
+                        <th>Гидроборт</th>
+                        <th>GPS</th>
+                        <th>Комментарий</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-drivers" class="tab-pane">
+
+        <div class="container-fluid spaced-container white">
+            <h4>Водители</h4>
+            <div>
+                <table class="table table table-striped table-bordered" id="driverDataTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>ФИО</th>
+                        <th>Телефон</th>
+                        <th>Паспорт</th>
+                        <th>Водительское удостверение</th>
+                        <th>Рейтинг</th>
+                        <th>Мобильное приложение</th>
+                        <th>Отслеживание по телефону</th>
+                        <th>В штате</th>
+                        <th>Оплата</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div th:insert="fragments/header :: footer"></div>
+
+</body>
+<script sec:authorize="hasAnyAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/orders.js"></script>
+</html>

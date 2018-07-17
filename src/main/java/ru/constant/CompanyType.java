@@ -6,7 +6,9 @@ public enum CompanyType {
     @JsonProperty("Транспортная компания")
     TRANSPORT("Транспортная компания"),
     @JsonProperty("Клиент")
-    RECEIVING("Клиент");
+    RECEIVING("Клиент"),
+    @JsonProperty("Диспетчерская компания")
+    DISPATCHER("Диспетчерская компания");;
 
     private String typeName;
 

@@ -9,6 +9,7 @@ $(document).ready(function () {
                     data: function (d) {
                         let newdata;
                         $.each(d.data, function (key, value) {
+                            value.originator = currentCompanyId;
                             newdata = JSON.stringify(value);
                         });
                         return newdata;
@@ -71,7 +72,7 @@ $(document).ready(function () {
                     data: function (d) {
                         return JSON.stringify(d);
                     },
-                    url: "dataTables/points", // json datasource
+                    url: "dataTables/pointsForUser", // json datasource
                     type: "post"  // method  , by default get
                 },
                 dom: 'Bfrtip',

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${order.getNumber()}"></title>
+    <th:block th:include="/fragments/header :: styling"></th:block>
+</head>
+<body class="grey">
+<div class="container-fluid">
+<div class="container white spaced-container">
+    <h4 th:text="'Заявка: '+${order.getNumber()}"></h4>
+    <br>
+    <div class="row">
+        <div class="col-6">
+            Статус: <span th:text="${order.status.getStatusName()}"></span><br>
+            Дата оплаты: <span th:text="${order.getPaymentDate()}"></span><br>
+            Дата возврата документов: <span th:text="${order.getDocumentReturnDate()}"></span><br>
+            Груз:
+            <ul>
+                <th:block th:each="cargoUnit : ${order.getCargo()}">
+                  <li th:text="${cargoUnit}"></li>
+                </th:block>
+            </ul>
+
+        </div>
+        <div class="col-6">
+            Маршрут: <span th:text="${order.getRoute().getName()}"></span><br>
+            Рейтинг: <span th:text="${order.getRating()}"></span><br>
+            Обязательность: <span th:text="${order.getOrderObligation().getObligationName()}"></span><br>
+
+        </div>
+    </div>
+</div>
+</div>
+
+</body>
+</html>

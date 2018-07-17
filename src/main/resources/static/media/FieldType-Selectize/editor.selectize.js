@@ -71,7 +71,7 @@
 
             selectize.clearOptions();
             selectize.addOption(options);
-            selectize.refreshOptions();
+            selectize.refreshOptions(false);
         },
 
         create: function (conf) {

@@ -16,32 +16,7 @@
     <script th:src="@{/routes/js/routes.js}"></script>
 
 </head>
-<header class="navbar navbar-expand navbar-dark flex-column flex-md-row logist-navbar" >
-    <!--<ul class="navbar-nav-scroll">-->
-    <!--<a href="#">Fgsfdds</a>-->
-
-    <!--</ul>-->
-
-    <ul class="navbar-nav flex-row">
-        <li class="nav-item"><a class="nav-link" href="#" ><i class="fa fa-th-list" aria-hidden="true"></i> Заявки</a></li>
-        <li class="nav-item"><a class="nav-link active" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск маршрутов</a></li>
-        <li class="nav-item"><a class="nav-link" href="/main" target="_self"><i class="fa fa-cog" aria-hidden="true"></i> Админка</a></li>
-        <li class="nav-item" sec:authorize='hasAuthority("ADMIN")'><a class="nav-link" href="/swagger-ui.html" target="_blank"><i class="fa fa-code" aria-hidden="true"></i> API</a></li>
-    </ul>
-
-    <ul class="navbar-nav ml-md-auto d-none flex-row d-md-flex">
-        <li class="nav-item dropdown">
-            <a class="nav-item nav-link  dropdown-toggle" id="userDropdown"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span sec:authentication="name"></span>
-                (<span sec:authentication="roleName"></span>)
-            </a>
-            <div class="dropdown-menu" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></i> Выход</a>
-            </div>
-        </li>
-    </ul>
-</header>
+<div th:insert="fragments/header :: header('routes')"></div>
 <body class="grey">
 <div class="container-fluid" >
 <div class="row" >

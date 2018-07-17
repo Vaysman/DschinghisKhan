@@ -3,6 +3,7 @@ package ru.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
 @Table(name = "route_points", indexes = {
@@ -25,8 +27,8 @@ public class RoutePoint {
     private Integer id;
 
     @JsonView(DataTablesOutput.View.class)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="point_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="POINT_ID", referencedColumnName = "ID")
     private Point point;
 
     @Column
@@ -41,8 +43,14 @@ public class RoutePoint {
     @JsonView(DataTablesOutput.View.class)
     private Integer cost;
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Integer loadingTime;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name="ROUTE_ID", referencedColumnName = "ID")
     private Route route;
+
 }

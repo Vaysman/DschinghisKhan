@@ -3,9 +3,13 @@ package ru.configuration.authentication;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import ru.dao.entity.Company;
 import ru.dao.entity.User;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class AuthToken extends AbstractAuthenticationToken {
 
@@ -20,6 +24,7 @@ public class AuthToken extends AbstractAuthenticationToken {
     private String name;
     private String roleName;
     private User user;
+    private Integer companyId;
 
     // ~ Constructors
     // ===================================================================================================
@@ -56,6 +61,10 @@ public class AuthToken extends AbstractAuthenticationToken {
         this.role = user.getUserRole().name();
         this.roleName = user.getUserRole().getRoleName();
         this.user = user;
+        this.companyId = Optional
+                .ofNullable(user.getCompany())
+                .map(Company::getId)
+                .orElse(null);
         super.setAuthenticated(true); // must use super, as we override
     }
 
@@ -87,6 +96,10 @@ public class AuthToken extends AbstractAuthenticationToken {
         return roleName;
     }
 
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
             throw new IllegalArgumentException(
@@ -102,4 +115,9 @@ public class AuthToken extends AbstractAuthenticationToken {
         credentials = null;
     }
 
+
+    public static AuthToken getCurrentAuthToken(){
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return (AuthToken)securityContext.getAuthentication();
+    }
 }

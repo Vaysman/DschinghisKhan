@@ -2,7 +2,6 @@ package ru.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -12,10 +11,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Data
 @Configuration
 @EnableTransactionManagement
-@EnableConfigurationProperties
 @EnableJpaRepositories(
-        basePackages = {"ru.dao"},
-        repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
+        basePackages = {"ru.dao"}
+        ,repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class
+)
 @ConfigurationProperties(prefix = "spring.main-datasource")
 @EnableSwagger2
 public class MainConnectionConfiguration {

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <th:block th:fragment="styling">
+        <link rel="stylesheet" type="text/css" th:href="@{/media/DataTables/Bootstrap-4-4.0.0/css/bootstrap.min.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/media/font-awesome/css/font-awesome.min.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/common/css/logist-styling.css}">
+        <script th:src="@{/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js}"></script>
+    </th:block>
+    <th:block th:fragment="scripts">
+        <link rel="stylesheet" type="text/css" href="/media/DataTables/Bootstrap-4-4.0.0/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="/media/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css"/>
+        <link rel="stylesheet" type="text/css" href="/media/Selectize/css/selectize.min.css"/>
+        <link rel="stylesheet" type="text/css" href="/media/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.css"/>
+        <link rel="stylesheet" type="text/css" href="/media/DataTables/Editor-1.7.3/css/editor.bootstrap4.css"/>
+        <link rel="stylesheet" type="text/css" href="/media/FieldType-Selectize/editor.selectize.min.css"/>
+        <link rel="stylesheet" type="text/css" href="/media/DataTables/Select-1.2.5/css/select.bootstrap4.css"/>
+        <!--<link rel="stylesheet" type="text/css" href="media/datatables/datatables.css"/>-->
+        <!--z-index:999-->
+        <link rel="stylesheet" type="text/css" href="/media/font-awesome/css/font-awesome.min.css"/>
+        <link rel="stylesheet" type="text/css" href="/main/css/main.css" th:href="@{/main/css/main.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/common/css/logist-styling.css}">
+        <!--<link rel="stylesheet" type="text/css" th:href="@{/common/css/dropdown.css}">-->
+
+        <script src="/media/jQuery-2.1.4/jquery-2.1.4.js"></script>
+        <script src="/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js"></script>
+        <script src="/media/jquery-mask/dist/jquery.mask.min.js"></script>
+        <script src="/media/Selectize/js/standalone/selectize.min.js"></script>
+        <script src="/media/DataTables/datatables.js"></script>
+        <script src="/media/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.js"></script>
+        <script src="/media/DataTables/Buttons-1.5.1/js/buttons.bootstrap.js"></script>
+        <script src="/media/DataTables/Editor-1.7.3/js/dataTables.editor.js"></script>
+        <script src="/media/DataTables/Editor-1.7.3/js/editor.bootstrap4.js"></script>
+        <script src="/media/FieldType-Mask/editor.mask.min.js"></script>
+        <script src="/media/FieldType-Selectize/editor.selectize.min.js"></script>
+        <script src="/media/DataTables/Select-1.2.5/js/dataTables.select.js"></script>
+        <script src="/media/DataTables/moment.js"></script>
+
+        <script src="/localization/localizeEditor.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+
+            let currentUser = /*[[${currentUser}]]*/;
+            let pendingOrders = /*[[${pendingOrders}]]*/;
+            let currentCompanyId = /*[[${currentCompanyId}]]*/;
+            let loadingTypes = /*[[${loadingTypes}]]*/;
+            var loadingTypeOptions = [];
+            loadingTypes.forEach(function (x) {
+                loadingTypeOptions.push({value: x, label: x});
+            });
+            let vehicleTypes = /*[[${vehicleTypes}]]*/;
+            var vehicleTypeOptions = [];
+            vehicleTypes.forEach(function (x) {
+                vehicleTypeOptions.push({value: x, label: x});
+            });
+            let vehicleBodyTypes = /*[[${vehicleBodyTypes}]]*/;
+            var vehicleBodyTypeOptions = [];
+            vehicleBodyTypes.forEach(function (x) {
+                vehicleBodyTypeOptions.push({value: x, label: x});
+            });
+            let paymentTypes = /*[[${paymentTypes}]]*/;
+            var paymentTypeOptions = [];
+            paymentTypes.forEach(function (x) {
+                paymentTypeOptions.push({value: x, label: x});
+            });
+            var companyTypes = /*[[${companyTypes}]]*/;
+            var companyTypeOptions = [];
+            companyTypes.forEach(function (x) {
+                companyTypeOptions.push({value: x, label: x});
+            });
+            var userRoles = /*[[${userRoles}]]*/;
+            var userRoleOptions = [];
+            userRoles.forEach(function (x) {
+                userRoleOptions.push({value: x, label: x});
+            });
+            var orderRequirements = /*[[${requirements}]]*/;
+            var requirementOptions = [];
+            orderRequirements.forEach(function (x) {
+                requirementOptions.push({value: x, label: x});
+            });
+
+            var orderObligations = /*[[${orderObligations}]]*/;
+            var obligationOptions = [];
+            orderObligations.forEach(function (x) {
+                obligationOptions.push({value: x, label: x});
+            });
+            /*]]>*/
+        </script>
+    </th:block>
+    <meta charset="UTF-8">
+    <title>header</title>
+</head>
+<body>
+<header class="navbar navbar-expand navbar-dark flex-column flex-md-row logist-navbar" th:fragment="header (pageName)">
+    <!--<ul class="navbar-nav-scroll">-->
+    <!--<a href="#">Fgsfdds</a>-->
+
+    <!--</ul>-->
+    <ul class="navbar-nav flex-row">
+        <li class="nav-item"><a class="nav-link" th:classappend="${#strings.equals(pageName,'orders')} ? 'active' : ''" href="/orders"><i class="fa fa-th-list" aria-hidden="true"></i>
+            Заявки</a>
+        </li>
+        <li class="nav-item" th:classappend="${#strings.equals(pageName,'routes')} ? 'active' : ''" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_DISPATCHER')"><a class="nav-link" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск
+            маршрутов</a></li>
+        <li class="nav-item" th:classappend="${#strings.equals(pageName,'admin')} ? 'active' : ''" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link" href="/main" target="_self"><i class="fa fa-cog"
+                                                                                aria-hidden="true"></i>
+            Настройки</a></li>
+        <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link"
+                                                                                                href="/swagger-ui.html"
+                                                                                                target="_blank"><i
+                class="fa fa-code" aria-hidden="true"></i> API</a></li>
+    </ul>
+
+    <ul class="navbar-nav ml-md-auto d-none flex-row d-md-flex">
+        <li class="nav-item dropdown">
+            <a class="nav-item nav-link  dropdown-toggle" id="userDropdown"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="badge badge-success" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}" th:text="${#lists.size(pendingOrders)}"></span>
+                <span sec:authentication="name"></span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="/profile"><i class="fa fa-user" aria-hidden="true"></i>
+                    Личный кабинет
+                    <span class="badge badge-success" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}" th:text="${#lists.size(pendingOrders)}"></span>
+                </a>
+                <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></i> Выход</a>
+            </div>
+        </li>
+    </ul>
+</header>
+<div class="pull-right" th:fragment="footer" style="margin: 10px"><small class="text-muted">Logicsmart</small></div>
+</body>
+</html>

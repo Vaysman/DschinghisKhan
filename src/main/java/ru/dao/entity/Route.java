@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.LoadingType;
-import ru.constant.VehicleType;
+import ru.constant.VehicleBodyType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,7 +20,8 @@ import java.util.List;
 @Table(name = "routes", indexes = {
         @Index(name = "routes_id_index", columnList = "id"),
         @Index(name = "routes_name_index", columnList = "name"),
-        @Index(name = "routes_transport_companies_id_fk", columnList = "transport_company_id")
+        @Index(name = "routes_transport_companies_id_fk", columnList = "transport_company_id"),
+        @Index(name = "routes_originator_index", columnList = "originator")
 })
 public class Route {
     @Id
@@ -35,43 +36,50 @@ public class Route {
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double totalCost;
+    private Float totalCost;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double totalCostNds;
+    private Float totalCostNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerKilometer;
+    private Float costPerKilometer;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerKilometerNds;
+    private Float costPerKilometerNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerPrr;
+    private Float costPerPrr;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerPrrNds;
+    private Float costPerPrrNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerBox;
+    private Float costPerBox;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double tonnage;
+    private Float tonnage;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double volume;
+    private Float volume;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Double costPerBoxNds;
+    private Float costPerBoxNds;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float costPerPallet;
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float costPerPalletNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -88,8 +96,8 @@ public class Route {
 
     @Column
     @Enumerated(EnumType.STRING)
-    @JsonView(DataTablesOutput.View.class)
-    private VehicleType vehicleType;
+//    @JsonView(DataTablesOutput.View.class)
+    private VehicleBodyType vehicleType;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -98,11 +106,11 @@ public class Route {
 
 
     @ManyToOne
-    @JsonView(DataTablesOutput.View.class)
+//    @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name = "TRANSPORT_COMPANY_ID", referencedColumnName = "ID")
     private Company company;
 
-    @OneToMany(mappedBy = "point", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "route", fetch = FetchType.LAZY, cascade = { CascadeType.ALL})
     private List<RoutePoint> routePoints = new ArrayList<>();
 
 
@@ -110,5 +118,47 @@ public class Route {
     private Integer originator;
 
 
+    //Calculating NDS/noNDS, if user didn't do so himself, oof..
+    @PrePersist
+    @PreUpdate
+    private void calculatePrices(){
+        if(totalCost==null && totalCostNds!=null){
+            totalCost=calculateNoNds(totalCostNds);
+        }
+        if(totalCostNds==null && totalCost!=null){
+            totalCostNds = calculateNds(totalCost);
+        }
+        if(costPerBox==null && costPerBoxNds!=null){
+            costPerBox=calculateNoNds(costPerBoxNds);
+        }
+        if(costPerBox!=null && costPerBoxNds==null){
+            costPerBoxNds=calculateNds(costPerBox);
+        }
+        if(costPerKilometer==null && costPerKilometerNds!=null){
+            costPerKilometer=calculateNoNds(costPerKilometerNds);
+        }
+        if(costPerKilometer!=null && costPerKilometerNds==null){
+            costPerKilometerNds=calculateNds(costPerKilometer);
+        }
+        if(costPerPrr==null && costPerPrrNds!=null){
+            costPerPrr=calculateNoNds(costPerPrrNds);
+        }
+        if(costPerPrr!=null && costPerPrrNds==null){
+            costPerPrrNds=calculateNds(costPerPrr);
+        }
+        if(costPerPallet==null && costPerPalletNds!=null){
+            costPerPallet=calculateNoNds(costPerPalletNds);
+        }
+        if(costPerPallet!=null && costPerPalletNds==null){
+            costPerPalletNds=calculateNds(costPerPallet);
+        }
+    }
 
+    private Float calculateNds(Float noNds){
+        return (float) (noNds*1.18);
+    }
+
+    private Float calculateNoNds(Float nds){
+        return (float) (nds * 0.82);
+    }
 }

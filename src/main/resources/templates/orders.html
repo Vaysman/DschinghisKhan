@@ -1,41 +1,40 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.springframework.org/schema/data/jaxb">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>O R D E R S</title>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/Bootstrap-4-4.0.0/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/Selectize/css/selectize.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/Editor-1.7.3/css/editor.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/FieldType-Selectize/editor.selectize.min.css"/>
-    <!--<link rel="stylesheet" type="text/css" href="media/datatables/datatables.css"/>-->
-    <!--z-index:999-->
-    <link rel="stylesheet" type="text/css" href="/media/font-awesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/DataTables/Select-1.2.5/css/select.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" href="/main/css/main.css" th:href="@{/main/css/main.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/common/css/logist-styling.css}">
-
-    <script src="/media/jQuery-2.1.4/jquery-2.1.4.js"></script>
-    <script src="/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js"></script>
-    <!--<script src="/media/jquery-mask/dist/jquery.mask.min.js"></script>-->
-    <script src="/media/Selectize/js/standalone/selectize.min.js"></script>
-    <script src="/media/DataTables/datatables.js"></script>
-    <script src="/media/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.js"></script>
-    <script src="/media/DataTables/Buttons-1.5.1/js/buttons.bootstrap.js"></script>
-    <script src="/media/DataTables/Editor-1.7.3/js/dataTables.editor.js"></script>
-    <script src="/media/DataTables/Editor-1.7.3/js/editor.bootstrap4.js"></script>
-    <!--<script src="/media/FieldType-Mask/editor.mask.min.js"></script>-->
-    <script src="/media/FieldType-Selectize/editor.selectize.min.js"></script>
-    <script src="/media/DataTables/Select-1.2.5/js/dataTables.select.js"></script>
-
-    <script src="/localization/localizeEditor.js"></script>
-    <script src="/main/js/users.js"></script>
-    <script src="/main/js/transportCompanies.js"></script>
-    <script src="/main/js/points.js"></script>
-    <script src="/main/js/routes.js"></script>
+    <th:block th:include="/fragments/header :: scripts"></th:block>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/orders.js"></script>
 </head>
-<body>
-
+<body class="grey">
+<div th:insert="fragments/header :: header('orders')"></div>
+<div class="container-fluid">
+    <div class="spaced-container white container-fluid">
+        <h4>Заявки</h4>
+        <div>
+            <table class="table table-sm table-striped " id="orderTable">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Номер</th>
+                    <th>Статус</th>
+                    <th>Маршрут</th>
+                    <th>Пункты<br>доставки</th>
+                    <th>ТК</th>
+                    <th>Транспорт</th>
+                    <th>Водитель</th>
+                    <th>Требования</th>
+                    <th>Груз</th>
+                    <th>Дата<br>оплаты</th>
+                    <th>Дата<br>возврата<br>документов</th>
+                    <th>Рейтинг</th>
+                    <th>Обязательность</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<div th:insert="fragments/header :: footer"></div>
 </body>
 </html>

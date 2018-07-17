@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Логин</title>
-    <link rel="stylesheet" href="login/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/login/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/common/css/logist-styling.css}">
     <!--custom js-->
     <!--<script type="text/javascript" src="content/js/login.js"></script>-->
 </head>
-<body>
+<body class="grey">
 <div class="container">
     <div class="main">
         <p th:if="${loginError}" class="error">Неправильный логин или пароль</p>

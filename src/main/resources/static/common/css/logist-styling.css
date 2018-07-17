@@ -13,6 +13,10 @@ body{
     color: rgba(26, 43, 109, 1);
 }
 
+.badge{
+    font-weight: normal;
+}
+
 input.form-control:matches([type=text], [type=password]){
     border: none;
     border-radius: 0;
@@ -32,6 +36,11 @@ div.selectize-input{
     /*border-bottom: 2px solid rgba(26, 43, 109, 1);*/
 /*}*/
 
+.nav-link.active .badge-light{
+    background: rgba(26, 43, 109, 1);
+    color: white;
+}
+
 .accent{
     color: #D41317;
 }
@@ -41,9 +50,9 @@ div.selectize-input{
 }
 
 .spaced-container {
-    margin: 10px;
+    /*margin: 10px;*/
     height: 93%;
-    padding: 20px;
+    padding: 15px;
     display: inline-block;
 }
 
@@ -122,4 +131,33 @@ div.selectize-input{
     background: white;
     box-shadow: 0px 0px 3px rgba(0,0,0,0.10);
 
+}
+
+th{
+    font-weight: normal;
+}
+
+.dataTables_wrapper{
+    margin-left: 0;
+}
+
+div.selectize-dropdown {
+    z-index: 4;
+}
+
+.modal.fade.show{
+    z-index: 2;
+}
+
+.modal-backdrop.fade.show{
+    z-index: 1;
+}
+
+
+.modal-dialog{
+    z-index: 3;
+}
+
+.red-first-letter::first-letter{
+    color: #D41317;
 }

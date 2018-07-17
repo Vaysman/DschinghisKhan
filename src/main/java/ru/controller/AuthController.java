@@ -1,20 +1,15 @@
 package ru.controller;
 
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import ru.configuration.authentication.AuthToken;
-import ru.constant.CompanyType;
-import ru.constant.LoadingType;
-import ru.constant.UserRole;
-import ru.constant.VehicleType;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@Transactional(propagation = Propagation.REQUIRED)
 public class AuthController {
 
     @GetMapping("/")
@@ -27,26 +22,16 @@ public class AuthController {
         return "/main";
     }
 
-    @RequestMapping("/main")
-    public String main(ModelMap model)
-    {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        AuthToken authentication=(AuthToken)securityContext.getAuthentication();
-        model.addAttribute("currentUser",authentication.getUser());
-        model.addAttribute("userRoles", UserRole.values());
-        model.addAttribute("companyTypes", CompanyType.values());
-        model.addAttribute("loadingTypes", LoadingType.values());
-        model.addAttribute("vehicleTypes", VehicleType.values());
-        return "/main";
-    }
 
-    @GetMapping("/routes")
-    public String routes() { return "/routes";}
+
+
 
     @RequestMapping(value = "/login")
     public String login() {
         return "login";
     }
+
+
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String postLogin() {
@@ -59,4 +44,14 @@ public class AuthController {
         model.addAttribute("loginError", true);
         return "login";
     }
+
+
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleResourceNotFoundException() {
+        return "error/404";
+    }
+
+
 }
