@@ -3,10 +3,7 @@ package ru.dao.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -27,6 +24,7 @@ import javax.validation.constraints.NotNull;
         @Index(name = "users_login_index", columnList = "login"),
         @Index(name = "users_originator_index", columnList = "originator")
 })
+@ToString(exclude = {"company",})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

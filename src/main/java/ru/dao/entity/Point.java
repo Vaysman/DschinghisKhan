@@ -3,6 +3,7 @@ package ru.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
 @Entity

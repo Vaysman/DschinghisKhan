@@ -4,10 +4,12 @@ package ru.dao.entity;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.LoadingType;
 import ru.constant.VehicleBodyType;
+import ru.dao.entity.listener.RouteListener;
 
 import javax.persistence.*;
 import java.util.SortedSet;
@@ -23,6 +25,8 @@ import java.util.TreeSet;
         @Index(name = "routes_transport_companies_id_fk", columnList = "transport_company_id"),
         @Index(name = "routes_originator_index", columnList = "originator")
 })
+@EntityListeners(RouteListener.class)
+@EqualsAndHashCode(exclude = {"company","routePoints"})
 public class Route {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -105,8 +109,8 @@ public class Route {
 
 
 
-    @ManyToOne
-//    @JsonView(DataTablesOutput.View.class)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name = "TRANSPORT_COMPANY_ID", referencedColumnName = "ID")
     private Company company;
 

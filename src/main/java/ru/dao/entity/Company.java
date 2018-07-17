@@ -3,10 +3,7 @@ package ru.dao.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.CompanyType;
 import ru.dao.entity.listener.CompanyListener;
@@ -18,6 +15,7 @@ import java.util.Set;
 @Data
 @Entity
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor(suppressConstructorProperties = true)
 @Table(name = "transport_companies", indexes = {
         @Index(name = "transport_companies_id_index", columnList = "id"),
@@ -25,6 +23,7 @@ import java.util.Set;
         @Index(name = "transport_companies_originator_index", columnList = "originator")
 })
 @EqualsAndHashCode(exclude = {"users","point","pendingOrders"})
+@ToString(exclude = {"users","point","pendingOrders"})
 @EntityListeners(CompanyListener.class)
 public class Company {
     @Id
@@ -99,7 +98,7 @@ public class Company {
 
     @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    Set<User> users;
+    Set<User> users = new HashSet<>();
 
 }
 
