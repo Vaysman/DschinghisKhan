@@ -23,6 +23,11 @@ input.form-control:matches([type=text], [type=password]){
     border-bottom: 2px solid rgba(26, 43, 109, 1);
 }
 
+input.form-control:matches([type=text], [type=password]).error-red{
+    border-bottom: 1px solid #D41317;
+}
+
+
 div.selectize-input{
     border: none;
     border-radius: 0;
@@ -156,6 +161,10 @@ div.selectize-dropdown {
 
 .modal-dialog{
     z-index: 3;
+}
+
+.red{
+    color: #D41317;
 }
 
 .red-first-letter::first-letter{

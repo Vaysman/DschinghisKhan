@@ -150,7 +150,7 @@ $(document).ready(function () {
                     placeholder: ""
                 }},
             {label: 'Тип погрузки', name: 'loadingType', type: "selectize", options: loadingTypeOptions},
-            {label: 'Тип транспорта', name: 'vehicleType', type: "selectize", options: vehicleTypeOptions},
+            {label: 'Тип транспорта', name: 'vehicleType', type: "selectize", options: vehicleBodyTypeOptions},
             {label: 'Комментарий', name: 'comment', type: "textarea"},
 
         ]

@@ -5,7 +5,102 @@
     <title>Регистрация</title>
     <th:block th:include="/fragments/header :: styling"></th:block>
 </head>
-<body>
-
+<body class="grey">
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="white spaced-container col-lg-6" style="margin-top:70px">
+            <div>
+                <form th:action="@{/register/process}" th:object="${registrationData}" method="post">
+                    <div class="form-group">
+                        <h5>Регистрация</h5>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyName" class="cols-sm-2 control-label">Полное название компании<sup class="red">*</sup></label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:classappend="${companyNameError!=null} ? 'error-red' : ''" th:field="*{companyName}" class="form-control" id="companyName" placeholder="Название"/>
+                            </div>
+                            <small th:if="${companyNameError!=null}" th:text="${companyNameError}" class="text-sm form-text red"></small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyShortName" class="cols-sm-2 control-label">Краткое название компании<sup class="red">*</sup></label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:classappend="${companyShortNameError!=null} ? 'error-red' : ''" th:field="*{companyShortName}" class="form-control" id="companyShortName" placeholder="Краткое Название"/>
+                            </div>
+                            <small th:if="${companyShortNameError!=null}" th:text="${companyShortNameError}" class="text-sm form-text red"></small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="cols-sm-2 control-label">E-mail</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:field="*{email}" class="form-control" id="email" placeholder="E-mail"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h6>Пользователь компании</h6>
+                        <small class="text-sm text-muted">
+                            Пользователь, под которым будет заходить компания<br>
+                            После регистрации можно будет создать нескольких пользователей
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label for="login" class="cols-sm-2 control-label">Логин<sup class="red">*</sup></label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:classappend="${loginError!=null} ? 'error-red' : ''" th:field="*{login}" class="form-control" id="login" placeholder="Логин"/>
+                            </div>
+                            <small th:if="${loginError!=null}" th:text="${loginError}" class="text-sm form-text red"></small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="cols-sm-2 control-label">Пароль<sup class="red">*</sup></label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="password" th:classappend="${passwordError!=null} ? 'error-red' : ''" th:field="*{password}" class="form-control" id="password"/>
+                            </div>
+                            <small th:if="${passwordError!=null}" th:text="${passwordError}" class="text-sm form-text red"></small>
+                            <small th:if="${passwordError==null}" class="text-muted form-text">Не менее 6 символов</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h6>Пункт отправки по умолчанию</h6>
+                        <small class="text-sm text-muted">Сэкономьте себе время и укажите пункт сразу</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="pointName" class="cols-sm-2 control-label">Название пункта</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:classappend="${pointNameError!=null} ? 'error-red' : ''" th:field="*{pointName}" class="form-control" id="pointName" placeholder="Название пункта"/>
+                            </div>
+                            <small th:if="${pointNameError!=null}" th:text="${pointNameError}" class="text-sm form-text red"></small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="cols-sm-2 control-label">Адрес пункта</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:classappend="${pointAddressError!=null} ? 'error-red' : ''" th:field="*{pointAddress}" class="form-control" id="name" placeholder="Адрес"/>
+                            </div>
+                            <small th:if="${pointAddressError!=null}" th:text="${pointAddressError}" class="text-sm form-text red"></small>
+                            <small th:if="${pointAddressError==null}" class="text-muted form-text">Указывайте как можно корректнее - этот адрес будет использоваться для интеграции с географическими сервисами</small>
+                        </div>
+                    </div>
+                    <div th:if="${error!=null}" class="form-group">
+                        <h5 th:text="Ошибка:${error}"></h5>
+                    </div>
+                    <div class="form-group ">
+                        <input type="submit" class="btn btn-primary btn-block" value="Зарегистрироваться">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
 </body>
 </html>

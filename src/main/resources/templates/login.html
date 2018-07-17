@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Логин</title>
     <link rel="stylesheet" th:href="@{/login/css/style.css}"/>
-    <link rel="stylesheet" th:href="@{/common/css/logist-styling.css}">
+    <th:block th:include="/fragments/header :: styling"></th:block>
     <!--custom js-->
     <!--<script type="text/javascript" src="content/js/login.js"></script>-->
 </head>
@@ -12,16 +12,18 @@
 <div class="container">
     <div class="main">
         <p th:if="${loginError}" class="error">Неправильный логин или пароль</p>
-        <form class="form" method="post" th:action="@{/login}">
-            <label for="username">Логин :</label>
-            <input type="text" placeholder="Введите логин" name="username" autofocus="autofocus" id="username">
-
-            <label for="passwordInput">Пароль :</label>
-            <input type="password" placeholder="Введите пароль" name="password" id="passwordInput">
-
+        <form class="form form"  method="post" th:action="@{/login}">
+            <div class="input-group">
+                <label for="username">Логин :</label>
+                <input type="text" placeholder="Введите логин" name="username" autofocus="autofocus" id="username">
+            </div>
+            <div class="input-group">
+                <label for="passwordInput">Пароль :</label>
+                <input type="password" placeholder="Введите пароль" name="password" id="passwordInput">
+            </div>
             <div id="loginErrorContainer"></div>
-
-            <input type="submit" name="login" id="loginButton" value="Войти">
+            <a th:href="@{/register}" class="btn">Регистрация</a>
+            <input type="submit" class="btn" name="login" id="loginButton" value="Войти">
         </form>
     </div>
 </div>

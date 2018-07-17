@@ -29,19 +29,6 @@ public class AuthToken extends AbstractAuthenticationToken {
     // ~ Constructors
     // ===================================================================================================
 
-    /**
-     * This constructor can be safely used by any code that wishes to create a
-     * <code>UsernamePasswordAuthenticationToken</code>, as the {@link #isAuthenticated()}
-     * will return <code>false</code>.
-     *
-     */
-    public AuthToken(Object principal, User user, Object credentials) {
-        super(null);
-        this.principal = principal;
-        this.credentials = credentials;
-        this.user = user;
-        setAuthenticated(false);
-    }
 
     /**
      * This constructor should only be used by <code>AuthenticationManager</code> or

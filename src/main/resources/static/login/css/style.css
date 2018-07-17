@@ -35,12 +35,12 @@ div.container {
     color: #D41317;
 }
 div.main {
-    width: 320px;
-    margin-top: 80px;
+    /*width: 320px;*/
+    /*margin-top: 80px;*/
     text-align: left;
     padding: 50px 65px 45px;
     background-color: #fff;
-    border: solid thin rgba(26, 43, 109, 1);
+    /*border: solid thin rgba(26, 43, 109, 1);*/
     /*border-top: 30px solid rgb(142,169,201);*/
     border-radius: 2px;
     font-size: 13px;
