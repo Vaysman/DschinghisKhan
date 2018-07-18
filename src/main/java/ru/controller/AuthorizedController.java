@@ -35,24 +35,24 @@ public class AuthorizedController {
     @RequestMapping("/profile")
     @Transactional
     public String profile(ModelMap model) {
-        return "/companyProfile";
+        return "companyProfile";
     }
 
 
     @RequestMapping("/main")
     public String main(ModelMap model)
     {
-        return "/main";
+        return "main";
     }
 
     @GetMapping("/routes")
     public String routes() {
-        return "/routes";
+        return "routes";
     }
 
     @RequestMapping(value = "/orders")
     public String orders(ModelMap model) {
-        return "/orders";
+        return "orders";
     }
 
     //Any methods with @ModelAttribute on them must be public in order for autoWired fields to work.

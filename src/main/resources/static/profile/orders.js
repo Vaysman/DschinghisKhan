@@ -80,7 +80,8 @@ var orderList = new Vue({
                         companyId: currentCompanyId,
                         driverId: this.driverId,
                         transportId: this.transportId,
-                        proposedPrice: this.proposedPrice
+                        proposedPrice: this.proposedPrice,
+                        userId: currentUser.id
                     }),
                 success: function (response) {
 

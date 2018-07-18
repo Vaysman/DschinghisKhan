@@ -28,7 +28,7 @@ public class RegisterController {
         if (errors.size() == 0) {
             try {
                 if(userManagementService.register(registrationData)) {
-                    return "redirect:/profile";
+                    return "redirect:../profile";
                 } else {
                     model.addAttribute("error","Непредвиденная ошибка. Запишите введенные данные и свяжитесь с администратором");
                     model.addAttribute("registrationData", registrationData);

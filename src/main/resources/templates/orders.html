@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>O R D E R S</title>
-    <th:block th:include="/fragments/header :: scripts"></th:block>
+    <th:block th:include="fragments/header :: scripts"></th:block>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/orders.js"></script>
 </head>
 <body class="grey">

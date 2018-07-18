@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>DKhan</title>
     <meta charset="UTF-8"/>
-    <th:block th:include="/fragments/header :: scripts"></th:block>
+    <th:block th:include="fragments/header :: scripts"></th:block>
 
     <script src="/localization/localizeEditor.js"></script>
     <script src="/main/js/users.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>

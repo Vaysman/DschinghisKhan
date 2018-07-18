@@ -14,16 +14,13 @@ public class AuthController {
 
     @GetMapping("/")
     public String root() {
-        return "/main";
+        return "main";
     }
 
     @GetMapping("/index")
     public String index() {
-        return "/main";
+        return "main";
     }
-
-
-
 
 
     @RequestMapping(value = "/login")

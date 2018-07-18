@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Логин</title>
-    <link rel="stylesheet" th:href="@{/login/css/style.css}"/>
-    <th:block th:include="/fragments/header :: styling"></th:block>
+    <link rel="stylesheet" th:href="@{login/css/style.css}"/>
+    <th:block th:include="fragments/header :: styling"></th:block>
     <!--custom js-->
     <!--<script type="text/javascript" src="content/js/login.js"></script>-->
 </head>
@@ -12,7 +12,7 @@
 <div class="container">
     <div class="main">
         <p th:if="${loginError}" class="error">Неправильный логин или пароль</p>
-        <form class="form form"  method="post" th:action="@{/login}">
+        <form class="form form"  method="post" th:action="@{login}">
             <div class="input-group">
                 <label for="username">Логин :</label>
                 <input type="text" placeholder="Введите логин" name="username" autofocus="autofocus" id="username">
@@ -22,7 +22,7 @@
                 <input type="password" placeholder="Введите пароль" name="password" id="passwordInput">
             </div>
             <div id="loginErrorContainer"></div>
-            <a th:href="@{/register}" class="btn">Регистрация</a>
+            <a th:href="@{register}" class="btn">Регистрация</a>
             <input type="submit" class="btn" name="login" id="loginButton" value="Войти">
         </form>
     </div>
