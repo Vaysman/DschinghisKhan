@@ -1,7 +1,9 @@
 package ru.constant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
+@Getter
 public enum OrderRequirements {
     @JsonProperty("Медицинская карта")
     MED_CARD("Медицинская карта"),

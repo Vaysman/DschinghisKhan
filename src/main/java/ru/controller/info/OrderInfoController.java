@@ -27,7 +27,6 @@ public class OrderInfoController {
     private String getFullOrder(@PathVariable Integer orderId, ModelMap modelMap){
         Order order = orderRepository.findById(orderId).orElse(null);
         assert order != null;
-        Hibernate.initialize(order.getDropPoints());
         Hibernate.initialize(order.getRoute());
         Hibernate.initialize(order.getCompany());
         modelMap.addAttribute("order",order);

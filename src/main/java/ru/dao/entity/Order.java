@@ -2,10 +2,7 @@ package ru.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.OrderObligation;
 import ru.constant.OrderPaymentType;
@@ -20,6 +17,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
+@Builder
 @Entity
 @Table(name = "orders",indexes = {
         @Index(name = "orders_number_uindex", columnList = "number", unique = true),
@@ -28,7 +26,7 @@ import java.util.Set;
         @Index(name = "orders_transport_id_index", columnList = "transport_id"),
         @Index(name = "orders_route_id_index", columnList = "route_id"),
 })
-@EqualsAndHashCode(exclude = {"route","driver","transport","company","assignedCompanies"})
+@EqualsAndHashCode(exclude = {"route","driver","transport","company","assignedCompanies","offers"})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,17 +62,6 @@ public class Order {
     @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name = "TRANSPORT_ID", referencedColumnName = "ID")
     private Transport transport;
-
-    @JsonView(DataTablesOutput.View.class)
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "drop_points",
-            joinColumns = { @JoinColumn(name = "order_id") },
-            inverseJoinColumns = { @JoinColumn(name = "point_id") },
-            indexes = {@Index(name = "drop_points_order_id_index", columnList = "order_id"),
-                    @Index(name = "drop_points_point_id_index", columnList = "point_id")}
-    )
-    private Set<Point> dropPoints = new HashSet<>();
 
 
     @Column(name = "requirements")
@@ -124,7 +111,7 @@ public class Order {
 
 
 
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
     @JsonIgnore
     @JoinTable(
             name = "pending_orders",
@@ -137,7 +124,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<OrderOffer> orderOffers = new HashSet<>();
+    private Set<OrderOffer> offers = new HashSet<>();
 
 
     @PrePersist

@@ -1,5 +1,6 @@
 package ru.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.util.Date;
 @Entity
 @Builder
 @Table(name = "order_history",indexes = {
-        @Index(name = "order_history_company_id_index", columnList = "company_id", unique = true),
+        @Index(name = "order_history_company_id_index", columnList = "company_id"),
         @Index(name = "order_history_user_id_index", columnList = "user_id"),
         @Index(name = "order_history_id_index", columnList = "id"),
         @Index(name = "order_history_order_id_index", columnList = "order_id"),
@@ -75,6 +76,7 @@ public class OrderHistory {
     private Company company;
 
     @Column
+    @JsonFormat(pattern = "dd/MM/yyyy HH:MM")
     @JsonView(DataTablesOutput.View.class)
     private Date date = new Date();
 }

@@ -12,6 +12,7 @@ import ru.dto.json.order.OrderAssignData;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 
 @Service
@@ -44,17 +45,21 @@ public class OrderLifecycleService {
 
 
     public void confirm(Integer orderId, User currentUser, Integer offerId){
-        Order order = orderRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Данной заявки не существует"));
-        if(!order.getStatus().equals(OrderStatus.ACCEPTED) || !order.getStatus().equals(OrderStatus.PRICE_CHANGED)) throw new IllegalArgumentException("Заявка не может быть утверждена: \nДругой диспетчер утвердил заявку");
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Данной заявки не существует"));
+        if(!order.getStatus().equals(OrderStatus.ACCEPTED) && !order.getStatus().equals(OrderStatus.PRICE_CHANGED)) throw new IllegalArgumentException("Заявка не может быть утверждена: \nДругой диспетчер утвердил заявку");
         OrderOffer orderOffer = orderOfferRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Заявка не может быть утверждена: \nДругой диспетчер утвердил заявку"));
 
         order.setCompany(orderOffer.getCompany());
         order.setDriver(orderOffer.getDriver());
         order.setTransport(orderOffer.getTransport());
         order.setCompanyPrice(orderOffer.getProposedPrice());
+        order.setOffers(new HashSet<>());
+        if(order.getStatus().equals(OrderStatus.PRICE_CHANGED)) order.setAssignedCompanies(new HashSet<>());
+        order.setStatus(OrderStatus.CONFIRMED);
 
+        orderRepository.save(order);
 
-
+        saveActionHistory(OrderLifecycleActions.CONFIRMED,currentUser,order);
     }
 
     public void accept(Integer orderId, User currentUser, OrderAcceptData orderAcceptData) throws IllegalArgumentException, IllegalStateException{
@@ -83,10 +88,10 @@ public class OrderLifecycleService {
 
             if(orderAcceptData.getProposedPrice().equals(order.getDispatcherPrice())){
                 order.setAssignedCompanies(new HashSet<>());
-                order.setOrderOffers(new HashSet<>(Collections.singletonList(orderOffer)));
+                order.setOffers(new HashSet<>(Collections.singletonList(orderOffer)));
                 order.setStatus(OrderStatus.ACCEPTED);
             } else {
-                order.getOrderOffers().add(orderOffer);
+                order.getOffers().add(orderOffer);
                 order.getAssignedCompanies().remove(company);
                 order.setStatus(OrderStatus.PRICE_CHANGED);
             }
@@ -155,6 +160,7 @@ public class OrderLifecycleService {
                 .orderId(order.getId())
                 .companyPrice(proposedPrice)
                 .orderNumber(order.getNumber())
+                .date(new Date())
                 .build();
         orderHistoryRepository.save(assignAction);
     }

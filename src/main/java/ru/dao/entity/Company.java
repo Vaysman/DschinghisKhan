@@ -22,8 +22,8 @@ import java.util.Set;
         @Index(name = "transport_companies_point_id_index", columnList = "point_id"),
         @Index(name = "transport_companies_originator_index", columnList = "originator")
 })
-@EqualsAndHashCode(exclude = {"users","point","pendingOrders","pendingOrderSet"})
-@ToString(exclude = {"users","point","pendingOrders","pendingOrderSet"})
+@EqualsAndHashCode(exclude = {"users", "point", "pendingOrders","transports","drivers"})
+@ToString(exclude = {"users", "point", "pendingOrders","transports","drivers"})
 @EntityListeners(CompanyListener.class)
 public class Company {
     @Id
@@ -86,7 +86,7 @@ public class Company {
     private Integer originator;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST })
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinTable(
             name = "pending_orders",
             joinColumns = { @JoinColumn(name = "transport_company_id") },
@@ -101,6 +101,18 @@ public class Company {
     @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     Set<User> users = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "originator", cascade = CascadeType.ALL)
+    Set<Transport> transports = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "originator", cascade = CascadeType.ALL)
+    Set<Driver> drivers = new HashSet<>();
+
+
+
+
 
 }
 

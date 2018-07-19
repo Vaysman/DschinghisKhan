@@ -28,7 +28,6 @@ public class DataController {
     @GetMapping(value="/orders/{orderId}",produces = "application/json; charset=UTF-8")
     private Order getFullOrder(@PathVariable Integer orderId){
         Order order = orderRepository.findById(orderId).orElse(null);
-        Hibernate.initialize(order.getDropPoints());
         Hibernate.initialize(order.getRoute());
         Hibernate.initialize(order.getRoute().getRoutePoints());
         return order;
