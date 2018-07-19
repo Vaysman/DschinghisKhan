@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.dto.json.order.OrderAcceptData;
+import ru.dto.json.order.OrderAssignData;
 import ru.service.OrderLifecycleService;
 
 @RestController
@@ -18,11 +19,22 @@ public class OrderLifecycleController {
         this.orderLifecycleService = orderLifecycleService;
     }
 
+    @RequestMapping(value = "/assign/{id}", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('DISPATCHER')")
+    private String assign(@PathVariable Integer id, @RequestBody OrderAssignData assignData){
+        try{
+            orderLifecycleService.assign(id, assignData);
+            return "Success";
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
     @RequestMapping(value = "/accept/{id}", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
-    private String acceptOrder(@PathVariable Integer id, @RequestBody OrderAcceptData details) {
+    private String accept(@PathVariable Integer id, @RequestBody OrderAcceptData details) {
         try {
-            orderLifecycleService.acceptOrder(id, details);
+            orderLifecycleService.accept(id, details);
             return "Заявка успешно принята и  отправлена на утверждение диспетчеру";
         } catch (Exception e) {
             return e.getMessage();
@@ -31,9 +43,9 @@ public class OrderLifecycleController {
 
     @RequestMapping(value = "/reject/{id}", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
-    private String rejectOrder(@PathVariable Integer id, @RequestBody Integer companyId) {
+    private String reject(@PathVariable Integer id, @RequestBody Integer companyId) {
         try {
-            orderLifecycleService.rejectOrder(id, companyId);
+            orderLifecycleService.reject(id, companyId);
             return "Заявка успешно отклонена";
         } catch (Exception e) {
             return e.getMessage();

@@ -8,8 +8,8 @@
 </head>
 <body class="grey">
 <div th:insert="fragments/header :: header('orders')"></div>
-<div class="container-fluid">
-    <div class="spaced-container white container-fluid">
+<div >
+    <div class="spaced-container white container-fluid" style="overflow-x: scroll">
         <h4>Заявки</h4>
         <div>
             <table class="table table-sm table-striped " id="orderTable">
@@ -25,10 +25,11 @@
                     <th>Водитель</th>
                     <th>Требования</th>
                     <th>Груз</th>
-                    <th>Дата<br>оплаты</th>
-                    <th>Дата<br>возврата<br>документов</th>
+                    <th>Дни для оплаты</th>
+                    <th>Дни для возврата<br>документов</th>
                     <th>Рейтинг</th>
                     <th>Обязательность</th>
+                    <th>Оплата</th>
                 </tr>
                 </thead>
             </table>

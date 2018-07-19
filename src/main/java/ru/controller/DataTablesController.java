@@ -17,6 +17,8 @@ import javax.validation.Valid;
 @RequestMapping("/dataTables")
 public class DataTablesController {
 
+    private final OrderHistoryRepository orderHistoryRepository;
+
     private final OrderRepository orderRepository;
 
     private final UserRepository userRepository;
@@ -36,7 +38,17 @@ public class DataTablesController {
     private final DriverRepository driverRepository;
 
     @Autowired
-    public DataTablesController(OrderRepository orderRepository, UserRepository userRepository, PointRepository pointRepository, CompanyRepository companyRepository, RoutePointRepository routePointRepository, RouteRepository routeRepository, ContactRepository contactRepository, TransportRepository transportRepository, DriverRepository driverRepository) {
+    public DataTablesController(OrderHistoryRepository orderHistoryRepository,
+                                OrderRepository orderRepository,
+                                UserRepository userRepository,
+                                PointRepository pointRepository,
+                                CompanyRepository companyRepository,
+                                RoutePointRepository routePointRepository,
+                                RouteRepository routeRepository,
+                                ContactRepository contactRepository,
+                                TransportRepository transportRepository,
+                                DriverRepository driverRepository) {
+        this.orderHistoryRepository = orderHistoryRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.pointRepository = pointRepository;
@@ -156,10 +168,20 @@ public class DataTablesController {
     }
 
     @JsonView(DataTablesOutput.View.class)
+    @PostMapping(value = "/orderHistory/{id}")
+    private DataTablesOutput<OrderHistory> getOrderHistory(@PathVariable Integer id, @Valid @RequestBody DataTablesInput input){
+        try{
+            return orderHistoryRepository.findAll(input, OrderHistories.historyForOrder(id));
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @JsonView(DataTablesOutput.View.class)
     @PostMapping(value = "/routePoints/routePointsForRoute/{routeId}")
     public DataTablesOutput<RoutePoint> routePointsForRoute(@Valid @RequestBody DataTablesInput input, @PathVariable Integer routeId) {
-        DataTablesOutput<RoutePoint> output = routePointRepository.findAll(input, RoutePoints.pointsForRoute(routeRepository.findById(routeId).orElseThrow(()->new IllegalArgumentException("No such route"))));
-        return output;
+        return routePointRepository.findAll(input, RoutePoints.pointsForRoute(routeRepository.findById(routeId).orElseThrow(()->new IllegalArgumentException("No such route"))));
     }
 
 //    @JsonView(DataTablesOutput.View.class)

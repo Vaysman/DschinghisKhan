@@ -80,12 +80,11 @@ var orderList = new Vue({
                         companyId: currentCompanyId,
                         driverId: this.driverId,
                         transportId: this.transportId,
-                        proposedPrice: this.proposedPrice,
-                        userId: currentUser.id
+                        proposedPrice: this.proposedPrice
                     }),
                 success: function (response) {
 
-                    that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id !== orderId);
+                    that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id !== that.orderId);
                     that.order = null;
                     alert(response)
                 }

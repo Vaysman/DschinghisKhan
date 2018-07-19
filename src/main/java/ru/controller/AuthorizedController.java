@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.configuration.authentication.AuthToken;
 import ru.constant.*;
 import ru.dao.entity.Company;
+import ru.dao.entity.PendingOrder;
 import ru.dao.repository.CompanyRepository;
 
 import java.util.HashMap;
@@ -65,7 +66,10 @@ public class AuthorizedController {
         if(authentication.getUser().getUserRole()==UserRole.ROLE_TRANSPORT_COMPANY){
             Company company = companyRepository.findById(authentication.getCompanyId()).orElse(null);
             if(company!=null){
-                model.addAttribute("pendingOrders", company.getPendingOrders().stream().map(x->{
+                model.addAttribute("pendingOrders", company.getPendingOrderSet().stream()
+                        .filter(x->x.getProposedPrice()==null)
+                        .map(PendingOrder::getOrder)
+                        .map(x->{
                     Map<String,String> orderMap= new HashMap<>();
                     orderMap.put("id", x.getId().toString());
                     orderMap.put("number", x.getNumber());
@@ -79,12 +83,13 @@ public class AuthorizedController {
 
         model.addAttribute("loadingTypes", LoadingType.values());
         model.addAttribute("vehicleBodyTypes", VehicleBodyType.values());
-        model.addAttribute("paymentTypes", PaymentType.values());
+        model.addAttribute("paymentTypes", DriverPaymentType.values());
         model.addAttribute("vehicleTypes", VehicleType.values());
         model.addAttribute("requirements", OrderRequirements.values());
         model.addAttribute("orderObligations", OrderObligation.values());
         model.addAttribute("userRoles", UserRole.values());
         model.addAttribute("companyTypes", CompanyType.values());
+        model.addAttribute("orderPaymentTypes", OrderPaymentType.values());
         return model;
     }
 }

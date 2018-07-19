@@ -22,8 +22,8 @@ import java.util.Set;
         @Index(name = "transport_companies_point_id_index", columnList = "point_id"),
         @Index(name = "transport_companies_originator_index", columnList = "originator")
 })
-@EqualsAndHashCode(exclude = {"users","point","pendingOrders"})
-@ToString(exclude = {"users","point","pendingOrders"})
+@EqualsAndHashCode(exclude = {"users","point","pendingOrders","pendingOrderSet"})
+@ToString(exclude = {"users","point","pendingOrders","pendingOrderSet"})
 @EntityListeners(CompanyListener.class)
 public class Company {
     @Id
@@ -95,6 +95,10 @@ public class Company {
                     @Index(name = "pending_orders_transport_company_id_index", columnList = "transport_company_id")}
     )
     private Set<Order> pendingOrders = new HashSet<>();
+
+    @OneToMany(mappedBy = "company")
+    @JsonIgnore
+    private Set<PendingOrder> pendingOrderSet = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)

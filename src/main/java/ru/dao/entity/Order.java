@@ -1,6 +1,5 @@
 package ru.dao.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,12 +7,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.OrderObligation;
+import ru.constant.OrderPaymentType;
 import ru.constant.OrderStatus;
 import ru.dao.entity.converter.StringSetToStringConverter;
 import ru.util.generator.RandomIntGenerator;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -88,14 +87,12 @@ public class Order {
     private Set<String> cargo = new HashSet<>();
 
     @Column
-    @JsonFormat(pattern = "d/M/yyyy")
     @JsonView(DataTablesOutput.View.class)
-    private Date paymentDate;
+    private Integer paymentDate;
 
     @Column
-    @JsonFormat(pattern = "d/M/yyyy")
     @JsonView(DataTablesOutput.View.class)
-    private Date documentReturnDate;
+    private Integer documentReturnDate;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -110,10 +107,6 @@ public class Order {
     private Float dispatcherPrice;
 
     @Column
-    @JsonView(DataTablesOutput.View.class)
-    private Float proposedPrice;
-
-    @Column
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)
     private OrderObligation orderObligation;
@@ -121,6 +114,9 @@ public class Order {
     @Column
     private Integer originator;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private OrderPaymentType paymentType;
 
 
 

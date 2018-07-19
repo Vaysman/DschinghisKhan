@@ -1,4 +1,4 @@
-package ru.controller;
+package ru.controller.info;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +12,13 @@ import ru.dao.repository.RouteRepository;
 
 @Controller
 @RequestMapping("/info")
-public class InfoController {
+public class OrderInfoController {
     private final RouteRepository routeRepository;
 
     private final OrderRepository orderRepository;
 
     @Autowired
-    public InfoController(OrderRepository orderRepository, RouteRepository routeRepository) {
+    public OrderInfoController(OrderRepository orderRepository, RouteRepository routeRepository) {
         this.orderRepository = orderRepository;
         this.routeRepository = routeRepository;
     }
@@ -33,4 +33,5 @@ public class InfoController {
         modelMap.addAttribute("order",order);
         return "info/order";
     }
+
 }

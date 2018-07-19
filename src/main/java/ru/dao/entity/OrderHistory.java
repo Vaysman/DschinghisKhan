@@ -2,11 +2,9 @@ package ru.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import ru.constant.OrderLifecycleActions;
 import ru.constant.OrderStatus;
 
 import javax.persistence.*;
@@ -16,13 +14,14 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
 @Entity
-@Table(name = "orders",indexes = {
+@Builder
+@Table(name = "order_history",indexes = {
         @Index(name = "order_history_company_id_index", columnList = "company_id", unique = true),
         @Index(name = "order_history_user_id_index", columnList = "user_id"),
         @Index(name = "order_history_id_index", columnList = "id"),
         @Index(name = "order_history_order_id_index", columnList = "order_id"),
 })
-@EqualsAndHashCode()
+@EqualsAndHashCode(exclude = {"order","user","company"})
 public class OrderHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,16 +38,14 @@ public class OrderHistory {
     private String orderNumber;
 
     @Column
-    private Float routePrice;
-
-    @Column
     private Float dispatcherPrice;
 
     @Column
     private Float companyPrice;
 
-    @Column
-    private String action;
+    @Column(name = "action")
+    @Enumerated(EnumType.STRING)
+    private OrderLifecycleActions action;
 
     @Column
     @Enumerated(EnumType.STRING)

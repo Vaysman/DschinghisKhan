@@ -84,6 +84,11 @@
             orderObligations.forEach(function (x) {
                 obligationOptions.push({value: x, label: x});
             });
+            var orderPaymentTypes = /*[[${orderPaymentTypes}]]*/;
+            var orderPaymentOptions = [];
+            orderPaymentTypes.forEach(function (x) {
+                orderPaymentOptions.push({value: x, label: x});
+            });
             /*]]>*/
         </script>
     </th:block>
