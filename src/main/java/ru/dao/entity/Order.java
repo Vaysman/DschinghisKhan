@@ -1,5 +1,6 @@
 package ru.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -107,6 +108,9 @@ public class Order {
     private Float dispatcherPrice;
 
     @Column
+    private Float companyPrice;
+
+    @Column
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)
     private OrderObligation orderObligation;
@@ -121,6 +125,7 @@ public class Order {
 
 
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnore
     @JoinTable(
             name = "pending_orders",
             joinColumns = { @JoinColumn(name = "order_id") },
@@ -130,6 +135,9 @@ public class Order {
     )
     private Set<Company> assignedCompanies = new HashSet<>();
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<OrderOffer> orderOffers = new HashSet<>();
 
 
     @PrePersist

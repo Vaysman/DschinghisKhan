@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.configuration.authentication.AuthToken;
 import ru.constant.*;
-import ru.dao.entity.Company;
-import ru.dao.entity.PendingOrder;
 import ru.dao.repository.CompanyRepository;
 
 import java.util.HashMap;
@@ -25,23 +23,22 @@ import java.util.stream.Collectors;
 @Transactional(propagation = Propagation.REQUIRED)
 public class AuthorizedController {
 
-    @Autowired
-    private CompanyRepository companyRepository;
-    private final Integer fgsfds;
+    private final CompanyRepository companyRepository;
 
-    public AuthorizedController() {
-        this.fgsfds=15;
+    @Autowired
+    public AuthorizedController(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
     }
 
     @RequestMapping("/profile")
     @Transactional
-    public String profile(ModelMap model) {
+    public String profile() {
         return "companyProfile";
     }
 
 
     @RequestMapping("/main")
-    public String main(ModelMap model)
+    public String main()
     {
         return "main";
     }
@@ -52,7 +49,7 @@ public class AuthorizedController {
     }
 
     @RequestMapping(value = "/orders")
-    public String orders(ModelMap model) {
+    public String orders() {
         return "orders";
     }
 
@@ -64,18 +61,12 @@ public class AuthorizedController {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         AuthToken authentication=(AuthToken)securityContext.getAuthentication();
         if(authentication.getUser().getUserRole()==UserRole.ROLE_TRANSPORT_COMPANY){
-            Company company = companyRepository.findById(authentication.getCompanyId()).orElse(null);
-            if(company!=null){
-                model.addAttribute("pendingOrders", company.getPendingOrderSet().stream()
-                        .filter(x->x.getProposedPrice()==null)
-                        .map(PendingOrder::getOrder)
-                        .map(x->{
-                    Map<String,String> orderMap= new HashMap<>();
-                    orderMap.put("id", x.getId().toString());
-                    orderMap.put("number", x.getNumber());
-                    return orderMap;
-                }).collect(Collectors.toList()));
-            }
+            companyRepository.findById(authentication.getCompanyId()).ifPresent(company -> model.addAttribute("pendingOrders", company.getPendingOrders().stream().map(x -> {
+                Map<String, String> orderMap = new HashMap<>();
+                orderMap.put("id", x.getId().toString());
+                orderMap.put("number", x.getNumber());
+                return orderMap;
+            }).collect(Collectors.toList())));
         }
         model.addAttribute("currentCompanyId", String.valueOf(authentication.getCompanyId()));
 

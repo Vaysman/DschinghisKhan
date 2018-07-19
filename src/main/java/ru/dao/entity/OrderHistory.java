@@ -21,7 +21,7 @@ import java.util.Date;
         @Index(name = "order_history_id_index", columnList = "id"),
         @Index(name = "order_history_order_id_index", columnList = "order_id"),
 })
-@EqualsAndHashCode(exclude = {"order","user","company"})
+@EqualsAndHashCode(exclude = {"user","company"})
 public class OrderHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,28 +30,34 @@ public class OrderHistory {
     private Integer id;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ORDER_ID", referencedColumnName = "ID")
-    private Order order;
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "order_id")
+    private Integer orderId;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String orderNumber;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Float dispatcherPrice;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Float companyPrice;
 
     @Column(name = "action")
     @Enumerated(EnumType.STRING)
+    @JsonView(DataTablesOutput.View.class)
     private OrderLifecycleActions action;
 
     @Column
     @Enumerated(EnumType.STRING)
+    @JsonView(DataTablesOutput.View.class)
     private OrderStatus orderStatus;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String actionUser;
 
     @JsonIgnore
@@ -60,6 +66,7 @@ public class OrderHistory {
     private User user;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String actionCompany;
 
     @JsonIgnore
@@ -68,5 +75,6 @@ public class OrderHistory {
     private Company company;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Date date = new Date();
 }

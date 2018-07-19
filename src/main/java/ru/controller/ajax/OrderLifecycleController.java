@@ -2,7 +2,10 @@ package ru.controller.ajax;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import ru.configuration.authentication.AuthToken;
+import ru.dao.entity.User;
 import ru.dto.json.order.OrderAcceptData;
 import ru.dto.json.order.OrderAssignData;
 import ru.service.OrderLifecycleService;
@@ -14,6 +17,10 @@ public class OrderLifecycleController {
 
     private final OrderLifecycleService orderLifecycleService;
 
+    private User getCurrentUser(){
+        return ((AuthToken)SecurityContextHolder.getContext().getAuthentication()).getUser();
+    }
+
     @Autowired
     public OrderLifecycleController(OrderLifecycleService orderLifecycleService) {
         this.orderLifecycleService = orderLifecycleService;
@@ -23,7 +30,7 @@ public class OrderLifecycleController {
     @PreAuthorize("hasAuthority('DISPATCHER')")
     private String assign(@PathVariable Integer id, @RequestBody OrderAssignData assignData){
         try{
-            orderLifecycleService.assign(id, assignData);
+            orderLifecycleService.assign(id, getCurrentUser(), assignData);
             return "Success";
         } catch (Exception e){
             return e.getMessage();
@@ -34,7 +41,7 @@ public class OrderLifecycleController {
     @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
     private String accept(@PathVariable Integer id, @RequestBody OrderAcceptData details) {
         try {
-            orderLifecycleService.accept(id, details);
+            orderLifecycleService.accept(id, getCurrentUser(), details);
             return "Заявка успешно принята и  отправлена на утверждение диспетчеру";
         } catch (Exception e) {
             return e.getMessage();
@@ -45,7 +52,7 @@ public class OrderLifecycleController {
     @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
     private String reject(@PathVariable Integer id, @RequestBody Integer companyId) {
         try {
-            orderLifecycleService.reject(id, companyId);
+            orderLifecycleService.reject(id, getCurrentUser(), companyId);
             return "Заявка успешно отклонена";
         } catch (Exception e) {
             return e.getMessage();

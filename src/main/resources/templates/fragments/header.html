@@ -128,7 +128,7 @@
                     Личный кабинет
                     <span class="badge badge-success" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}" th:text="${#lists.size(pendingOrders)}"></span>
                 </a>
-                <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></i> Выход</a>
+                <a class="dropdown-item" th:href="@{logout}"><i class="fa fa-sign-out" aria-hidden="true"></i></i> Выход</a>
             </div>
         </li>
     </ul>

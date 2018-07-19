@@ -14,7 +14,7 @@ public class OrderHistories {
     public static Specification<OrderHistory> historyForOrder(final Integer orderId) {
         return (final Root<OrderHistory> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> {
             final List<Predicate> predicates = new ArrayList<>();
-            predicates.add(criteriaBuilder.equal(root.get("order_id"), orderId));
+            predicates.add(criteriaBuilder.equal(root.get("orderId"), orderId));
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }

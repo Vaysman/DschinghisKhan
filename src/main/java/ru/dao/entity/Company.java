@@ -96,9 +96,7 @@ public class Company {
     )
     private Set<Order> pendingOrders = new HashSet<>();
 
-    @OneToMany(mappedBy = "company")
-    @JsonIgnore
-    private Set<PendingOrder> pendingOrderSet = new HashSet<>();
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
