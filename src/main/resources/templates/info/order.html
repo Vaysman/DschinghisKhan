@@ -4,33 +4,61 @@
     <meta charset="UTF-8">
     <title th:text="${order.getNumber()}"></title>
     <th:block th:include="fragments/header :: scripts"></th:block>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+            let currentOrderId = /*[[${order.id}]]*/;
+        /*]]>*/
+    </script>
+    <script src="/info/order.js"></script>
 </head>
 <body class="grey">
 <div class="container-fluid">
-<div class="container white spaced-container">
-    <h4 th:text="'Заявка: '+${order.getNumber()}"></h4>
-    <br>
     <div class="row">
-        <div class="col-6">
-            Статус: <span th:text="${order.status.getStatusName()}"></span><br>
-            Дата оплаты: <span th:text="${order.getPaymentDate()}"></span><br>
-            Дата возврата документов: <span th:text="${order.getDocumentReturnDate()}"></span><br>
-            Груз:
-            <ul>
-                <th:block th:each="cargoUnit : ${order.getCargo()}">
-                  <li th:text="${cargoUnit}"></li>
-                </th:block>
-            </ul>
+        <div class="col-2"></div>
+        <div class="col-8 container white spaced-container">
+            <h4 th:text="'Заявка: '+${order.getNumber()}"></h4>
+            <br>
+            <div class="row">
+                <div class="col-6">
+                    Статус: <span th:text="${order.status.getStatusName()}"></span><br>
+                    Дата оплаты: <span th:text="${order.getPaymentDate()}"></span><br>
+                    Дата возврата документов: <span th:text="${order.getDocumentReturnDate()}"></span><br>
+                    Груз:
+                    <ul>
+                        <th:block th:each="cargoUnit : ${order.getCargo()}">
+                            <li th:text="${cargoUnit}"></li>
+                        </th:block>
+                    </ul>
 
-        </div>
-        <div class="col-6">
-            Маршрут: <span th:text="${order.getRoute().getName()}"></span><br>
-            Рейтинг: <span th:text="${order.getRating()}"></span><br>
-            Обязательность: <span th:text="${order.getOrderObligation().getObligationName()}"></span><br>
+                </div>
+                <div class="col-6">
+                    Маршрут: <span th:text="${order.getRoute().getName()}"></span><br>
+                    Рейтинг: <span th:text="${order.getRating()}"></span><br>
+                    Обязательность: <span th:text="${order.getOrderObligation().getObligationName()}"></span><br>
 
+                </div>
+                <div class="col-12">
+                    <table class="table table-striped table-borderless table-sm" id="orderHistoryTable">
+                        <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>Статус заявки</th>
+                            <th>Компания</th>
+                            <th>Пользователь</th>
+                            <th>Действие</th>
+                            <th>Стоимость от диспетчера</th>
+                            <th>Стоимость от компании</th>
+                            <th>Дата</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
+        <div class="col-2"></div>
     </div>
-</div>
+
 </div>
 
 </body>

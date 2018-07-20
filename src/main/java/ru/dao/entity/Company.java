@@ -1,7 +1,6 @@
 package ru.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -22,8 +21,8 @@ import java.util.Set;
         @Index(name = "transport_companies_point_id_index", columnList = "point_id"),
         @Index(name = "transport_companies_originator_index", columnList = "originator")
 })
-@EqualsAndHashCode(exclude = {"users","point","pendingOrders"})
-@ToString(exclude = {"users","point","pendingOrders"})
+@EqualsAndHashCode(exclude = {"users", "point", "pendingOrders","transports","drivers","managedOffers"})
+@ToString(exclude = {"users", "point", "pendingOrders","transports","drivers","managedOffers"})
 @EntityListeners(CompanyListener.class)
 public class Company {
     @Id
@@ -76,7 +75,7 @@ public class Company {
     @Column
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)
-    private CompanyType type;
+    private CompanyType type = CompanyType.TRANSPORT;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -85,8 +84,8 @@ public class Company {
     @Column
     private Integer originator;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST })
+    @JsonIgnore
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinTable(
             name = "pending_orders",
             joinColumns = { @JoinColumn(name = "transport_company_id") },
@@ -97,8 +96,24 @@ public class Company {
     private Set<Order> pendingOrders = new HashSet<>();
 
     @JsonIgnore
+    @OneToMany(mappedBy = "managerCompany", cascade = CascadeType.ALL)
+    Set<OrderOffer> managedOffers = new HashSet<>();
+
+    @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     Set<User> users = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "originator", cascade = CascadeType.ALL)
+    Set<Transport> transports = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "originator", cascade = CascadeType.ALL)
+    Set<Driver> drivers = new HashSet<>();
+
+
+
+
 
 }
 

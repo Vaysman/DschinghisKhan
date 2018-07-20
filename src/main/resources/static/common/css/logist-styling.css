@@ -10,7 +10,7 @@
 
 body{
     font-family: "Gerbera Light", serif;
-    color: rgba(26, 43, 109, 1);
+    color: #000;
 }
 
 .badge{
@@ -52,6 +52,10 @@ div.selectize-input{
 
 .grey{
     background: rgb(239,239,239);
+}
+
+.grey-ish{
+    background: rgb(212, 212, 212);
 }
 
 .spaced-container {
@@ -132,7 +136,7 @@ div.selectize-input{
     color: #D41317;
 }
 
-.white{
+div.white{
     background: white;
     box-shadow: 0px 0px 3px rgba(0,0,0,0.10);
 
@@ -167,6 +171,3 @@ div.selectize-dropdown {
     color: #D41317;
 }
 
-.red-first-letter::first-letter{
-    color: #D41317;
-}

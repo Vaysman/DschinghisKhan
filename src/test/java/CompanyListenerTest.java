@@ -33,18 +33,18 @@ public class CompanyListenerTest {
         Company company = Company
                 .builder()
                 .email("test@test.test")
-                .name("test")
-                .shortName("test")
+                .name("testerony")
+                .shortName("testerony")
                 .originator(0)
                 .type(CompanyType.TRANSPORT)
                 .build();
         companyRepository.save(company);
 
 
-        List<Company> companyList = companyRepository.findTop10ByNameContaining("test");
+        List<Company> companyList = companyRepository.findTop10ByNameContaining("testerony");
         assertThat(companyList.size()).isNotEqualTo(0);
         Company savedCompany = companyList.get(0);
-        User user = userRepository.findByLogin("test").orElse(null);
+        User user = userRepository.findByLogin("testerony").orElse(null);
         assertThat(user).isNotEqualTo(null);
         assertThat(savedCompany).isNotEqualTo(null);
         assertThat(savedCompany).isEqualTo(company);

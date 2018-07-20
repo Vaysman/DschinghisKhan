@@ -1,12 +1,11 @@
 package ru.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import ru.constant.OrderLifecycleActions;
 import ru.constant.OrderStatus;
 
 import javax.persistence.*;
@@ -16,13 +15,14 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
 @Entity
-@Table(name = "orders",indexes = {
-        @Index(name = "order_history_company_id_index", columnList = "company_id", unique = true),
+@Builder
+@Table(name = "order_history",indexes = {
+        @Index(name = "order_history_company_id_index", columnList = "company_id"),
         @Index(name = "order_history_user_id_index", columnList = "user_id"),
         @Index(name = "order_history_id_index", columnList = "id"),
         @Index(name = "order_history_order_id_index", columnList = "order_id"),
 })
-@EqualsAndHashCode()
+@EqualsAndHashCode(exclude = {"user","company"})
 public class OrderHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,30 +31,34 @@ public class OrderHistory {
     private Integer id;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ORDER_ID", referencedColumnName = "ID")
-    private Order order;
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "order_id")
+    private Integer orderId;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String orderNumber;
 
     @Column
-    private Float routePrice;
-
-    @Column
+    @JsonView(DataTablesOutput.View.class)
     private Float dispatcherPrice;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Float companyPrice;
 
-    @Column
-    private String action;
+    @Column(name = "action")
+    @Enumerated(EnumType.STRING)
+    @JsonView(DataTablesOutput.View.class)
+    private OrderLifecycleActions action;
 
     @Column
     @Enumerated(EnumType.STRING)
+    @JsonView(DataTablesOutput.View.class)
     private OrderStatus orderStatus;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String actionUser;
 
     @JsonIgnore
@@ -63,6 +67,7 @@ public class OrderHistory {
     private User user;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String actionCompany;
 
     @JsonIgnore
@@ -71,5 +76,7 @@ public class OrderHistory {
     private Company company;
 
     @Column
+    @JsonFormat(pattern = "dd/MM/yyyy HH:MM")
+    @JsonView(DataTablesOutput.View.class)
     private Date date = new Date();
 }

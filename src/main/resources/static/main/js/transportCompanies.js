@@ -95,8 +95,7 @@ $(document).ready(function () {
 
             {label: 'Название', name: 'name', type: 'text'},
             {label: 'Краткое название', name: 'shortName', type: 'text', fieldInfo: "Будет использовано как логин"},
-            {label: "E-mail", name: "email", type: 'text', fieldInfo: "На данный адрес будет отправлен логин и пароль"},
-            {label: 'Тип компании', name: 'type', type: 'selectize', options: companyTypeOptions}
+            {label: "E-mail", name: "email", type: 'text', fieldInfo: "На данный адрес будет отправлен логин и пароль"}
         ]
     });
 

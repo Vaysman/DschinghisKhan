@@ -1,5 +1,67 @@
 $(document).ready(function () {
 
+    let orderAssignEditor = new $.fn.dataTable.Editor({
+        table: '#orderTable',
+        idSrc: 'id',
+        ajax: {
+            edit: {
+                contentType: 'application/json',
+                type: 'POST',
+                url: 'orderLifecycle/assign/_id_',
+                data: function (d) {
+                    let newdata;
+                    $.each(d.data, function (key, value) {
+                        newdata = JSON.stringify(value);
+                    });
+                    return newdata;
+                },
+                success: function (response) {
+                    if (response === "Success") {
+                        alert("Заявка назначена успешно. \n Назначенные компании получат уведомление в личном кабинете.");
+                        orderDataTable.draw();
+                        orderAssignEditor.close();
+                    } else {
+                        alert(response)
+                    }
+
+                },
+                error: function (jqXHR, exception) {
+                    alert(response.responseText);
+                }
+            }
+        },
+        fields: [
+            {
+                label: 'Компании', name: 'assignedCompanies', type: 'selectize',
+                options: [],
+                opts: {
+                    searchField: "label",
+                    create: false,
+                    placeholder: "Нажмите, чтобы изменить",
+                    maxItems: 10,
+                    loadThrottle: 400,
+                    load: function (query, callback) {
+                        $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
+                            function (data) {
+                                var companyOptions = [];
+                                data._embedded.companies.forEach(function (entry) {
+                                    companyOptions.push({"label": entry.name, "value": entry.id});
+                                });
+                                callback(companyOptions);
+                            }
+                        );
+                    }
+                },
+                fieldInfo: "Можно указать до 10 компаний. Если заявка обязательная - то только 1."
+            },
+            {
+                label: 'Стоимость', name: 'dispatcherPrice', data: "routePrice", type: 'mask',
+                mask: "#",
+                fieldInfo: "Если стоимость отличается от указанной в маршруте - измените её здесь."
+            }
+        ]
+    });
+
     let orderEditor = new $.fn.dataTable.Editor({
         ajax: {
             create: {
@@ -34,13 +96,13 @@ $(document).ready(function () {
                         if (value['route'] == "") {
                             delete value['route'];
                         }
-                        if (value['assignedCompanies'].length===0) {
+                        if (value['assignedCompanies'].length === 0) {
                             delete value['assignedCompanies'];
                         }
-                        if(value['requirements'].length===0){
+                        if (value['requirements'].length === 0) {
                             delete value['requirements'];
                         }
-                        if(value['cargo'].length===0){
+                        if (value['cargo'].length === 0) {
                             delete value['cargo'];
                         }
 
@@ -74,7 +136,7 @@ $(document).ready(function () {
                 label: 'Маршрут', name: 'route', type: 'selectize',
                 options: [],
                 opts: {
-                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить", loadThrottle: 400,
                     load: function (query, callback) {
                         $.get(`api/routes/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
                             function (data) {
@@ -87,37 +149,19 @@ $(document).ready(function () {
                         );
                     }
                 },
-                fieldInfo:"Найти подходящий маршрут можно <a href='/routes'>здесь</a>"
+                // fieldInfo:"Найти подходящий маршрут можно <a href='/routes'>здесь</a>"
             },
-            {label: 'Обязательность заявки', name: 'orderObligation', type: "selectize", options: obligationOptions},
-            {
-                label: 'Компании', name: 'assignedCompanies', type: 'selectize', placeholder: "Нажмите, чтобы изменить",
-                options: [],
-                opts: {
-                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить", maxItems: 10,
-                    load: function (query, callback) {
-                        $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
-                            function (data) {
-                                var companyOptions = [];
-                                data._embedded.companies.forEach(function (entry) {
-                                    companyOptions.push({"label": entry.name, "value": entry._links.self.href});
-                                });
-                                callback(companyOptions);
-                            }
-                        );
-
-                    }
-                },
-                fieldInfo:"Можно указать до 10 компаний. Если заявка обязательная - то только 1."
-            },
-
             {
                 label: 'Груз',
                 name: 'cargo',
                 type: 'selectize',
                 options: [],
                 opts: {
-                    searchField: "label", create: true, maxItems: 10, placeholder: "Нажмите, чтобы изменить",
+                    searchField: "label",
+                    create: true,
+                    maxItems: 10,
+                    placeholder: "Нажмите, чтобы изменить",
+                    loadThrottle: 400,
                     load: function (query, callback) {
                         $.get(`api/cargoTypes/search/findTop10ByNameStartingWith/?name=${query}`,
                             function (data) {
@@ -142,10 +186,10 @@ $(document).ready(function () {
                 }
             },
             {
-                label: 'Дата оплаты', name: 'paymentDate', type: "datetime", format: "D/M/YYYY"
+                label: 'Дата оплаты', name: 'paymentDate', type: "mask", mask: "#"
             },
             {
-                label: 'Дата возврата документов', name: 'documentReturnDate', type: "datetime", format: "D/M/YYYY"
+                label: 'Дата возврата документов', name: 'documentReturnDate', type: "mask", mask: "#"
             },
             {
                 label: 'Коэф. изменения рейтинга', name: 'rating', type: "mask", mask: "###",
@@ -154,8 +198,8 @@ $(document).ready(function () {
                     placeholder: "1000"
                 }
             },
-
-
+            {label: 'Обязательность заявки', name: 'orderObligation', type: "selectize", options: obligationOptions},
+            {label: "Оплата", name: "paymentType", type: "selectize", options: orderPaymentOptions}
         ]
     });
 
@@ -192,12 +236,26 @@ $(document).ready(function () {
                 {
                     extend: "remove",
                     editor: orderEditor
+                }, {
+
+                    text: "Назначить компании",
+                    action: function (e, dt, node, config) {
+                        orderAssignEditor.edit(orderDataTable.rows('.selected', {select: true}), 'Назначить компании', {
+                            "label": "Назначить",
+                            "fn": function () {
+                                this.submit();
+                            }
+                        });
+                    },
+                    enabled: false
                 }
             ],
             "paging": 10,
             "columnDefs": [
                 {"name": "id", "data": "id", "targets": 0, visible: false},
-                {"name": "number", "data": "number", "targets": 1,},
+                {"name": "number", "data": "number", "targets": 1, render: function(data, type, full){
+                        return `<a target="_blank" href='info/orders/${full.id}'>${data}</a>`;
+                    }},
                 {"name": "status", "data": "status", searchable: false, orderable: false, "targets": 2},
                 {
                     "name": "route.name",
@@ -208,19 +266,11 @@ $(document).ready(function () {
                     defaultContent: ""
                 },
                 {
-                    "name": "route.routePoints",
-                    "data": "route.routePoints[, ].name",
-                    "targets": 4,
-                    searchable: false,
-                    orderable: false,
-                    defaultContent: ""
-                },
-                {
                     "name": "company.name",
                     "data": "company.name",
                     searchable: false,
                     orderable: false,
-                    "targets": 5,
+                    "targets": 4,
                     defaultContent: ""
                 },
                 {
@@ -228,7 +278,7 @@ $(document).ready(function () {
                     "data": "transport.number",
                     searchable: false,
                     orderable: false,
-                    "targets": 6,
+                    "targets": 5,
                     defaultContent: ""
                 },
                 {
@@ -236,13 +286,13 @@ $(document).ready(function () {
                     "data": "driver.name",
                     searchable: false,
                     orderable: false,
-                    "targets": 7,
+                    "targets": 6,
                     defaultContent: ""
                 },
                 {
                     "name": "requirements",
                     "data": "requirements[, ]",
-                    "targets": 8,
+                    "targets": 7,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -250,7 +300,7 @@ $(document).ready(function () {
                 {
                     "name": "cargo",
                     "data": "cargo[, ]",
-                    "targets": 9,
+                    "targets": 8,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -258,7 +308,7 @@ $(document).ready(function () {
                 {
                     "name": "paymentDate",
                     "data": "paymentDate",
-                    "targets": 10,
+                    "targets": 9,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -266,7 +316,7 @@ $(document).ready(function () {
                 {
                     "name": "documentReturnDate",
                     "data": "documentReturnDate",
-                    "targets": 11,
+                    "targets": 10,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -274,7 +324,7 @@ $(document).ready(function () {
                 {
                     "name": "rating",
                     "data": "rating",
-                    "targets": 12,
+                    "targets": 11,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -282,11 +332,19 @@ $(document).ready(function () {
                 {
                     "name": "orderObligation",
                     "data": "orderObligation",
-                    "targets": 13,
+                    "targets": 12,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
                 },
+                {
+                    "name": "paymentType",
+                    "data": "paymentType",
+                    "targets": 13,
+                    searchable: false,
+                    orderable: false,
+                    defaultContent: ""
+                }
                 // {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, "targets": 9,defaultContent: ""},
                 // {"name": "volume", "data": "volume", searchable:false, orderable: false, "targets": 10,defaultContent: "" , render: function (data, type, row, meta) {
                 //         return (data!==null) ? `${data}м<sup>3</sup>` : "";
@@ -300,4 +358,15 @@ $(document).ready(function () {
         }
     );
 
+    orderDataTable.on('select', function (e, dt, type, indexes) {
+        if (orderDataTable.row(indexes[0]).data().status == "Создано") {
+            orderDataTable.button(3).enable();
+        } else {
+            orderDataTable.button(3).disable();
+        }
+    });
+
+    orderDataTable.on('deselect', function () {
+        orderDataTable.button(3).disable();
+    })
 });

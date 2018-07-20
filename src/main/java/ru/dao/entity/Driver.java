@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
-import ru.constant.PaymentType;
+import ru.constant.DriverPaymentType;
 
 import javax.persistence.*;
 
@@ -55,7 +55,7 @@ public class Driver {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private PaymentType paymentType;
+    private DriverPaymentType paymentType;
 
     //Company id
     @Column
