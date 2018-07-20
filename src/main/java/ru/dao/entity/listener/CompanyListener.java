@@ -49,6 +49,7 @@ public class CompanyListener {
         company.setUsers(userList);
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, false);
+        helper.setFrom("tarificationsquad@gmail.com");
         helper.setTo(company.getEmail());
         helper.setText("Зарегистрирован пользователь для транспортой компании: " +
                 company.getName()+

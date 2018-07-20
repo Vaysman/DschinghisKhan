@@ -75,7 +75,7 @@ public class Company {
     @Column
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)
-    private CompanyType type;
+    private CompanyType type = CompanyType.TRANSPORT;
 
     @Column
     @JsonView(DataTablesOutput.View.class)

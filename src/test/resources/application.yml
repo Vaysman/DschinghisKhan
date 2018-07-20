@@ -27,6 +27,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+        connection:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     open-in-view: true
     show-sql: true
