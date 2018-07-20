@@ -1,41 +1,210 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>O R D E R S</title>
+    <title>Заявки</title>
     <th:block th:include="fragments/header :: scripts"></th:block>
-    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/orders.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/all-orders.js"></script>
 </head>
 <body class="grey">
 <div th:insert="fragments/header :: header('orders')"></div>
-<div >
-    <div class="spaced-container white container-fluid" style="overflow-x: scroll">
-        <h4>Заявки</h4>
-        <div>
-            <table class="table table-sm table-striped " id="orderTable">
-                <thead>
-                <tr>
-                    <th>id</th>
-                    <th>Номер</th>
-                    <th>Статус</th>
-                    <th>Маршрут</th>
-                    <th>Пункты<br>доставки</th>
-                    <th>ТК</th>
-                    <th>Транспорт</th>
-                    <th>Водитель</th>
-                    <th>Требования</th>
-                    <th>Груз</th>
-                    <th>Дни для оплаты</th>
-                    <th>Дни для возврата<br>документов</th>
-                    <th>Рейтинг</th>
-                    <th>Обязательность</th>
-                    <th>Оплата</th>
-                </tr>
-                </thead>
-            </table>
+<nav class="logist-tabs">
+    <div>
+        <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+                <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-all-orders"><i
+                        class="fa fa-user" aria-hidden="true"></i> Все заявки</a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-pending-orders"><span
+                        class="badge badge-light" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}"
+                        th:text="${#lists.size(pendingOrders)}"></span>
+                    <i class="fa fa-th-list" aria-hidden="true"></i> Предложенные заявки
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAuthority('ROLE_DISPATCHER')">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-managed-offers">
+                    <span class="badge badge-primary" th:if="${managedOffers!=null && #lists.size(managedOffers) > 0}"
+                          th:text="${#lists.size(managedOffers)}"></span>
+                    <i class="fa fa-truck" aria-hidden="true"></i> Предложения компаний
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="tab-content" id="tabContent">
+    <div id="tab-all-orders"
+         th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? '' : 'in active' "
+         class="tab-pane">
+        <div class="spaced-container white container-fluid" style="overflow-x: scroll">
+            <h4>Все заявки</h4>
+            <div>
+                <table class="table table-sm table-striped " id="orderTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Номер</th>
+                        <th>Статус</th>
+                        <th>Маршрут</th>
+                        <th>ТК</th>
+                        <th>Транспорт</th>
+                        <th>Водитель</th>
+                        <th>Требования</th>
+                        <th>Груз</th>
+                        <th>Дни для оплаты</th>
+                        <th>Дни для возврата<br>документов</th>
+                        <th>Рейтинг</th>
+                        <th>Обязательность</th>
+                        <th>Оплата</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-pending-orders"
+         th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? 'in active' : '' "
+         class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Предложенные заявки</h4>
+            <div class="row" id="pendingOrders">
+                <div class="col-2">
+                    <h5 th:if="${pendingOrders==null || #lists.size(pendingOrders) == 0}">
+                        <small class="text-muted">Предложенные заявки появятся здесь.</small>
+                    </h5>
+                    <div class="list-group">
+                        <a href="#" v-for="pendingOrder in pendingOrders" @click="loadOrderInfo(pendingOrder.id)"
+                           class="list-group-item list-group-item-action">
+                            {{ pendingOrder.number }}
+                        </a>
+                    </div>
+                </div>
+                <pending-order-info :order="order"></pending-order-info>
+                <div class="col-3" id="pendingOrderAcceptForm" :hidden="(order==null)">
+                    <div class="form-group">
+                        <label for="orderTransportSelect">Транспорт</label>
+                        <input id="orderTransportSelect">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="orderDriverSelect">Водитель</label>
+                        <input id="orderDriverSelect">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="orderProposedPrice">Стоимость</label>
+                        <input class="form-control" v-model="proposedPrice" id="orderProposedPrice">
+                        <span class="small text-muted">Если не устраивает стоимость,<br>выставленная диспетчером</span>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" @click="acceptOrder()"
+                                :disabled="(order==null||proposedPrice==null||driverId==null||transportId==null)">
+                            Принять
+                        </button>
+                        <button class="btn btn-default" @click="rejectOrder()" :disabled="(order==null)">Отклонить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tab-managed-offers" class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Предложения от перевозчиков</h4>
+            <div class="row" id="managedOffers">
+                <div class="col-2">
+                    <h5 th:if="${managedOffers==null || #lists.size(managedOffers) == 0}">
+
+                        <small class="text-muted">Предложения от компаний появятся здесь</small>
+                    </h5>
+                    <div class="list-group">
+                        <a href="#" v-bind:class="getOfferColor(managedOffer.isPriceChanged)"
+                           v-for="managedOffer in managedOffers" @click="loadOfferInfo(managedOffer.id)"
+                           class="list-group-item list-group-item-action grey">
+                            {{ managedOffer.orderNumber }}
+                        </a>
+                    </div>
+                </div>
+                <div v-if="offer" class="col-10" id="pendingOrderInfo">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Заявка: {{offer.orderNumber}}</h5>
+                            <h5>Компания: {{offer.company.name}}</h5>
+                            <br>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-4">
+
+                                    Оплата:<br>{{offer.order.paymentType}}<br>
+                                    Обязательность:<br>{{offer.order.orderObligation}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    Дней для возврата документов:<br>
+                                    {{offer.order.documentReturnDate}} <br>
+                                    Дней для оплаты:<br>
+                                    {{offer.order.paymentDate}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    Водитель:<br>
+                                    {{offer.driver.name}} <br>
+                                    Транспорт:<br>{{offer.transport.number}}/{{offer.transport.type}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    Требования:
+                                    <ul>
+                                        <li v-for="requirement in offer.order.requirements">{{requirement}}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-4">
+                                    Груз:
+                                    <ul>
+                                        <li v-for="cargoUnit in offer.order.cargo">{{cargoUnit}}</li>
+                                    </ul>
+                                </div>
+
+                                <div class="col-4">
+                                    Маршрут: {{offer.order.route.name}}<br>
+                                    Пункты маршрута:
+                                    <ol>
+                                        <li v-for="routePoint in offer.order.route.routePoints">
+                                            {{routePoint.point.name}}
+                                        </li>
+                                    </ol>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    Назначенная диспетчером цена:<br>
+                                    {{offer.dispatcherPrice}}<br><br>
+                                </div>
+                                <div class="col-6">
+                                    Назначенная компанией цена:<br>
+                                    {{offer.proposedPrice}}<br><br>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-block btn-primary" @click="acceptOffer()"
+                                            :disabled="(offer==null)">Утвердить
+                                    </button>
+                                    <button class="btn btn-block btn-default" @click="rejectOffer()"
+                                            :disabled="(offer==null)">Отклонить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 <div th:insert="fragments/header :: footer"></div>
 </body>
+<script sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")' src="/orders/js/managed-offers.js"></script>
+<script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")' src="/orders/js/pending-orders.js"></script>
 </html>

@@ -8,6 +8,8 @@ public enum OrderLifecycleActions {
     ASSIGN("Назначил ТК"),
     @JsonProperty("Отклонил заявку")
     REJECT_ORDER("Отклонил заявку"),
+    @JsonProperty("Отклонил предложение перевозчика")
+    DECLINE_OFFER("Отклонил предложение перевозчика"),
     @JsonProperty("Принял заявку")
     ACCEPTED("Принял заявку"),
     @JsonProperty("Утвердил заявку")

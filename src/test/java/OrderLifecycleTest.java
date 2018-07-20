@@ -73,6 +73,7 @@ public class OrderLifecycleTest {
                 .rating(100)
                 .documentReturnDate(1)
                 .paymentDate(1)
+                .originator(dispatcherUser.getCompany().getId())
                 .number("LSS-1")
                 .status(OrderStatus.CREATED)
                 .build();
@@ -128,8 +129,9 @@ public class OrderLifecycleTest {
         assertThat(offer.getTransport())
                 .isEqualTo(companyTransport);
         assertThat(offer.getProposedPrice()).isEqualTo(100F);
+        assertThat(offer.getManagerCompany().equals(dispatcherUser.getCompany()));
 
-        orderLifecycleService.confirm(order.getId(),dispatcherUser,offer.getId());
+        orderLifecycleService.confirm(dispatcherUser,offer.getId());
         company = companyRepository.findById(company.getId()).orElse(null);
         assertThat(company).isNotNull();
 
@@ -138,7 +140,7 @@ public class OrderLifecycleTest {
                 .isEqualTo(companyTransport);
         assertThat(order.getDriver())
                 .isEqualTo(companyDriver);
-        assertThat(order.getCompanyPrice()).isEqualTo(100F);
+        assertThat(order.getProposedPrice()).isEqualTo(100F);
         assertThat(order.getOffers().size()).isEqualTo(0);
         assertThat(order.getAssignedCompanies().size()).isEqualTo(0);
     }

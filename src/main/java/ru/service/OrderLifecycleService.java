@@ -43,21 +43,42 @@ public class OrderLifecycleService {
     }
 
 
+    public void declineOffer(User currentUser, Integer offerId){
+        OrderOffer orderOffer = orderOfferRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку"));
+        Order order = orderOffer.getOrder();
+        if(!order.getStatus().equals(OrderStatus.ACCEPTED) && !order.getStatus().equals(OrderStatus.PRICE_CHANGED)) throw new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку");
 
-    public void confirm(Integer orderId, User currentUser, Integer offerId){
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Данной заявки не существует"));
-        if(!order.getStatus().equals(OrderStatus.ACCEPTED) && !order.getStatus().equals(OrderStatus.PRICE_CHANGED)) throw new IllegalArgumentException("Заявка не может быть утверждена: \nДругой диспетчер утвердил заявку");
-        OrderOffer orderOffer = orderOfferRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Заявка не может быть утверждена: \nДругой диспетчер утвердил заявку"));
+        order.getOffers().remove(orderOffer);
+        if(order.getOffers().size()==0){
+            if(order.getAssignedCompanies().size()==0) {
+                order.setStatus(OrderStatus.CREATED);
+            } else {
+                order.setStatus(OrderStatus.ASSIGNED);
+            }
+        }
+        orderRepository.save(order);
+
+        orderOfferRepository.delete(orderOffer);
+
+        saveActionHistory(OrderLifecycleActions.DECLINE_OFFER,currentUser,order);
+    }
+
+    public void confirm(User currentUser, Integer offerId){
+        OrderOffer orderOffer = orderOfferRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Заявка не может быть утверждена: \nДругой диспетчер утвердил/отклонил заявку"));
+        Order order = orderOffer.getOrder();
+        if(!order.getStatus().equals(OrderStatus.ACCEPTED) && !order.getStatus().equals(OrderStatus.PRICE_CHANGED)) throw new IllegalArgumentException("Заявка не может быть утверждена: \nДругой диспетчер утвердил/отклонил заявку");
 
         order.setCompany(orderOffer.getCompany());
         order.setDriver(orderOffer.getDriver());
         order.setTransport(orderOffer.getTransport());
-        order.setCompanyPrice(orderOffer.getProposedPrice());
+        order.setProposedPrice(orderOffer.getProposedPrice());
         order.setOffers(new HashSet<>());
         if(order.getStatus().equals(OrderStatus.PRICE_CHANGED)) order.setAssignedCompanies(new HashSet<>());
         order.setStatus(OrderStatus.CONFIRMED);
 
         orderRepository.save(order);
+
+        orderOfferRepository.delete(orderOffer);
 
         saveActionHistory(OrderLifecycleActions.CONFIRMED,currentUser,order);
     }
@@ -76,13 +97,18 @@ public class OrderLifecycleService {
         if((order.getStatus().equals(OrderStatus.ASSIGNED)||order.getStatus().equals(OrderStatus.PRICE_CHANGED))
                 && order.getAssignedCompanies().contains(company)){
 
+            Company managerCompany = companyRepository.findById(order.getOriginator()).orElse(null);
+
             OrderOffer orderOffer = OrderOffer
                     .builder()
                     .order(order)
                     .company(company)
                     .proposedPrice(orderAcceptData.getProposedPrice())
+                    .dispatcherPrice(order.getDispatcherPrice())
+                    .orderNumber(order.getNumber())
                     .driver(driver)
                     .transport(transport)
+                    .managerCompany(managerCompany)
                     .build();
             orderOfferRepository.save(orderOffer);
 
@@ -145,7 +171,7 @@ public class OrderLifecycleService {
     }
 
     private void saveActionHistory(OrderLifecycleActions action, User user, Order order){
-        saveActionHistory(action,user,order,order.getCompanyPrice());
+        saveActionHistory(action,user,order,order.getProposedPrice());
     }
 
     private void saveActionHistory(OrderLifecycleActions action, User user, Order order, Float proposedPrice){

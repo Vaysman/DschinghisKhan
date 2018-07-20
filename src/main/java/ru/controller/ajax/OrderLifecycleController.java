@@ -26,11 +26,33 @@ public class OrderLifecycleController {
         this.orderLifecycleService = orderLifecycleService;
     }
 
+    @RequestMapping(value = "/confirm/{offerId}", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('DISPATCHER')")
+    private String confirm(@PathVariable Integer offerId){
+        try{
+            orderLifecycleService.confirm(getCurrentUser(),offerId);
+            return "Success";
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
     @RequestMapping(value = "/assign/{id}", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('DISPATCHER')")
     private String assign(@PathVariable Integer id, @RequestBody OrderAssignData assignData){
         try{
             orderLifecycleService.assign(id, getCurrentUser(), assignData);
+            return "Success";
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
+    @RequestMapping(value = "/declineOffer/{offerId}", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('DISPATCHER')")
+    private String declineOffer(@PathVariable Integer offerId){
+        try{
+            orderLifecycleService.declineOffer(getCurrentUser(),offerId);
             return "Success";
         } catch (Exception e){
             return e.getMessage();

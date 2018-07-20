@@ -16,6 +16,7 @@ import ru.dao.repository.CompanyRepository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -38,8 +39,7 @@ public class AuthorizedController {
 
 
     @RequestMapping("/main")
-    public String main()
-    {
+    public String main() {
         return "main";
     }
 
@@ -57,20 +57,36 @@ public class AuthorizedController {
     //Otherwise you'll get NullPointerException when trying to use autowired field
     //In this instance it'll be upon calling findById in CompanyRepository
     @ModelAttribute
-    public ModelMap setConstants(ModelMap model){
+    public ModelMap setConstants(ModelMap model) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        AuthToken authentication=(AuthToken)securityContext.getAuthentication();
-        if(authentication.getUser().getUserRole()==UserRole.ROLE_TRANSPORT_COMPANY){
-            companyRepository.findById(authentication.getCompanyId()).ifPresent(company -> model.addAttribute("pendingOrders", company.getPendingOrders().stream().map(x -> {
-                Map<String, String> orderMap = new HashMap<>();
-                orderMap.put("id", x.getId().toString());
-                orderMap.put("number", x.getNumber());
-                return orderMap;
-            }).collect(Collectors.toList())));
+        AuthToken authentication = (AuthToken) securityContext.getAuthentication();
+        if (authentication.getUser().getUserRole() == UserRole.ROLE_TRANSPORT_COMPANY) {
+            companyRepository.findById(authentication.getCompanyId())
+                    .ifPresent(company -> model.addAttribute("pendingOrders", company
+                            .getPendingOrders()
+                            .stream()
+                            .map(x -> {
+                                Map<String, String> orderMap = new HashMap<>();
+                                orderMap.put("id", x.getId().toString());
+                                orderMap.put("number", x.getNumber());
+                                return orderMap;
+                            }).collect(Collectors.toList())));
+        } else if (authentication.getUser().getUserRole() == UserRole.ROLE_DISPATCHER) {
+            companyRepository.findById(authentication.getCompanyId())
+                    .ifPresent(company -> model.addAttribute("managedOffers", company
+                            .getManagedOffers()
+                            .stream()
+                            .map(x -> {
+                                Map<String, String> orderMap = new HashMap<>();
+                                orderMap.put("id", x.getId().toString());
+                                orderMap.put("orderNumber", x.getOrderNumber());
+                                orderMap.put("isPriceChanged", String.valueOf((!Objects.equals(x.getProposedPrice(), x.getDispatcherPrice()))));
+                                return orderMap;
+                            }).collect(Collectors.toList())));
         }
         model.addAttribute("currentCompanyId", String.valueOf(authentication.getCompanyId()));
 
-        model.addAttribute("currentUser",authentication.getUser());
+        model.addAttribute("currentUser", authentication.getUser());
 
         model.addAttribute("loadingTypes", LoadingType.values());
         model.addAttribute("vehicleBodyTypes", VehicleBodyType.values());

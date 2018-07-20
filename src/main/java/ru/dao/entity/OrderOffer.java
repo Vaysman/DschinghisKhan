@@ -13,9 +13,10 @@ import javax.persistence.*;
 @Builder
 @Table(name = "order_offers",indexes = {
         @Index(name = "order_offers_id_index", columnList = "id"),
+        @Index(name = "order_offers_manager_company_id_index", columnList = "manager_company_id"),
         @Index(name="order_offers_order_id_company_id_index", columnList = "order_id, company_id")
 })
-@EqualsAndHashCode(exclude = {"order","company","transport","driver"})
+@EqualsAndHashCode(exclude = {"order","company","transport","driver","managerCompany"})
 public class OrderOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +27,9 @@ public class OrderOffer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_ID")
     private Order order;
+
+    @Column
+    private String orderNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COMPANY_ID")
@@ -42,5 +46,11 @@ public class OrderOffer {
     @Column
     private Float proposedPrice;
 
+    @Column
+    private Float dispatcherPrice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MANAGER_COMPANY_ID")
+    private Company managerCompany;
 
 }

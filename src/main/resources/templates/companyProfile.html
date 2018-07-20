@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Личный кабинет</title>
     <th:block th:include="fragments/header :: scripts"></th:block>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!--<script src="/media/vue.min.js"></script>-->
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/transports.js"></script>
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/drivers.js"></script>
@@ -21,12 +20,6 @@
             <li class="nav-item">
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-info"><i
                         class="fa fa-user" aria-hidden="true"></i> Профиль</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders"><span
-                        class="badge badge-light" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}"
-                        th:text="${#lists.size(pendingOrders)}"></span>
-                    <i class="fa fa-th-list" aria-hidden="true"></i> Заявки </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-transports"><i
@@ -63,44 +56,6 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Обновить</button>
             </form>
-        </div>
-    </div>
-    <div id="tab-orders" class="tab-pane">
-        <div class="spaced-container white container-fluid">
-            <h4>Заявки</h4>
-            <div class="row" id="pendingOrders">
-                <div class="col-2">
-
-                    <div class="list-group">
-                        <a href="#" v-for="pendingOrder in pendingOrders" @click="loadOrderInfo(pendingOrder.id)"
-                           class="list-group-item list-group-item-action">
-                            {{ pendingOrder.number }}
-                        </a>
-                    </div>
-                </div>
-                <pending-order-info :order="order"></pending-order-info>
-                <div class="col-3" id="pendingOrderAcceptForm" :hidden="(order==null)">
-                        <div class="form-group" >
-                            <label for="orderTransportSelect">Транспорт</label>
-                                <input  id="orderTransportSelect">
-
-                        </div>
-                        <div class="form-group" >
-                            <label for="orderDriverSelect">Водитель</label>
-                                <input id="orderDriverSelect">
-
-                        </div>
-                        <div class="form-group">
-                            <label for="orderProposedPrice">Стоимость</label>
-                                <input class="form-control" v-model="proposedPrice" id="orderProposedPrice">
-                                <span class="small text-muted">Если не устраивает стоимость,<br>выставленная диспетчером</span>
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-primary" @click="acceptOrder()" :disabled="(order==null||proposedPrice==null||driverId==null||transportId==null)">Принять</button>
-                            <button class="btn btn-default" @click="rejectOrder()" :disabled="(order==null)">Отклонить</button>
-                        </div>
-                </div>
-            </div>
         </div>
     </div>
     <div id="tab-transports" class="tab-pane">

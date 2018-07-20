@@ -95,7 +95,7 @@ public class Order {
     private Float dispatcherPrice;
 
     @Column
-    private Float companyPrice;
+    private Float proposedPrice;
 
     @Column
     @Enumerated(EnumType.STRING)
