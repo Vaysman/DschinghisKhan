@@ -11,6 +11,7 @@ import ru.dao.entity.converter.StringSetToStringConverter;
 import ru.util.generator.RandomIntGenerator;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -109,6 +110,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderPaymentType paymentType;
 
+    @Column
+    private Date statusChangeDate;
+
 
 
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
@@ -125,7 +129,6 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<OrderOffer> offers = new HashSet<>();
-
 
     @PrePersist
     private void setPricing(){

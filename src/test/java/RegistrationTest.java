@@ -3,6 +3,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -49,13 +50,14 @@ public class RegistrationTest {
                 .pointName("testPointName")
                 .pointAddress("Москва")
                 .build();
-        userManagementService.register(registrationData);
+        User registeredUser = userManagementService.register(registrationData);
 
         List<Company> foundCompanies = companyRepository.findTop10ByNameContaining("tCompany");
         assertThat(foundCompanies.size()).isNotEqualTo(0);
 
         Company company = foundCompanies.get(0);
 
+        assertThat(registeredUser.getCompany()).isEqualTo(company);
         assertThat(company.getType()).isEqualTo(CompanyType.DISPATCHER);
 
 
@@ -64,7 +66,7 @@ public class RegistrationTest {
         assertThat(user.getUserRole()).isEqualTo(UserRole.ROLE_DISPATCHER);
         assertThat(user.getSalt()).isNotEmpty();
         assertThat(user.getOriginator()).isEqualTo(company.getId());
-        assertThat(user.getCompany()).isEqualTo(company);
+        assertThat(user).isEqualTo(registeredUser);
 
         String correctPassAndSalt = DigestUtils.md5DigestAsHex((DigestUtils.md5DigestAsHex(("test").getBytes())+user.getSalt()).getBytes());
         assertThat(user.getPassAndSalt()).isEqualTo(correctPassAndSalt);
@@ -74,6 +76,8 @@ public class RegistrationTest {
         Point point = points.get(0);
         assertThat(company.getPoint()).isEqualTo(point);
 
+        userManagementService.setAuthorized(registeredUser,"test");
+        assertThat(SecurityContextHolder.getContext().getAuthentication().isAuthenticated()).isTrue();
         //If you made it here - congrats
     }
 

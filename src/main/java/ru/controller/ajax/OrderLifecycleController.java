@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.configuration.authentication.AuthToken;
+import ru.constant.OrderStatus;
 import ru.dao.entity.User;
 import ru.dto.json.order.OrderAcceptData;
 import ru.dto.json.order.OrderAssignData;
@@ -24,6 +25,73 @@ public class OrderLifecycleController {
     @Autowired
     public OrderLifecycleController(OrderLifecycleService orderLifecycleService) {
         this.orderLifecycleService = orderLifecycleService;
+    }
+
+    @PostMapping(value="/confirmPayment/{orderId}")
+    @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
+    private String confirmPayment(@PathVariable Integer orderId){
+        try {
+            orderLifecycleService.confirmPayment(getCurrentUser(),orderId);
+            return "Success";
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
+    @PostMapping(value="/claimNonPayment/{orderId}")
+    @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
+    private String claimNonPayment(@PathVariable Integer orderId){
+        try {
+            orderLifecycleService.claimNonPayment(getCurrentUser(),orderId);
+            return "Success";
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
+    @PostMapping(value="/claimPayment/{orderId}")
+    @PreAuthorize("hasAuthority('DISPATCHER')")
+    private String claimPayment(@PathVariable Integer orderId){
+        try {
+            orderLifecycleService.claimPayment(getCurrentUser(),orderId);
+            return "Success";
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
+    @PostMapping(value="/confirmDocumentDelivery/{orderId}")
+    @PreAuthorize("hasAuthority('DISPATCHER')")
+    private String confirmDocumentDelivery(@PathVariable Integer orderId){
+        try {
+            orderLifecycleService.confirmDocumentDelivery(getCurrentUser(),orderId);
+            return "Success";
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
+
+    @PostMapping(value = "/confirmDelivery/{orderId}")
+    @PreAuthorize("isAuthenticated()")
+    private String confirmDelivery(@PathVariable Integer orderId){
+        try{
+            orderLifecycleService.confirmDelivery(getCurrentUser(),orderId);
+            return "Success";
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
+    @PostMapping(value = "/changeStatus/{orderId}")
+    @PreAuthorize("isAuthenticated()")
+    private String changeStatus(@PathVariable Integer orderId, @RequestBody OrderStatus orderStatus){
+        try{
+            orderLifecycleService.changeStatus(getCurrentUser(),orderId,orderStatus);
+            return "Success";
+        } catch (Exception e){
+            return e.getMessage();
+        }
     }
 
     @RequestMapping(value = "/confirm/{offerId}", method = RequestMethod.POST)

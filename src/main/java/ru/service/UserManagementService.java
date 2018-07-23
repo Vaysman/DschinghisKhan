@@ -34,15 +34,16 @@ public class UserManagementService {
     }
 
 
-    private void setAuthorized(User user, String password){
+    public void setAuthorized(User user, String password){
         UserCredentials forgedCredentials = new UserCredentials(user.getUsername(),password);
         Authentication auth = new AuthToken(user, forgedCredentials, Collections.singletonList(new SimpleGrantedAuthority(user.getUserRole().name())));
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
 
+
     @Transactional
-    public boolean register(UserRegistrationData registrationData){
+    public User register(UserRegistrationData registrationData){
         if (userRepository.findByLogin(registrationData.getLogin()).isPresent()) throw new IllegalArgumentException("Данный пользователь уже существует");
 
         Point point = null;
@@ -80,7 +81,7 @@ public class UserManagementService {
                 .build();
         userRepository.save(user);
 
-        setAuthorized(user, registrationData.getPassword());
-        return true;
+
+        return user;
     }
 }

@@ -26,7 +26,7 @@ $(document).ready(function () {
 
                 },
                 error: function (jqXHR, exception) {
-                    alert(response.responseText);
+                    alert(exception.responseText);
                 }
             }
         },
@@ -186,10 +186,12 @@ $(document).ready(function () {
                 }
             },
             {
-                label: 'Дата оплаты', name: 'paymentDate', type: "mask", mask: "#"
+                label: 'Дней для оплаты', name: 'paymentDate', type: "mask", mask: "#",
+                fieldInfo:"Через сколько дней статус заявки сменится с 'Документы получены' на 'Ожидает оплаты'"
             },
             {
-                label: 'Дата возврата документов', name: 'documentReturnDate', type: "mask", mask: "#"
+                label: 'Дней для возврата документов', name: 'documentReturnDate', type: "mask", mask: "#",
+                fieldInfo:"Через сколько дней статус заявки сменится с 'Доставлено'/'Подтверждение доставки' на 'Ожидает возврата документов'"
             },
             {
                 label: 'Коэф. изменения рейтинга', name: 'rating', type: "mask", mask: "###",

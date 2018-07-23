@@ -1,6 +1,7 @@
 package ru.constant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
 public enum  OrderStatus {
     @JsonProperty("Создано")
@@ -64,7 +65,7 @@ public enum  OrderStatus {
     DOCUMENT_RETURN("Ожидает возврата документов"),
 
     @JsonProperty("Документы получены")
-    GOT_DOCUMENTS("Документы получены"),
+    DOCS_RECEIVED("Документы получены"),
 
     @JsonProperty("Ожидает оплаты")
     PAY_PENDING("Ожидает оплаты"),
@@ -79,10 +80,58 @@ public enum  OrderStatus {
     NOT_PAYED("Не оплачено");
 
 
+    @Getter
     private String statusName;
 
-    public String getStatusName() {
-        return statusName;
+    public static OrderStatus[] getChangeableStatuses(){
+        return new OrderStatus[]{
+                OrderStatus.CONFIRMED,
+                OrderStatus.EN_ROUTE,
+                OrderStatus.LATE_LOAD,
+                OrderStatus.LATE_UNLOAD,
+                OrderStatus.STALE_UNLOAD,
+                OrderStatus.STALE_LOAD,
+                OrderStatus.PRETENSION,
+                OrderStatus.CMP_PRETENSION,
+                OrderStatus.LOADING,
+                OrderStatus.ACCIDENT,
+                OrderStatus.SITUATION,
+        };
+    }
+
+    public static OrderStatus[] getStatusesInWork(){
+        return new OrderStatus[]{
+                OrderStatus.CONFIRMED,
+                OrderStatus.EN_ROUTE,
+                OrderStatus.LATE_LOAD,
+                OrderStatus.LATE_UNLOAD,
+                OrderStatus.STALE_UNLOAD,
+                OrderStatus.STALE_LOAD,
+                OrderStatus.PRETENSION,
+                OrderStatus.CMP_PRETENSION,
+                OrderStatus.LOADING,
+                OrderStatus.ACCIDENT,
+                OrderStatus.SITUATION,
+                OrderStatus.DELIVERED,
+                OrderStatus.DELIVERY_CONFD,
+                OrderStatus.DOCUMENT_RETURN,
+                OrderStatus.DOCS_RECEIVED,
+                OrderStatus.PAY_PENDING,
+                OrderStatus.PAYED,
+                OrderStatus.NOT_PAYED,
+        };
+    }
+
+    public static OrderStatus[] getDeliveredStatuses(){
+        return new OrderStatus[]{
+                OrderStatus.DELIVERED,
+                OrderStatus.DELIVERY_CONFD,
+                OrderStatus.DOCUMENT_RETURN,
+                OrderStatus.DOCS_RECEIVED,
+                OrderStatus.PAY_PENDING,
+                OrderStatus.NOT_PAYED,
+                OrderStatus.PAYED
+        };
     }
 
     OrderStatus(String statusName) {

@@ -52,5 +52,5 @@ drop table routes_to_companies;
 
 drop table drop_points;
 
-
+ALTER TABLE orders ADD status_change_date DATETIME null;
 

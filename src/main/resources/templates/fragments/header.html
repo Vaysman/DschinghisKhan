@@ -90,6 +90,22 @@
             orderPaymentTypes.forEach(function (x) {
                 orderPaymentOptions.push({value: x, label: x});
             });
+
+            var changeableStatuses = /*[[${changeableStatuses}]]*/;
+            var deliveredStatuses = /*[[${deliveredStatuses}]]*/;
+
+            var statusesForDispatcher = /*[[${statusesForDispatcher}]]*/;
+            var statusesForDispatcherOptions = [];
+            statusesForDispatcher.forEach(function (x) {
+                statusesForDispatcherOptions.push({value: x, label: x});
+            });
+            var statusesForCompany = /*[[${statusesForCompany}]]*/;
+            var statusesForCompanyOptions = [];
+            statusesForCompany.forEach(function (x) {
+                statusesForCompanyOptions.push({value: x, label: x});
+            });
+
+
             /*]]>*/
         </script>
     </th:block>
