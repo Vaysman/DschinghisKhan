@@ -48,7 +48,13 @@ public class Driver {
     private Boolean hasMobileApp;
 
     @Column
+    private String mobileAppNumber;
+
+    @Column
     private Boolean isTracked;
+
+    @Column
+    private String trackingNumber;
 
     @Column
     private Boolean isHired;
