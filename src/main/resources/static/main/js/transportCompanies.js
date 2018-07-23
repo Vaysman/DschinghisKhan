@@ -29,7 +29,8 @@ $(document).ready(function () {
             {label: 'ФИО главного бухгалтера', name: 'accountantName', type: 'text'},
             {label: 'ОКВЕД', name: 'ocved', type: 'text'},
             {label: 'ОКПО', name: 'ocpo', type: 'text'},
-            {label: 'ОГРН', name: 'ogrn', type: 'text'}
+            {label: 'ОГРН', name: 'ogrn', type: 'text'},
+            {label: 'Налогообложение', name: 'taxationType', type: 'selectize',options: [{label:"С НДС",value:"С НДС"},{label:"Без НДС",value:"Без НДС"}]}
         ],
         table: '#transportCompaniesTable',
         idSrc: 'id',
@@ -126,16 +127,8 @@ $(document).ready(function () {
                 },
                 {
                     extend: "edit",
-                    editor: companyEditor
-                },
-                {
-                    extend: "edit",
                     editor: companyInfoEditor,
                     text: "Редактировать информацию"
-                },
-                {
-                    extend: "remove",
-                    editor: companyEditor
                 }
             ],
             "paging": 10,
@@ -153,6 +146,7 @@ $(document).ready(function () {
                 {"name": "ogrn", "data": "ogrn", "targets": 9, defaultContent:"", orderable: false, searchable: false},
                 {"name": "type", "data": "type", "targets": 10, defaultContent:"", orderable: false, searchable: false},
                 {"name": "email", "data": "email", "targets": 11, defaultContent:"", orderable: false, searchable: false},
+                {"name": "taxationType", "data": "taxationType", "targets": 12, defaultContent:"", orderable: false, searchable: false},
             ]
         }
     );

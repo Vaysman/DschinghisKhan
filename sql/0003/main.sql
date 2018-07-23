@@ -1,0 +1,1 @@
+ALTER TABLE transport_companies ADD taxation_type VARCHAR(10) NULL;

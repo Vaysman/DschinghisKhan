@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import ru.constant.CompanyType;
+import ru.constant.TaxationType;
 import ru.dao.entity.listener.CompanyListener;
 
 import javax.persistence.*;
@@ -97,23 +98,23 @@ public class Company {
 
     @JsonIgnore
     @OneToMany(mappedBy = "managerCompany", cascade = CascadeType.ALL)
-    Set<OrderOffer> managedOffers = new HashSet<>();
+    private Set<OrderOffer> managedOffers = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    Set<User> users = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "originator", cascade = CascadeType.ALL)
-    Set<Transport> transports = new HashSet<>();
+    private Set<Transport> transports = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "originator", cascade = CascadeType.ALL)
-    Set<Driver> drivers = new HashSet<>();
+    private Set<Driver> drivers = new HashSet<>();
 
-
-
-
+    @Column
+    @Enumerated(EnumType.STRING)
+    private TaxationType taxationType;
 
 }
 
