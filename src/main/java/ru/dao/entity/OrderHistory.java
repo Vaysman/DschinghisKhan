@@ -76,7 +76,7 @@ public class OrderHistory {
     private Company company;
 
     @Column
-    @JsonFormat(pattern = "dd/MM/yyyy HH:MM")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:MM", timezone = "GMT+03:00")
     @JsonView(DataTablesOutput.View.class)
     private Date date = new Date();
 }

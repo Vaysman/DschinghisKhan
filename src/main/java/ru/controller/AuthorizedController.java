@@ -97,6 +97,10 @@ public class AuthorizedController {
         model.addAttribute("userRoles", UserRole.values());
         model.addAttribute("companyTypes", CompanyType.values());
         model.addAttribute("orderPaymentTypes", OrderPaymentType.values());
+        model.addAttribute("changeableStatuses",OrderStatus.getChangeableStatuses());
+        model.addAttribute("statusesForDispatcher",UserRole.ROLE_DISPATCHER.getOrderStatuses());
+        model.addAttribute("statusesForCompany",UserRole.ROLE_TRANSPORT_COMPANY.getOrderStatuses());
+        model.addAttribute("deliveredStatuses", OrderStatus.getDeliveredStatuses());
         return model;
     }
 }

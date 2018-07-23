@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.dao.entity.User;
 import ru.dto.json.user.UserRegistrationData;
 import ru.service.UserManagementService;
 
@@ -27,7 +28,9 @@ public class RegisterController {
 
         if (errors.size() == 0) {
             try {
-                if(userManagementService.register(registrationData)) {
+                User registeredUser =userManagementService.register(registrationData);
+                if(registeredUser!=null) {
+                    userManagementService.setAuthorized(registeredUser, registrationData.getPassword());
                     return "redirect:../profile";
                 } else {
                     model.addAttribute("error","Непредвиденная ошибка. Запишите введенные данные и свяжитесь с администратором");

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.configuration.authentication.AuthToken;
+import ru.constant.OrderStatus;
 import ru.dao.entity.*;
 import ru.dao.entity.specification.*;
 import ru.dao.repository.*;
@@ -136,6 +137,28 @@ public class DataTablesController {
     public DataTablesOutput<Order> getOrdersForUser(@Valid @RequestBody DataTablesInput input) {
         try {
             return orderRepository.findAll(input, Orders.ordersForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/ordersForUserInWork", method = RequestMethod.POST)
+    public DataTablesOutput<Order> getOrdersForUserInWork(@Valid @RequestBody DataTablesInput input) {
+        try {
+            return orderRepository.findAll(input, Orders.ordersInStatus(OrderStatus.getStatusesInWork()), Orders.ordersForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/ordersForCompanyInWork", method = RequestMethod.POST)
+    public DataTablesOutput<Order> getOrdersForCompanyInWork(@Valid @RequestBody DataTablesInput input) {
+        try {
+            return orderRepository.findAll(input, Orders.ordersForCompany(AuthToken.getCurrentAuthToken().getCompanyId()), Orders.ordersInStatus(OrderStatus.getStatusesInWork()));
         } catch (Exception e){
             e.printStackTrace();
             return null;

@@ -53,6 +53,7 @@ public class OrderLifecycleTest {
 
     @Test
     public void orderLifecycleTest(){
+        //User/Company are described in import.sql
         User companyUser = userRepository.findByLogin("UMB").orElse(null);
         User dispatcherUser = userRepository.findByLogin("test").orElse(null);
         assertThat(companyUser).isNotNull();
@@ -64,6 +65,7 @@ public class OrderLifecycleTest {
         Route route = routeRepository.findById(1).orElse(null);
         assertThat(route).isNotNull();
 
+        //Creating order
         Order order = Order
                 .builder()
                 .orderObligation(OrderObligation.NON_MANDATORY)
@@ -81,6 +83,8 @@ public class OrderLifecycleTest {
 
         assertThat(order.getId()).isNotNull();
 
+
+        //Assigning order
         OrderAssignData orderAssignData = new OrderAssignData();
         orderAssignData.setDispatcherPrice(100F);
         orderAssignData.setAssignedCompanies(Collections.singletonList(company.getId()));
@@ -99,6 +103,7 @@ public class OrderLifecycleTest {
 //        assertThat(company.getPendingOrders().size()).isNotEqualTo(0);
 
 
+        //Accepting order
         Transport companyTransport = company.getTransports().stream().findFirst().orElse(null);
         Driver companyDriver = company.getDrivers().stream().findFirst().orElse(null);
 
@@ -120,6 +125,8 @@ public class OrderLifecycleTest {
         assertThat(order.getOffers().stream().findFirst().orElse(null)).isNotNull();
         assertThat(order.getAssignedCompanies().size()).isEqualTo(0);
 
+
+        //Confirming order
         OrderOffer offer = order.getOffers().stream().findFirst().orElse(null);
         assertThat(offer).isNotNull();
         assertThat(offer.getCompany())
@@ -143,5 +150,33 @@ public class OrderLifecycleTest {
         assertThat(order.getProposedPrice()).isEqualTo(100F);
         assertThat(order.getOffers().size()).isEqualTo(0);
         assertThat(order.getAssignedCompanies().size()).isEqualTo(0);
+
+        //Changing order status
+        orderLifecycleService.changeStatus(dispatcherUser, order.getId(),OrderStatus.EN_ROUTE);
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.EN_ROUTE);
+
+        //Confirm delivery
+        orderLifecycleService.confirmDelivery(dispatcherUser, order.getId());
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.DELIVERY_CONFD);
+
+        assertThat(orderRepository.findFirstByIdAndStatusIn(order.getId(), OrderStatus.getChangeableStatuses()).isPresent()).isEqualTo(false);
+
+        orderLifecycleService.changeStatus(order,OrderStatus.DOCUMENT_RETURN);
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.DOCUMENT_RETURN);
+
+        orderLifecycleService.confirmDocumentDelivery(dispatcherUser,order.getId());
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.DOCS_RECEIVED);
+
+        orderLifecycleService.changeStatus(order, OrderStatus.PAY_PENDING);
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAY_PENDING);
+
+        orderLifecycleService.claimPayment(dispatcherUser,order.getId());
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAYED);
+
+        orderLifecycleService.claimNonPayment(companyUser,order.getId());
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.NOT_PAYED);
+
+        orderLifecycleService.confirmPayment(companyUser,order.getId());
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAYMENT_CONFD);
     }
 }

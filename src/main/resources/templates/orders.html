@@ -7,6 +7,10 @@
     <th:block th:include="fragments/header :: scripts"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/all-orders.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/orders-in-work-dispatcher.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")' src="/orders/js/orders-in-work-company.js"></script>
+
+
 </head>
 <body class="grey">
 <div th:insert="fragments/header :: header('orders')"></div>
@@ -29,6 +33,11 @@
                     <span class="badge badge-primary" th:if="${managedOffers!=null && #lists.size(managedOffers) > 0}"
                           th:text="${#lists.size(managedOffers)}"></span>
                     <i class="fa fa-truck" aria-hidden="true"></i> Предложения компаний
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders-in-work">
+                    <i class="fa fa-truck" aria-hidden="true"></i> Заявки в работе
                 </a>
             </li>
         </ul>
@@ -199,6 +208,34 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div id="tab-orders-in-work"
+         class="tab-pane">
+        <div class="spaced-container white container-fluid" style="overflow-x: scroll">
+            <h4>Все заявки</h4>
+            <div>
+                <table class="table table-sm table-striped " id="ordersInWorkTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Номер</th>
+                        <th>Статус</th>
+                        <th>Маршрут</th>
+                        <th>ТК</th>
+                        <th>Транспорт</th>
+                        <th>Водитель</th>
+                        <th>Требования</th>
+                        <th>Груз</th>
+                        <th>Дни для оплаты</th>
+                        <th>Дни для возврата<br>документов</th>
+                        <th>Рейтинг</th>
+                        <th>Обязательность</th>
+                        <th>Оплата</th>
+                    </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>

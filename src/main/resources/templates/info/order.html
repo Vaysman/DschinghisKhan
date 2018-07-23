@@ -22,8 +22,8 @@
             <div class="row">
                 <div class="col-6">
                     Статус: <span th:text="${order.status.getStatusName()}"></span><br>
-                    Дата оплаты: <span th:text="${order.getPaymentDate()}"></span><br>
-                    Дата возврата документов: <span th:text="${order.getDocumentReturnDate()}"></span><br>
+                    Дней для оплаты: <span th:text="${order.getPaymentDate()}"></span><br>
+                    Дней для возврата документов: <span th:text="${order.getDocumentReturnDate()}"></span><br>
                     Груз:
                     <ul>
                         <th:block th:each="cargoUnit : ${order.getCargo()}">
