@@ -1,4 +1,6 @@
 $(document).ready(function () {
+
+
     let routeEditor = null;
     routeEditor = new $.fn.dataTable.Editor({
         ajax: {
@@ -56,6 +58,7 @@ $(document).ready(function () {
             }
         },
         table: '#routesTable',
+        template: '#routesForm',
         idSrc: 'id',
 
         fields: [
@@ -65,7 +68,7 @@ $(document).ready(function () {
                 name: 'company',
                 type: 'selectize',
                 options: [],
-                opts: {searchField: "label", create: false,
+                opts: {searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
                 load: function (query, callback) {
                     $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
                         function (data) {
@@ -94,7 +97,7 @@ $(document).ready(function () {
                     reverse: true,
                     placeholder: ""
                 }},
-            {label: 'Стоимость за километр+НДС', name: 'costPerKilometerNds', type: "mask", mask: "#",
+            {label: 'Стоимость за километр + НДС', name: 'costPerKilometerNds', type: "mask", mask: "#",
                 maskOptions: {
                     reverse: true,
                     placeholder: ""
@@ -114,7 +117,7 @@ $(document).ready(function () {
                     reverse: true,
                     placeholder: ""
                 }},
-            {label: 'Стоимость за паллету+НДС', name: 'costPerPalletNds', type: "mask", mask: "#",
+            {label: 'Стоимость за паллету + НДС', name: 'costPerPalletNds', type: "mask", mask: "#",
                 maskOptions: {
                     reverse: true,
                     placeholder: ""
@@ -124,7 +127,7 @@ $(document).ready(function () {
                     reverse: true,
                     placeholder: ""
                 }},
-            {label: 'Стоимость за коробку+НДС', name: 'costPerBoxNds', type: "mask", mask: "#",
+            {label: 'Стоимость за коробку + НДС', name: 'costPerBoxNds', type: "mask", mask: "#",
                 maskOptions: {
                     reverse: true,
                     placeholder: ""
@@ -162,6 +165,7 @@ $(document).ready(function () {
             processing: true,
             serverSide: true,
             searchDelay: 800,
+
             ajax: {
                 contentType: 'application/json',
                 processing: true,
@@ -194,7 +198,7 @@ $(document).ready(function () {
             ],
             "paging": 10,
             "columnDefs": [
-                {"name": "id", "data": "id", "targets": 0, visible: false},
+                {"name": "id", "data": "id", "targets": 0},
                 {"name": "name", "data": "name", "targets": 1,},
                 {"name": "company.name", "data": "company.name", searchable:false, orderable: false, "targets": 2, defaultContent: ""},
                 {"name": "totalCost", "data": null, "targets": 3, searchable:false, orderable: false,render: function (data, type, full) {
@@ -415,6 +419,15 @@ $(document).ready(function () {
             });
         });
     }
+
+    routeEditor.on('open', function(){
+        $('#routesForm').closest(".DTE_Action_Edit").parent().parent().css('max-width','750px');
+    });
+
+
+    routeEditor.on('close', function(){
+        $('#routesForm').closest(".DTE_Action_Edit").parent().parent().css('max-width','500px');
+    });
 
 
 });
