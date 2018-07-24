@@ -30,7 +30,12 @@ $(document).ready(function () {
             {label: 'ОКВЕД', name: 'ocved', type: 'text'},
             {label: 'ОКПО', name: 'ocpo', type: 'text'},
             {label: 'ОГРН', name: 'ogrn', type: 'text'},
-            {label: 'Налогообложение', name: 'taxationType', type: 'selectize',options: [{label:"С НДС",value:"С НДС"},{label:"Без НДС",value:"Без НДС"}]}
+            {
+                label: 'Налогообложение',
+                name: 'taxationType',
+                type: 'selectize',
+                options: [{label: "С НДС", value: "С НДС"}, {label: "Без НДС", value: "Без НДС"}]
+            }
         ],
         table: '#transportCompaniesTable',
         idSrc: 'id',
@@ -106,19 +111,45 @@ $(document).ready(function () {
             "columnDefs": [
 
                 {"name": "id", "data": "id", "targets": 0, visible: false},
-                {"name": "name", "data": "name", "targets": 1, render: function (data,type,full) {
-                        return `<span ${full.originator==currentCompanyId ? 'class="somewhat-green"' : ""}>${data}</span>`
-                    }},
+                {
+                    "name": "name", "data": "name", "targets": 1
+                },
                 {"name": "shortName", "data": "shortName", "targets": 2},
-                {"name": "inn", "data": "inn", "targets": 3, defaultContent:""},
-                {"name": "numberOfTransports", "data": "numberOfTransports", "targets": 4, defaultContent:"", orderable: false, searchable: false},
-                {"name": "accountantName", "data": "accountantName", "targets": 5, defaultContent:"", orderable: false, searchable: false},
-                {"name": "ocved", "data": "ocved", "targets": 6, defaultContent:"", orderable: false, searchable: false},
-                {"name": "ocpo", "data": "ocpo", "targets": 7, defaultContent:"", orderable: false, searchable: false},
-                {"name": "ogrn", "data": "ogrn", "targets": 8, defaultContent:"", orderable: false, searchable: false},
-                {"name": "email", "data": "email", "targets": 9, defaultContent:"", orderable: false, searchable: false},
-                {"name": "taxationType", "data": "taxationType", "targets": 10, defaultContent:"", orderable: false, searchable: false},
-            ]
-        }
+                {"name": "inn", "data": "inn", "targets": 3, defaultContent: ""},
+                {
+                    "name": "numberOfTransports",
+                    "data": "numberOfTransports",
+                    "targets": 4,
+                    defaultContent: "",
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    "name": "accountantName",
+                    "data": "accountantName",
+                    "targets": 5,
+                    defaultContent: "",
+                    orderable: false,
+                    searchable: false
+                },
+                {"name": "ocved", "data": "ocved", "targets": 6, defaultContent: "", orderable: false, searchable: false},
+                {"name": "ocpo", "data": "ocpo", "targets": 7, defaultContent: "", orderable: false, searchable: false},
+                {"name": "ogrn", "data": "ogrn", "targets": 8, defaultContent: "", orderable: false, searchable: false},
+                {"name": "email", "data": "email", "targets": 9, defaultContent: "", orderable: false, searchable: false},
+                {
+                    "name": "taxationType",
+                    "data": "taxationType",
+                    "targets": 10,
+                    defaultContent: "",
+                    orderable: false,
+                    searchable: false
+                },
+            ],
+            createdRow: function (row, data, dataIndex) {
+                if(data.originator==currentCompanyId){
+                    $(row).addClass("table-success");
+                }
+            },
+        },
     );
 });
