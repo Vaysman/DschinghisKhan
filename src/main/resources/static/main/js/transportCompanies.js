@@ -110,16 +110,15 @@ $(document).ready(function () {
                         return `<span ${full.originator==currentCompanyId ? 'class="somewhat-green"' : ""}>${data}</span>`
                     }},
                 {"name": "shortName", "data": "shortName", "targets": 2},
-                {"name": "user.username", "data": "user.username", "targets": 3, defaultContent:"", orderable: false, searchable: false},
-                {"name": "inn", "data": "inn", "targets": 4, defaultContent:""},
-                {"name": "numberOfTransports", "data": "numberOfTransports", "targets": 5, defaultContent:"", orderable: false, searchable: false},
-                {"name": "accountantName", "data": "accountantName", "targets": 6, defaultContent:"", orderable: false, searchable: false},
-                {"name": "ocved", "data": "ocved", "targets": 7, defaultContent:"", orderable: false, searchable: false},
-                {"name": "ocpo", "data": "ocpo", "targets": 8, defaultContent:"", orderable: false, searchable: false},
-                {"name": "ogrn", "data": "ogrn", "targets": 9, defaultContent:"", orderable: false, searchable: false},
-                {"name": "type", "data": "type", "targets": 10, defaultContent:"", orderable: false, searchable: false},
-                {"name": "email", "data": "email", "targets": 11, defaultContent:"", orderable: false, searchable: false},
-                {"name": "taxationType", "data": "taxationType", "targets": 12, defaultContent:"", orderable: false, searchable: false},
+                {"name": "inn", "data": "inn", "targets": 3, defaultContent:""},
+                {"name": "numberOfTransports", "data": "numberOfTransports", "targets": 4, defaultContent:"", orderable: false, searchable: false},
+                {"name": "accountantName", "data": "accountantName", "targets": 5, defaultContent:"", orderable: false, searchable: false},
+                {"name": "ocved", "data": "ocved", "targets": 6, defaultContent:"", orderable: false, searchable: false},
+                {"name": "ocpo", "data": "ocpo", "targets": 7, defaultContent:"", orderable: false, searchable: false},
+                {"name": "ogrn", "data": "ogrn", "targets": 8, defaultContent:"", orderable: false, searchable: false},
+                {"name": "type", "data": "type", "targets": 9, defaultContent:"", orderable: false, searchable: false},
+                {"name": "email", "data": "email", "targets": 10, defaultContent:"", orderable: false, searchable: false},
+                {"name": "taxationType", "data": "taxationType", "targets": 11, defaultContent:"", orderable: false, searchable: false},
             ]
         }
     );

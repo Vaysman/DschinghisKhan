@@ -17,6 +17,7 @@ $(document).ready(function () {
                         $.each(d.data, function (key, value) {
                             value.originator = currentCompanyId;
                             value.company = currentCompany._links.self.href;
+                            value.role = "Диспетчер";
                             newdata = JSON.stringify(value);
                         });
                         console.log(newdata);
@@ -81,11 +82,6 @@ $(document).ready(function () {
                 {label: 'Пароль', name: 'passAndSalt', type: 'password',data: function () {
                         return "dummy";
                     },compare: function ( a, b ) {
-                        return (a===b);
-                    }},
-                {
-                    label: 'Роль', name: 'userRole', type: 'selectize', options: userRoleOptions
-                    ,compare: function ( a, b ) {
                         return (a===b);
                     }},
                 {label: 'E-Mail', name: 'email', type: 'text'},
@@ -166,14 +162,9 @@ $(document).ready(function () {
                             return "dummy";
                         }, def: "dummy",
                         "targets":3, visible:false},
-                    {
-                        "name": "userRole", "data": "userRole", "targets": 4
-                    },
-                    {"name": "email", "data": "email", "targets": 5},
+                    {"name": "email", "data": "email", "targets": 4},
                 ]
             }
         );
-
-    //Validation
 
 });
