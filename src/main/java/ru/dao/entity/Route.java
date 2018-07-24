@@ -101,7 +101,7 @@ public class Route {
     @Column
     @Enumerated(EnumType.STRING)
 //    @JsonView(DataTablesOutput.View.class)
-    private VehicleBodyType vehicleType;
+    private VehicleBodyType vehicleType= VehicleBodyType.TENT;
 
     @Column
     @JsonView(DataTablesOutput.View.class)

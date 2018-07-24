@@ -422,11 +422,13 @@ $(document).ready(function () {
 
     routeEditor.on('open', function(){
         $('#routesForm').closest(".DTE_Action_Edit").parent().parent().css('max-width','750px');
+        $('#routesForm').closest(".DTE_Action_Create").parent().parent().css('max-width','750px');
     });
 
 
     routeEditor.on('close', function(){
         $('#routesForm').closest(".DTE_Action_Edit").parent().parent().css('max-width','500px');
+        $('#routesForm').closest(".DTE_Action_Create").parent().parent().css('max-width','500px');
     });
 
 
