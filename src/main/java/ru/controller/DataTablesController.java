@@ -86,7 +86,7 @@ public class DataTablesController {
     }
 
     @JsonView(DataTablesOutput.View.class)
-    @RequestMapping(value = "/transportCompanies", method = RequestMethod.POST)
+    @RequestMapping(value = "/companies", method = RequestMethod.POST)
     public DataTablesOutput<Company> getTransportCompanies(@Valid @RequestBody DataTablesInput input) {
         return companyRepository.findAll(input);
     }

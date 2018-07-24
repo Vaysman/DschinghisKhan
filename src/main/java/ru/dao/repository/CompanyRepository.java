@@ -5,6 +5,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import ru.dao.entity.Company;
 
 import java.util.List;
@@ -15,4 +16,20 @@ public interface CompanyRepository extends DataTablesRepository<Company, Integer
 
     List<Company> findTop10ByNameContaining(@Param("name") String name);
     List<Company> findTop10ByNameContainingAndOriginator(@Param("name") String name, @Param("originator") Integer originator);
+
+    @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
+    void delete(Company entity);
+
+    @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
+    void deleteAll();
+
+    @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
+    void deleteAll(Iterable<? extends Company> entities);
+
+    @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
+    void deleteById(Integer integer);
 }

@@ -58,35 +58,6 @@ $(document).ready(function () {
                 error: function (jqXHR, exception) {
                     alert(response.responseText);
                 }
-            },
-            edit: {
-                contentType: 'application/json',
-                type: 'PATCH',
-                url: 'api/companies/_id_',
-                data: function (d) {
-                    let newdata;
-                    $.each(d.data, function (key, value) {
-                        newdata = JSON.stringify(value);
-                    });
-                    console.log(newdata);
-                    return newdata;
-                },
-                success: function (response) {
-                    companiesTable.draw();
-                    companyEditor.close();
-                },
-                error: function (jqXHR, exception) {
-                    alert(response.responseText);
-                }
-            }
-            ,
-            remove: {
-                type: 'DELETE',
-                contentType: 'application/json',
-                url: 'api/companies/_id_',
-                data: function (d) {
-                    return '';
-                }
             }
         },
         table: '#transportCompaniesTable',
@@ -110,7 +81,7 @@ $(document).ready(function () {
                 data: function (d) {
                     return JSON.stringify(d);
                 },
-                url: "dataTables/companiesForUser", // json datasource
+                url: "dataTables/companies", // json datasource
                 type: "post"  // method  , by default get
             },
             dom: 'Bfrtip',
@@ -135,7 +106,9 @@ $(document).ready(function () {
             "columnDefs": [
 
                 {"name": "id", "data": "id", "targets": 0, visible: false},
-                {"name": "name", "data": "name", "targets": 1},
+                {"name": "name", "data": "name", "targets": 1, render: function (data,type,full) {
+                        return `<span ${full.originator==currentCompanyId ? 'class="somewhat-green"' : ""}>${data}</span>`
+                    }},
                 {"name": "shortName", "data": "shortName", "targets": 2},
                 {"name": "user.username", "data": "user.username", "targets": 3, defaultContent:"", orderable: false, searchable: false},
                 {"name": "inn", "data": "inn", "targets": 4, defaultContent:""},
