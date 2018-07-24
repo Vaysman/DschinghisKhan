@@ -40,7 +40,11 @@ public class RoutePoint implements Comparable<RoutePoint>{
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Integer cost;
+    private Float cost;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float prrCost;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
