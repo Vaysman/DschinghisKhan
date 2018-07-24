@@ -25,7 +25,7 @@ $(document).ready(function () {
         fields: [
             {label: 'ИНН', name: 'inn', type: 'text'},
             {label: 'Кол-во наемного  транспорта', name: 'numberOfTransports', type: 'mask', mask: "###"},
-            {label: 'Код ati.ru', name: 'atiCode', type: 'text'},
+            {label: 'Код ati.su', name: 'atiCode', type: 'text'},
             {label: 'ФИО главного бухгалтера', name: 'accountantName', type: 'text'},
             {label: 'ОКВЕД', name: 'ocved', type: 'text'},
             {label: 'ОКПО', name: 'ocpo', type: 'text'},
@@ -81,7 +81,7 @@ $(document).ready(function () {
                 data: function (d) {
                     return JSON.stringify(d);
                 },
-                url: "dataTables/companies", // json datasource
+                url: "dataTables/transportCompanies", // json datasource
                 type: "post"  // method  , by default get
             },
             dom: 'Bfrtip',
@@ -116,9 +116,8 @@ $(document).ready(function () {
                 {"name": "ocved", "data": "ocved", "targets": 6, defaultContent:"", orderable: false, searchable: false},
                 {"name": "ocpo", "data": "ocpo", "targets": 7, defaultContent:"", orderable: false, searchable: false},
                 {"name": "ogrn", "data": "ogrn", "targets": 8, defaultContent:"", orderable: false, searchable: false},
-                {"name": "type", "data": "type", "targets": 9, defaultContent:"", orderable: false, searchable: false},
-                {"name": "email", "data": "email", "targets": 10, defaultContent:"", orderable: false, searchable: false},
-                {"name": "taxationType", "data": "taxationType", "targets": 11, defaultContent:"", orderable: false, searchable: false},
+                {"name": "email", "data": "email", "targets": 9, defaultContent:"", orderable: false, searchable: false},
+                {"name": "taxationType", "data": "taxationType", "targets": 10, defaultContent:"", orderable: false, searchable: false},
             ]
         }
     );

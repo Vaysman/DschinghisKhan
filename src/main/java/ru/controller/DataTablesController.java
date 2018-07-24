@@ -7,6 +7,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.configuration.authentication.AuthToken;
+import ru.constant.CompanyType;
 import ru.constant.OrderStatus;
 import ru.dao.entity.*;
 import ru.dao.entity.specification.*;
@@ -87,14 +88,20 @@ public class DataTablesController {
 
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/companies", method = RequestMethod.POST)
-    public DataTablesOutput<Company> getTransportCompanies(@Valid @RequestBody DataTablesInput input) {
+    public DataTablesOutput<Company> getCompanies(@Valid @RequestBody DataTablesInput input) {
         return companyRepository.findAll(input);
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/transportCompanies", method = RequestMethod.POST)
+    public DataTablesOutput<Company> getTransportCompanies(@Valid @RequestBody DataTablesInput input) {
+        return companyRepository.findAll(input,Companies.companiesByType(CompanyType.TRANSPORT));
     }
 
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/companiesForUser", method = RequestMethod.POST)
     public DataTablesOutput<Company> getCompaniesForUser(@Valid @RequestBody DataTablesInput input) {
-        return companyRepository.findAll(input,TransportCompanies.companiesForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
+        return companyRepository.findAll(input,Companies.companiesForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
 
     @JsonView(DataTablesOutput.View.class)
@@ -215,6 +222,6 @@ public class DataTablesController {
 
     @RequestMapping(value = "/transportCompanies/transportCompaniesForRoute/{routeId}", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
     public DataTablesOutput<Company> transportCompaniesForRoute(@Valid @RequestBody DataTablesInput input, @PathVariable Integer routeId) {
-        return companyRepository.findAll(input, TransportCompanies.transportCompaniesForRoute(routeRepository.findById(routeId).orElseThrow(()->new IllegalArgumentException("No such route"))));
+        return companyRepository.findAll(input, Companies.companiesForRoute(routeRepository.findById(routeId).orElseThrow(()->new IllegalArgumentException("No such route"))));
     }
 }
