@@ -70,6 +70,7 @@
     <div id="tab-companies" class="tab-pane">
         <div class="spaced-container white container-fluid">
             <h4>Транспортные компании</h4>
+            <small class="text-muted text-sm">Зеленым подсвечены компании, созданные пользователем вашей компании</small>
             <div>
                 <table class="table  table-striped table-sm" id="transportCompaniesTable">
                     <thead>
@@ -78,7 +79,6 @@
                         <th>id</th>
                         <th>Название</th>
                         <th>Краткое название</th>
-                        <th>Пользователь</th>
                         <th>ИНН</th>
                         <th>Кол-во ТС</th>
                         <th>ФИО гл. бухгалтера</th>
@@ -87,6 +87,7 @@
                         <th>ОГРН</th>
                         <th>Тип компании</th>
                         <th>E-mail</th>
+                        <th>Налогообложение</th>
                     </tr>
                     </thead>
                 </table>
@@ -99,7 +100,7 @@
         <div class=" container-fluid spaced-container white">
             <h4>Маршруты</h4>
             <div>
-                <table class="table table-sm table-striped " id="routesTable">
+                <table class="table table-striped " id="routesTable">
                     <thead>
                     <tr>
                         <th>id</th>
@@ -108,7 +109,6 @@
                         <th>Ст. за маршрут</th>
                         <th>₽/км</th>
                         <th>₽/коробка</th>
-                        <th>₽/ПРР</th>
                         <th>₽/паллета</th>
                         <th>Темп. режим</th>
                         <th>Тип кузова</th>
@@ -124,7 +124,7 @@
         <div class="container-fluid spaced-container white">
             <h4>Точки маршрута</h4>
             <div>
-                <table class="table  table-sm table-striped " id="routePointsTable">
+                <table class="table  table-striped " id="routePointsTable">
                     <thead>
                     <tr>
                         <th>id</th>
@@ -132,6 +132,7 @@
                         <th>Адрес</th>
                         <th>Расстояние</th>
                         <th>Стоимость</th>
+                        <th>Стоимость ПРР</th>
                         <th>Время разгрузки</th>
                         <th>Порядковый номер</th>
                     </tr>
@@ -145,14 +146,13 @@
         <div class=" container-fluid spaced-container white">
             <h4>Пользователи</h4>
             <div>
-                <table class="table table-sm table-striped " id="usersTable">
+                <table class="table table-striped " id="usersTable">
                     <thead>
                     <tr>
                         <th>id</th>
                         <th>Имя</th>
                         <th>Логин</th>
                         <th>Пароль</th>
-                        <th>Роль</th>
                         <th>E-Mail</th>
                     </tr>
                     </thead>

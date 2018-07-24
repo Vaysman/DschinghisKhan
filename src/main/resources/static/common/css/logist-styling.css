@@ -104,7 +104,7 @@ div.selectize-input{
     font-size: 14px;
     /*font-weight: bold;*/
     background-color: inherit;
-    color: rgba(26, 43, 109, 1);
+    /*color: rgba(26, 43, 109, 1);*/
     border: none;
     /*border-color: #ccc;*/
 }
@@ -114,14 +114,16 @@ div.selectize-input{
 }
 
 .btn-default{
-    color: rgba(26, 43, 109, 1);
+    /*color: rgba(26, 43, 109, 1);*/
+    color: black;
     background: transparent;
     border: none;
 }
 
 .btn-default.disabled{
     background: transparent;
-    color: rgba(26, 43, 109, 1);
+    color: black;
+    /*color: rgba(26, 43, 109, 1);*/
     border:none;
 }
 
@@ -170,4 +172,65 @@ div.selectize-dropdown {
 .red{
     color: #D41317;
 }
+
+.somewhat-blue-ish{
+    color: #2d393b;
+}
+
+.black-ish-grey-ish{
+    color: #636363;
+}
+
+.kinda-grey{
+    color: #d4d4d4;
+}
+
+.blue-green-ish{
+    color: #3a728a;
+}
+
+.cyan-ish{
+    color: #5cb4bf;
+}
+
+.too-much-pink{
+    color: #ffa3db;
+}
+
+.dirt-ish{
+    color: #8c7a77;
+}
+
+.somewhat-green{
+    color: #a3d982;
+}
+
+.dirt-yellow{
+    color: #c2b061;
+}
+
+.dark-blue-green-idk{
+    color: #105249;
+}
+
+.decent-normal-black{
+    color: #000000;
+}
+
+.dirt-color{
+    color: #594a2d;
+}
+
+.sand{
+    color: #e8e397;
+}
+
+.dark-green{
+    color: #3f5410;
+}
+
+.grey-green-ish{
+    color: #95ab8c;
+}
+
 

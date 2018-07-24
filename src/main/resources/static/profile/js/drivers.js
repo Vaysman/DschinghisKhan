@@ -99,7 +99,19 @@ $(document).ready(function () {
                 label: 'Мобильное приложение', name: 'hasMobileApp', type: "radio", options: [{ label:"Есть", value:true}, {label:"Нет",value:false}]
             },
             {
+                label: 'Телефон для приложения',
+                name: 'mobileAppNumber',
+                type: 'mask',
+                mask: '+7 (000)-000-00-00'
+            },
+            {
                 label: 'Отслеживание по телефону', name: 'isTracked', type: "radio", options: [{ label:"Есть", value:true}, {label:"Нет",value:false}]
+            },
+            {
+                label: 'Телефон для отслеживания',
+                name: 'trackingNumber',
+                type: 'mask',
+                mask: '+7 (000)-000-00-00'
             },
             {
                 label: 'В штате', name: 'isHired', type: "radio", options: [{ label:"Да", value:true}, {label:"Нет",value:false}]
@@ -170,20 +182,22 @@ $(document).ready(function () {
                         return (data) ? "Есть" : "Нет"
                     }
                 },
+                {"name": "mobileAppNumber", "data": "mobileAppNumber", searchable: false, orderable: false, "targets": 7},
                 {
                     "name": "isTracked",
                     "data": "isTracked",
-                    "targets": 7,
+                    "targets": 8,
                     searchable: false,
                     orderable: false,
                     render: function (data) {
                         return (data) ? "Да" : "Нет"
                     }
                 },
+                {"name": "trackingNumber", "data": "trackingNumber", searchable: false, orderable: false, "targets": 9},
                 {
                     "name": "isHired",
                     "data": "isHired",
-                    "targets": 8,
+                    "targets": 10,
                     searchable: false,
                     orderable: false,
                     render: function (data) {
@@ -193,7 +207,7 @@ $(document).ready(function () {
                 {
                     "name": "paymentType",
                     "data": "paymentType",
-                    "targets": 9,
+                    "targets": 11,
                     searchable: false,
                     orderable: false
                 }

@@ -8,6 +8,7 @@
     <!--<script src="/media/vue.min.js"></script>-->
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/transports.js"></script>
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/drivers.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/company-users.js"></script>
 
 
 </head>
@@ -29,6 +30,11 @@
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-drivers"><i class="fa fa-users"
                                                                                                    aria-hidden="true"></i>
                     Водители</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-company-users"><i class="fa fa-users"
+                                                                                                   aria-hidden="true"></i>
+                    Пользователи</a>
             </li>
         </ul>
     </div>
@@ -63,7 +69,7 @@
         <div class="container-fluid spaced-container white">
             <h4>Транспортные средства</h4>
             <div>
-                <table class="table  table table-striped table-bordered" id="transportDataTable">
+                <table class="table  table table-striped table-bordered" style="width: 100%" id="transportDataTable">
                     <thead>
                     <tr>
                         <th>id</th>
@@ -98,7 +104,9 @@
                         <th>Водительское удостверение</th>
                         <th>Рейтинг</th>
                         <th>Мобильное приложение</th>
+                        <th>Номер для приложения</th>
                         <th>Отслеживание по телефону</th>
+                        <th>Номер для отслеживания</th>
                         <th>В штате</th>
                         <th>Оплата</th>
                     </tr>
@@ -107,10 +115,26 @@
             </div>
         </div>
     </div>
-
+    <div id="tab-company-users" class="tab-pane">
+        <div class="container-fluid spaced-container white">
+            <h4>Пользователи</h4>
+            <div>
+                <table class="table table-striped" style="width: 80%" id="usersTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Имя</th>
+                        <th>Логин</th>
+                        <th>Пароль</th>
+                        <th>E-Mail</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 <div th:insert="fragments/header :: footer"></div>
 
 </body>
-<script sec:authorize="hasAnyAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/pendingOrders.js"></script>
 </html>

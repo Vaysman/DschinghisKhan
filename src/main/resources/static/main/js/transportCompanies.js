@@ -29,7 +29,8 @@ $(document).ready(function () {
             {label: 'ФИО главного бухгалтера', name: 'accountantName', type: 'text'},
             {label: 'ОКВЕД', name: 'ocved', type: 'text'},
             {label: 'ОКПО', name: 'ocpo', type: 'text'},
-            {label: 'ОГРН', name: 'ogrn', type: 'text'}
+            {label: 'ОГРН', name: 'ogrn', type: 'text'},
+            {label: 'Налогообложение', name: 'taxationType', type: 'selectize',options: [{label:"С НДС",value:"С НДС"},{label:"Без НДС",value:"Без НДС"}]}
         ],
         table: '#transportCompaniesTable',
         idSrc: 'id',
@@ -57,35 +58,6 @@ $(document).ready(function () {
                 error: function (jqXHR, exception) {
                     alert(response.responseText);
                 }
-            },
-            edit: {
-                contentType: 'application/json',
-                type: 'PATCH',
-                url: 'api/companies/_id_',
-                data: function (d) {
-                    let newdata;
-                    $.each(d.data, function (key, value) {
-                        newdata = JSON.stringify(value);
-                    });
-                    console.log(newdata);
-                    return newdata;
-                },
-                success: function (response) {
-                    companiesTable.draw();
-                    companyEditor.close();
-                },
-                error: function (jqXHR, exception) {
-                    alert(response.responseText);
-                }
-            }
-            ,
-            remove: {
-                type: 'DELETE',
-                contentType: 'application/json',
-                url: 'api/companies/_id_',
-                data: function (d) {
-                    return '';
-                }
             }
         },
         table: '#transportCompaniesTable',
@@ -109,7 +81,7 @@ $(document).ready(function () {
                 data: function (d) {
                     return JSON.stringify(d);
                 },
-                url: "dataTables/companiesForUser", // json datasource
+                url: "dataTables/companies", // json datasource
                 type: "post"  // method  , by default get
             },
             dom: 'Bfrtip',
@@ -126,33 +98,27 @@ $(document).ready(function () {
                 },
                 {
                     extend: "edit",
-                    editor: companyEditor
-                },
-                {
-                    extend: "edit",
                     editor: companyInfoEditor,
                     text: "Редактировать информацию"
-                },
-                {
-                    extend: "remove",
-                    editor: companyEditor
                 }
             ],
             "paging": 10,
             "columnDefs": [
 
                 {"name": "id", "data": "id", "targets": 0, visible: false},
-                {"name": "name", "data": "name", "targets": 1},
+                {"name": "name", "data": "name", "targets": 1, render: function (data,type,full) {
+                        return `<span ${full.originator==currentCompanyId ? 'class="somewhat-green"' : ""}>${data}</span>`
+                    }},
                 {"name": "shortName", "data": "shortName", "targets": 2},
-                {"name": "user.username", "data": "user.username", "targets": 3, defaultContent:"", orderable: false, searchable: false},
-                {"name": "inn", "data": "inn", "targets": 4, defaultContent:""},
-                {"name": "numberOfTransports", "data": "numberOfTransports", "targets": 5, defaultContent:"", orderable: false, searchable: false},
-                {"name": "accountantName", "data": "accountantName", "targets": 6, defaultContent:"", orderable: false, searchable: false},
-                {"name": "ocved", "data": "ocved", "targets": 7, defaultContent:"", orderable: false, searchable: false},
-                {"name": "ocpo", "data": "ocpo", "targets": 8, defaultContent:"", orderable: false, searchable: false},
-                {"name": "ogrn", "data": "ogrn", "targets": 9, defaultContent:"", orderable: false, searchable: false},
-                {"name": "type", "data": "type", "targets": 10, defaultContent:"", orderable: false, searchable: false},
-                {"name": "email", "data": "email", "targets": 11, defaultContent:"", orderable: false, searchable: false},
+                {"name": "inn", "data": "inn", "targets": 3, defaultContent:""},
+                {"name": "numberOfTransports", "data": "numberOfTransports", "targets": 4, defaultContent:"", orderable: false, searchable: false},
+                {"name": "accountantName", "data": "accountantName", "targets": 5, defaultContent:"", orderable: false, searchable: false},
+                {"name": "ocved", "data": "ocved", "targets": 6, defaultContent:"", orderable: false, searchable: false},
+                {"name": "ocpo", "data": "ocpo", "targets": 7, defaultContent:"", orderable: false, searchable: false},
+                {"name": "ogrn", "data": "ogrn", "targets": 8, defaultContent:"", orderable: false, searchable: false},
+                {"name": "type", "data": "type", "targets": 9, defaultContent:"", orderable: false, searchable: false},
+                {"name": "email", "data": "email", "targets": 10, defaultContent:"", orderable: false, searchable: false},
+                {"name": "taxationType", "data": "taxationType", "targets": 11, defaultContent:"", orderable: false, searchable: false},
             ]
         }
     );

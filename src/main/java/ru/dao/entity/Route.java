@@ -54,13 +54,13 @@ public class Route {
     @JsonView(DataTablesOutput.View.class)
     private Float costPerKilometerNds;
 
-    @Column
-    @JsonView(DataTablesOutput.View.class)
-    private Float costPerPrr;
-
-    @Column
-    @JsonView(DataTablesOutput.View.class)
-    private Float costPerPrrNds;
+//    @Column
+//    @JsonView(DataTablesOutput.View.class)
+//    private Float costPerPrr;
+//
+//    @Column
+//    @JsonView(DataTablesOutput.View.class)
+//    private Float costPerPrrNds;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -145,12 +145,12 @@ public class Route {
         if(costPerKilometer!=null && costPerKilometerNds==null){
             costPerKilometerNds=calculateNds(costPerKilometer);
         }
-        if(costPerPrr==null && costPerPrrNds!=null){
-            costPerPrr=calculateNoNds(costPerPrrNds);
-        }
-        if(costPerPrr!=null && costPerPrrNds==null){
-            costPerPrrNds=calculateNds(costPerPrr);
-        }
+//        if(costPerPrr==null && costPerPrrNds!=null){
+//            costPerPrr=calculateNoNds(costPerPrrNds);
+//        }
+//        if(costPerPrr!=null && costPerPrrNds==null){
+//            costPerPrrNds=calculateNds(costPerPrr);
+//        }
         if(costPerPallet==null && costPerPalletNds!=null){
             costPerPallet=calculateNoNds(costPerPalletNds);
         }

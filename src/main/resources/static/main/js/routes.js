@@ -198,32 +198,32 @@ $(document).ready(function () {
                 {"name": "name", "data": "name", "targets": 1,},
                 {"name": "company.name", "data": "company.name", searchable:false, orderable: false, "targets": 2, defaultContent: ""},
                 {"name": "totalCost", "data": null, "targets": 3, searchable:false, orderable: false,render: function (data, type, full) {
-                        return (data.totalCost!==null&&data.totalCostNds!==null) ? `${data.totalCost}₽/${data.totalCostNds}₽` : "";
+                        return (data.totalCost!==null&&data.totalCostNds!==null) ? `${data.totalCost}/${data.totalCostNds}₽` : "";
                     }},
                 {"name": "costPerKilometer", "data": null, "targets": 4,searchable:false, orderable: false,render: function (data, type, full) {
                         return (data.costPerKilometer!==null&&data.costPerKilometerNds!==null) ?  `${data.costPerKilometer}₽/${data.costPerKilometerNds}₽` : "";
                     }},
                 {"name": "costPerBox", "data": null, "targets": 5,searchable:false, orderable: false,render: function (data, type, full) {
-                        return (data.costPerBox!==null&&data.costPerBoxNds!==null) ? `${data.costPerBox}₽/${data.costPerBoxNds}₽`: "";
+                        return (data.costPerBox!==null&&data.costPerBoxNds!==null) ? `${data.costPerBox}/${data.costPerBoxNds}₽`: "";
                     }},
-                {"name": "costPerPrr", "data": null, searchable:false, orderable: false, "targets": 6,render: function (data, type, full) {
-                        return (data.costPerPrr!==null&&data.costPerPrrNds!==null) ? `${data.costPerPrr}₽/${data.costPerPrrNds}₽` : "";
+                // {"name": "costPerPrr", "data": null, searchable:false, orderable: false, "targets": 6,render: function (data, type, full) {
+                //         return (data.costPerPrr!==null&&data.costPerPrrNds!==null) ? `${data.costPerPrr}₽/${data.costPerPrrNds}₽` : "";
+                //     }},
+                {"name": "costPerPallet", "data": null, searchable:false, orderable: false, "targets": 6,render: function (data, type, full) {
+                        return (data.costPerPallet!==null&&data.costPerPalletNds!==null) ? `${data.costPerPallet}/${data.costPerPalletNds}₽` : "";
                     }},
-                {"name": "costPerPallet", "data": null, searchable:false, orderable: false, "targets": 7,render: function (data, type, full) {
-                        return (data.costPerPallet!==null&&data.costPerPalletNds!==null) ? `${data.costPerPallet}₽/${data.costPerPalletNds}₽` : "";
-                    }},
-                {"name": "tempTo", "data": null, searchable:false, orderable: false, "targets": 8,render: function (data, type, full) {
+                {"name": "tempTo", "data": null, searchable:false, orderable: false, "targets": 7,render: function (data, type, full) {
                         return (data.tempTo!==null&&data.tempFrom!==null) ?  `${data.tempFrom}º-${data.tempTo}º` : "";
                     }},
-                {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, "targets": 9,defaultContent: ""},
-                {"name": "volume", "data": "volume", searchable:false, orderable: false, "targets": 10,defaultContent: "" , render: function (data, type, row, meta) {
+                {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, "targets": 8,defaultContent: ""},
+                {"name": "volume", "data": "volume", searchable:false, orderable: false, "targets": 9,defaultContent: "" , render: function (data, type, row, meta) {
                         return (data!==null) ? `${data}м<sup>3</sup>` : "";
                     }},
-                {"name": "tonnage", "data": "tonnage", searchable:false, orderable: false, "targets": 11,defaultContent: "", render: function (data, type, row, meta) {
+                {"name": "tonnage", "data": "tonnage", searchable:false, orderable: false, "targets": 10,defaultContent: "", render: function (data, type, row, meta) {
                         return (data!==null) ? `${data}т` : "";
                     }},
-                {"name": "loadingType", "data": "loadingType", searchable:false, orderable: false, "targets": 12,defaultContent: ""},
-                {"name": "comment", "data": "comment", searchable:false, orderable: false, "targets": 13,defaultContent: ""},
+                {"name": "loadingType", "data": "loadingType", searchable:false, orderable: false, "targets": 11,defaultContent: ""},
+                {"name": "comment", "data": "comment", searchable:false, orderable: false, "targets": 12,defaultContent: ""},
             ]
         }
     );
@@ -306,6 +306,11 @@ $(document).ready(function () {
                             placeholder: ""
                         }},
                     {label: 'Стоимость', name: 'cost', type: 'mask', mask: "#",
+                        maskOptions: {
+                            reverse: true,
+                            placeholder: ""
+                        }},
+                    {label: 'Стоимость ПРР', name: 'prrCost', type: 'mask', mask: "#",
                         maskOptions: {
                             reverse: true,
                             placeholder: ""
@@ -397,10 +402,13 @@ $(document).ready(function () {
                     {"name": "cost", "data": "cost", "targets": 4,searchable:false,orderable:false, render: function (data) {
                             return (data!==null) ? `${data}₽` : "";
                         }},
-                    {"name": "loadingTime", data:"loadingTime", "targets": 5, searchable:false,orderable:false,render: function (data) {
+                    {"name": "prrCost", "data": "prrCost", "targets": 5,searchable:false,orderable:false, render: function (data) {
+                            return (data!==null) ? `${data}₽` : "";
+                        }},
+                    {"name": "loadingTime", data:"loadingTime", "targets": 6, searchable:false,orderable:false,render: function (data) {
                             return (data!==null) ? `${data}м` : "";
                         }},
-                    {"name": "queueNumber", "data": "queueNumber", "targets": 6, render: function (data) {
+                    {"name": "queueNumber", "data": "queueNumber", "targets": 7, render: function (data) {
                             return (data!==null) ? `№${data}` : "";
                         }}
                 ]

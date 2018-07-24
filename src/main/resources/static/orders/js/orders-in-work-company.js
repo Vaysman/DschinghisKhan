@@ -132,6 +132,7 @@ $(document).ready(function () {
                             }
                         })
                     },
+                    className: 'dark-green',
                     enabled: false
                 },
             ],
