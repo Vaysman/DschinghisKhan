@@ -1,5 +1,43 @@
 $(document).ready(function () {
 
+    let statusChangeEditorOnAllOrders = new $.fn.dataTable.Editor({
+        table: '#orderTable',
+        idSrc: 'id',
+        ajax: {
+            edit: {
+                contentType: 'application/json',
+                type: 'POST',
+                url: 'orderLifecycle/changeStatus/_id_',
+                data: function (d) {
+                    let newdata;
+                    $.each(d.data, function (key, value) {
+                        newdata = JSON.stringify(value);
+                    });
+                    return newdata;
+                },
+                success: function (response) {
+                    if (response === "Success") {
+                        orderDataTable.draw();
+                        statusChangeEditorOnAllOrders.close();
+                        orderDataTable.button(4).disable();
+                    } else {
+                        alert(response)
+                    }
+
+                },
+                error: function (jqXHR, exception) {
+                    alert(exception.responseText);
+                }
+            }
+        },
+        fields: [
+            {
+                label: 'Статус', name: 'status', data: "status", type: "selectize", options: statusesForDispatcherOptions
+            }
+        ]
+    });
+
+
     let orderAssignEditor = new $.fn.dataTable.Editor({
         table: '#orderTable',
         idSrc: 'id',
@@ -250,7 +288,19 @@ $(document).ready(function () {
                         });
                     },
                     enabled: false
-                }
+                },{
+
+                    text: "Изменить статус",
+                    action: function (e, dt, node, config) {
+                        statusChangeEditorOnAllOrders.edit(orderDataTable.rows('.selected', {select: true}), 'Изменить статус', {
+                            "label": "Изменить статус",
+                            "fn": function () {
+                                this.submit();
+                            }
+                        });
+                    },
+                    enabled: false
+                },
             ],
             "paging": 10,
             "columnDefs": [
@@ -361,12 +411,21 @@ $(document).ready(function () {
     );
 
     orderDataTable.on('select', function (e, dt, type, indexes) {
-        if (orderDataTable.row(indexes[0]).data().status == "Создано") {
-            orderDataTable.button(3).enable();
-        } else {
-            orderDataTable.button(3).disable();
+            if (orderDataTable.row(indexes[0]).data().status == "Создано") {
+                dt.button(3).enable();
+            } else {
+                dt.button(3).disable();
+            }
+
+            let currentStatus = orderDataTable.row(indexes[0]).data().status;
+            if (changeableStatuses.includes(currentStatus)) {
+                dt.button(4).enable();
+            } else {
+                dt.button(4).disable();
+
+            }
         }
-    });
+        );
 
     orderDataTable.on('deselect', function () {
         orderDataTable.button(3).disable();

@@ -60,7 +60,6 @@ $(document).ready(function () {
             {label: 'Адрес', name: 'address', type: 'text'},
             {label: 'Фактический адрес', name: 'factAddress', type: 'text'},
             {label: 'Телефон', name: 'phone', type: "mask", mask:"+7 (000) 000-00-00"},
-            {label: 'Кол-во собственного транспорта', name: 'numberOfTransports', type: "mask", mask:"###"},
             {label: 'Налогообложение', name: 'taxation', type: 'text'},
         ]
     });
@@ -104,10 +103,7 @@ $(document).ready(function () {
                 {"name": "id", "data": "id", "targets": 0, visible: false},
                 {"name": "name", "data": "name", "targets": 1},
                 {"name": "address", "data": "address", "targets": 2},
-                {"name": "factAddress", "data": "factAddress", "targets": 3},
-                {"name": "phone", "data": "phone", "targets": 4},
-                {"name": "numberOfTransports", "data": "numberOfTransports", "targets": 5},
-                {"name": "taxation", "data": "taxation", "targets": 6},
+                {"name": "phone", "data": "phone", "targets": 3},
             ]
         }
     );

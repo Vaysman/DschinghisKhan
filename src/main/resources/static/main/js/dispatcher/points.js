@@ -98,7 +98,7 @@ $(document).ready(function () {
                 ],
                 "paging": 10,
                 "columnDefs": [
-                    {"name": "id", "data": "id", "targets": 0, visible: false},
+                    {"name": "id", "data": "id", "targets": 0},
                     {"name": "name", "data": "name", "targets": 1},
                     {"name": "address", "data": "address", "targets": 2},
                 ]

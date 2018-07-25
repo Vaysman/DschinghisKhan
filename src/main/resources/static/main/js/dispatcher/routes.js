@@ -470,7 +470,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        label: 'Время разгрузки', name: 'loadingTime', type: 'mask', mask: "#",
+                        label: 'Время ПРР', name: 'loadingTime', type: 'mask', mask: "#",
                         maskOptions: {
                             reverse: true,
                             placeholder: ""

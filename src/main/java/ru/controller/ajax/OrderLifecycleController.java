@@ -11,6 +11,8 @@ import ru.dto.json.order.OrderAcceptData;
 import ru.dto.json.order.OrderAssignData;
 import ru.service.OrderLifecycleService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/orderLifecycle")
 @PreAuthorize("hasAnyAuthority('ADMIN','DISPATCHER','TRANSPORT_COMPANY')")
@@ -85,9 +87,9 @@ public class OrderLifecycleController {
 
     @PostMapping(value = "/changeStatus/{orderId}")
     @PreAuthorize("isAuthenticated()")
-    private String changeStatus(@PathVariable Integer orderId, @RequestBody OrderStatus orderStatus){
+    private String changeStatus(@PathVariable Integer orderId, @RequestBody Map<String,OrderStatus> orderStatus){
         try{
-            orderLifecycleService.changeStatus(getCurrentUser(),orderId,orderStatus);
+            orderLifecycleService.changeStatus(getCurrentUser(),orderId,orderStatus.get("status"));
             return "Success";
         } catch (Exception e){
             return e.getMessage();
