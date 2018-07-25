@@ -7,12 +7,19 @@
     <th:block th:include="fragments/header :: scripts"></th:block>
 
     <script src="/localization/localizeEditor.js"></script>
-    <script src="/main/js/users.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
-    <script src="/main/js/transportCompanies.js"
+    <script src="/main/js/dispatcher/users.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
+    <script src="/main/js/dispatcher/transportCompanies.js"
             sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
-    <script src="/main/js/points.js"></script>
-    <script src="/main/js/routes.js"></script>
-    <script src="/main/js/contacts.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
+            src="/main/js/dispatcher/points.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
+            src="/main/js/dispatcher/routes.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
+            src="/main/js/dispatcher/contacts.js"></script>
+
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/transports.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/drivers.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/company-users.js"></script>
 
 
 </head>
@@ -21,33 +28,52 @@
 <nav class="logist-tabs">
     <div>
         <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-contacts"><i
                         class="fa fa-address-book" aria-hidden="true"></i> Контакты</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-companies"><i
                         class="fa fa-truck" aria-hidden="true"></i> Организации</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="true" href="#tab-routes"><i
                         class="fa fa-compass" aria-hidden="true"></i> Маршруты</a></li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-users"><i class="fa fa-users"
                                                                                                  aria-hidden="true"></i>
                     Пользователи</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-points"><i class="fa fa-map"
                                                                                                   aria-hidden="true"></i>
                     Пункты</a>
+            </li>
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-info"><i
+                        class="fa fa-user" aria-hidden="true"></i> Профиль</a>
+            </li>
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-transports"><i
+                        class="fa fa-truck" aria-hidden="true"></i> Транспортные средства</a>
+            </li>
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-drivers"><i class="fa fa-users"
+                                                                                                   aria-hidden="true"></i>
+                    Водители</a>
+            </li>
+            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-company-users"><i class="fa fa-users"
+                                                                                                         aria-hidden="true"></i>
+                    Пользователи</a>
             </li>
         </ul>
     </div>
 </nav>
 
 <div class="tab-content" id="tabContent">
-    <div id="tab-contacts" class="tab-pane in active">
+    <div id="tab-contacts" class="tab-pane"
+         th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? '' : 'in active' ">
         <div class="spaced-container white container-fluid">
             <h4>Контакты</h4>
             <div>
@@ -108,6 +134,8 @@
                         <th>Ст. за маршрут</th>
                         <th>₽/км</th>
                         <th>₽/коробка</th>
+                        <th>₽/пункт</th>
+                        <th>₽/час</th>
                         <th>₽/паллета</th>
                         <th>Темп. режим</th>
                         <th>Тип кузова</th>
@@ -141,10 +169,34 @@
                     <div data-editor-template="costPerBoxNds"></div>
                 </div>
                 <div class="col-6">
+                    <div data-editor-template="costPerPoint"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerPointNds"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerHour"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerHourNds"></div>
+                </div>
+                <div class="col-6">
                     <div data-editor-template="costPerPallet"></div>
                 </div>
                 <div class="col-6">
                     <div data-editor-template="costPerPalletNds"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerKilometer"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerKilometerNds"></div>
+                </div>
+                <div class="col-12">
+                    <div data-editor-template="loadingType"></div>
+                </div>
+                <div class="col-12">
+                    <div data-editor-template="vehicleType"></div>
                 </div>
                 <div class="col-6">
                     <div data-editor-template="tempFrom"></div>
@@ -158,12 +210,7 @@
                 <div class="col-6">
                     <div data-editor-template="tonnage"></div>
                 </div>
-                <div class="col-12">
-                    <div data-editor-template="loadingType"></div>
-                </div>
-                <div class="col-12">
-                    <div data-editor-template="vehicleType"></div>
-                </div>
+
                 <div class="col-12">
                     <div data-editor-template="comment"></div>
                 </div>
@@ -220,6 +267,100 @@
                         <th>id</th>
                         <th>Название</th>
                         <th>Адрес</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-info" class="tab-pane"
+         th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? 'in active' : '' ">
+        <div class="spaced-container white container-fluid">
+            <h4>Данные</h4>
+            <form>
+                <div class="form-group">
+                    <label>Email address
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                               placeholder="Enter email">
+                    </label>
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Обновить</button>
+            </form>
+        </div>
+    </div>
+    <div id="tab-transports" class="tab-pane">
+
+        <div class="container-fluid spaced-container white">
+            <h4>Транспорт</h4>
+            <div>
+                <table class="table  table table-striped table-bordered" style="width: 100%" id="transportDataTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Номер</th>
+                        <th>Тип</th>
+                        <th>Кузов</th>
+                        <th>Погрузка</th>
+                        <th>Тоннаж</th>
+                        <th>Объем</th>
+                        <th>Коники</th>
+                        <th>Гидроборт</th>
+                        <th>GPS</th>
+                        <th>Комментарий</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-drivers" class="tab-pane">
+
+        <div class="container-fluid spaced-container white">
+            <h4>Водители</h4>
+            <div>
+                <table class="table table table-striped table-bordered" id="driverDataTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>ФИО</th>
+                        <th>Телефон</th>
+                        <th>Паспорт</th>
+                        <th>Водительское удостверение</th>
+                        <th>Рейтинг</th>
+                        <th>Мобильное приложение</th>
+                        <th>Номер для приложения</th>
+                        <th>Отслеживание по телефону</th>
+                        <th>Номер для отслеживания</th>
+                        <th>В штате</th>
+                        <th>Оплата</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-company-users" class="tab-pane">
+        <div class="container-fluid spaced-container white">
+            <h4>Пользователи</h4>
+            <div>
+                <table class="table table-striped" style="width: 80%" id="companyUsersTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Имя</th>
+                        <th>Логин</th>
+                        <th>Пароль</th>
+                        <th>E-Mail</th>
                     </tr>
                     </thead>
                 </table>

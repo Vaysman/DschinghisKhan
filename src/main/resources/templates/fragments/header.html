@@ -127,13 +127,14 @@
         </li>
         <!--<li class="nav-item" th:classappend="${#strings.equals(pageName,'routes')} ? 'active' : ''" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_DISPATCHER')"><a class="nav-link" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск-->
             <!--маршрутов</a></li>-->
-        <li class="nav-item" th:classappend="${#strings.equals(pageName,'admin')} ? 'active' : ''" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link" href="/main" target="_self"><i class="fa fa-cog"
+        <li class="nav-item" th:classappend="${#strings.equals(pageName,'admin')} ? 'active' : ''" ><a class="nav-link" href="/main" target="_self"><i class="fa fa-cog"
                                                                                 aria-hidden="true"></i>
             Настройки</a></li>
         <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link"
                                                                                                 href="/swagger-ui.html"
                                                                                                 target="_blank"><i
                 class="fa fa-code" aria-hidden="true"></i> API</a></li>
+        <li class="nav-item"  sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link" href="/pdf-info" target="_blank"><i class="fa fa-info" aria-hidden="true"></i> О программе</a></li>
     </ul>
 
     <ul class="navbar-nav ml-md-auto d-none flex-row d-md-flex">
@@ -143,10 +144,9 @@
                 <span sec:authentication="name"></span>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="/profile"><i class="fa fa-user" aria-hidden="true"></i>
-                    Личный кабинет
-                    <span class="badge badge-success" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}" th:text="${#lists.size(pendingOrders)}"></span>
-                </a>
+                <!--<a class="dropdown-item" href="/profile"><i class="fa fa-user" aria-hidden="true"></i>-->
+                    <!--Личный кабинет-->
+                <!--</a>-->
                 <a class="dropdown-item" th:href="@{logout}"><i class="fa fa-sign-out" aria-hidden="true"></i></i> Выход</a>
             </div>
         </li>
