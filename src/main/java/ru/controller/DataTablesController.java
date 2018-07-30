@@ -214,12 +214,6 @@ public class DataTablesController {
         return routePointRepository.findAll(input, RoutePoints.pointsForRoute(routeRepository.findById(routeId).orElseThrow(()->new IllegalArgumentException("No such route"))));
     }
 
-//    @JsonView(DataTablesOutput.View.class)
-//    @RequestMapping(value = "/routePoints/routePointsForRoute/{routeId}", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
-//    public DataTablesOutput<RoutePoint> getRoutePointsForRoute( @PathVariable Integer routeId) {
-//        return routePointRepository.findAll(new DataTablesInput());
-//    }
-
     @RequestMapping(value = "/transportCompanies/transportCompaniesForRoute/{routeId}", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
     public DataTablesOutput<Company> transportCompaniesForRoute(@Valid @RequestBody DataTablesInput input, @PathVariable Integer routeId) {
         return companyRepository.findAll(input, Companies.companiesForRoute(routeRepository.findById(routeId).orElseThrow(()->new IllegalArgumentException("No such route"))));

@@ -42,6 +42,7 @@ public class Company {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POINT_ID")
+    @JsonIgnore
     @JsonView(DataTablesOutput.View.class)
     private Point point;
 
@@ -83,6 +84,7 @@ public class Company {
     private String email;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Integer originator;
 
     @JsonIgnore

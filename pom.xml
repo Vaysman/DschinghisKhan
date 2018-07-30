@@ -160,9 +160,9 @@
         </dependency>
 
         <dependency>
-            <groupId>geoGoogle</groupId>
-            <artifactId>geoGoogle</artifactId>
-            <version>1.4.3</version>
+            <groupId>com.google.maps</groupId>
+            <artifactId>google-maps-services</artifactId>
+            <version>0.2.7</version>
         </dependency>
     </dependencies>
 

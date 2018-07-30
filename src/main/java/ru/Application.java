@@ -6,10 +6,12 @@ import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFa
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+//Worker bees can leave
+    //Even drones can fly away
+        //The queen is their slave
 @SpringBootApplication
 @EnableJpaRepositories(
-        basePackages = {"ru.dao"}
-        ,repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class
+        basePackages = {"ru.dao"},repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class
 )
 @EnableScheduling
 public class Application {

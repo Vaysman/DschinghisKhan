@@ -35,42 +35,54 @@ public class Transport {
     private Integer id;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String number;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Boolean isGps = false;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     @Enumerated(EnumType.STRING)
     private VehicleType type = VehicleType.TRANSPORT;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     @Enumerated(EnumType.STRING)
     private VehicleBodyType bodyType = VehicleBodyType.TENT;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Integer tonnage;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Integer volume;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     @Convert(converter = LoadingTypeArrayToStringConverter.class)
     private Set<LoadingType> loadingType = new HashSet<>();
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Boolean conics = false;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Boolean hydrobort = false;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String comment;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Integer originator;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String wialonId;
 
 

@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     let pointsEditor = null;
         pointsEditor = new $.fn.dataTable.Editor({
             ajax: {
@@ -57,8 +58,10 @@ $(document).ready(function () {
             idSrc: 'id',
 
             fields: [
-                {label: 'Название', name: 'name', type: 'text'},
-                {label: 'Адрес', name: 'address', type: 'text'}
+                {label: 'Грузополучатель', name: 'name', type: 'text', attr:{maxlength: 256}},
+                {label: 'Адрес', name: 'address', type: 'text', attr:{maxlength: 256},fieldInfo:"Будет использован только в геосервисах. <br>Не будет показываться диспетчерам/перевозчикам."},
+                {label: 'Полный адрес', name: 'fullAddress', type: 'text', attr:{maxlength: 256},fieldInfo:"Для отображения другим диспетчерам и перевозчикам. "},
+                {label: 'Комментарий', name: 'comment', type: 'textarea', attr:{maxlength: 256}},
             ]
         });
 
@@ -101,6 +104,8 @@ $(document).ready(function () {
                     {"name": "id", "data": "id", "targets": 0},
                     {"name": "name", "data": "name", "targets": 1},
                     {"name": "address", "data": "address", "targets": 2},
+                    {"name": "fullAddress", "data": "fullAddress", "targets": 3},
+                    {"name": "comment", "data": "comment", "targets": 4},
                 ]
             }
         );

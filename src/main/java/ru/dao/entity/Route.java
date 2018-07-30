@@ -116,7 +116,7 @@ public class Route {
 
     @Column
     @Enumerated(EnumType.STRING)
-//    @JsonView(DataTablesOutput.View.class)
+    @JsonView(DataTablesOutput.View.class)
     private VehicleBodyType vehicleType= VehicleBodyType.TENT;
 
     @Column
@@ -125,7 +125,7 @@ public class Route {
 
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name = "TRANSPORT_COMPANY_ID", referencedColumnName = "ID")
     private Company company;

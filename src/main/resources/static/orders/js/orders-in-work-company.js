@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    $('#tab-orders-in-work-link a').one('shown.bs.tab',function () {
+    console.log("tab-orders-in-work-link shown");
 
     let statusChangeEditor = new $.fn.dataTable.Editor({
         table: '#ordersInWorkTable',
@@ -146,14 +148,12 @@ $(document).ready(function () {
                     "name": "route.name",
                     "data": "route.name",
                     "targets": 3,
-                    searchable: false,
                     orderable: false,
                     defaultContent: ""
                 },
                 {
                     "name": "company.name",
                     "data": "company.name",
-                    searchable: false,
                     orderable: false,
                     "targets": 4,
                     defaultContent: ""
@@ -161,7 +161,6 @@ $(document).ready(function () {
                 {
                     "name": "transport.number",
                     "data": "transport.number",
-                    searchable: false,
                     orderable: false,
                     "targets": 5,
                     defaultContent: ""
@@ -169,7 +168,6 @@ $(document).ready(function () {
                 {
                     "name": "driver.name",
                     "data": "driver.name",
-                    searchable: false,
                     orderable: false,
                     "targets": 6,
                     defaultContent: ""
@@ -259,5 +257,6 @@ $(document).ready(function () {
 
     ordersInWorkDataTable.on('deselect', function () {
         ordersInWorkDataTable.buttons().disable();
+    })
     })
 });

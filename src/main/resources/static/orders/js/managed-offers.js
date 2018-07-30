@@ -54,7 +54,7 @@ var offerList = new Vue({
             if (isPriceChanged != "false") {
                 return ""
             } else {
-                return "red"
+                return "list-group-item-danger"
             }
         }
     },

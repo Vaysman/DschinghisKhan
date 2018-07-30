@@ -49,6 +49,9 @@ public class OrderOffer {
     @Column
     private Float dispatcherPrice;
 
+    @Column
+    private String proposedPriceComment;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MANAGER_COMPANY_ID")
     private Company managerCompany;

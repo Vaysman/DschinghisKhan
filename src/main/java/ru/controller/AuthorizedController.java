@@ -69,6 +69,7 @@ public class AuthorizedController {
                                 Map<String, String> orderMap = new HashMap<>();
                                 orderMap.put("id", x.getId().toString());
                                 orderMap.put("number", x.getNumber());
+                                orderMap.put("isMandatory",String.valueOf(x.getOrderObligation().equals(OrderObligation.MANDATORY)));
                                 return orderMap;
                             }).collect(Collectors.toList())));
         } else if (authentication.getUser().getUserRole() == UserRole.ROLE_DISPATCHER) {

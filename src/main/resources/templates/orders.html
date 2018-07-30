@@ -5,10 +5,20 @@
     <meta charset="UTF-8">
     <title>Заявки</title>
     <th:block th:include="fragments/header :: scripts"></th:block>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="/media/vue.min.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/all-orders.js"></script>
-    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/orders-in-work-dispatcher.js"></script>
-    <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")' src="/orders/js/orders-in-work-company.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
+            src="/orders/js/orders-in-work-dispatcher.js"></script>
+    <script src="/main/js/dispatcher/transportCompanies.js"
+            sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
+            src="/main/js/dispatcher/points.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
+            src="/main/js/dispatcher/routes.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
+            src="/main/js/dispatcher/contacts.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'
+            src="/orders/js/orders-in-work-company.js"></script>
 
 
 </head>
@@ -17,28 +27,39 @@
 <nav class="logist-tabs">
     <div>
         <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
-            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+            <li id="tab-all-orders-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-all-orders"><i
                         class="fa fa-user" aria-hidden="true"></i> Все заявки</a>
             </li>
-            <li class="nav-item" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
+            <li id="tab-pending-orders-link" class="nav-item" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-pending-orders"><span
                         class="badge badge-light" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}"
                         th:text="${#lists.size(pendingOrders)}"></span>
                     <i class="fa fa-th-list" aria-hidden="true"></i> Предложенные заявки
                 </a>
             </li>
-            <li class="nav-item" sec:authorize="hasAuthority('ROLE_DISPATCHER')">
+            <li id="tab-managed-offers-link" class="nav-item" sec:authorize="hasAuthority('ROLE_DISPATCHER')">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-managed-offers">
                     <span class="badge badge-primary" th:if="${managedOffers!=null && #lists.size(managedOffers) > 0}"
                           th:text="${#lists.size(managedOffers)}"></span>
-                    <i class="fa fa-truck" aria-hidden="true"></i> Предложения компаний
+                    <i class="fa fa-truck" aria-hidden="true"></i> Предложения
                 </a>
             </li>
-            <li class="nav-item">
+            <li id="tab-orders-in-work-link" class="nav-item">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders-in-work">
                     <i class="fa fa-truck" aria-hidden="true"></i> Заявки в работе
                 </a>
+            </li>
+            <li id="tab-companies-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-companies"><i
+                        class="fa fa-truck" aria-hidden="true"></i> ТК</a>
+            </li>
+            <li id="tab-routes-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="true" href="#tab-routes"><i
+                        class="fa fa-compass" aria-hidden="true"></i> Маршруты</a></li>
+            <li id="tab-contacts-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-contacts"><i
+                        class="fa fa-address-book" aria-hidden="true"></i> Грузополучатели</a>
             </li>
         </ul>
     </div>
@@ -85,12 +106,49 @@
                     </h5>
                     <div class="list-group">
                         <a href="#" v-for="pendingOrder in pendingOrders" @click="loadOrderInfo(pendingOrder.id)"
+                           v-bind:class="getOrderColor(pendingOrder.isMandatory)"
                            class="list-group-item list-group-item-action">
                             {{ pendingOrder.number }}
                         </a>
                     </div>
                 </div>
-                <pending-order-info :order="order"></pending-order-info>
+                <div v-if="order" class="col-7" id="pendingOrderInfo">
+                    <h5 class="red-first-letter">{{order.number}}</h5>
+                    <div class="row">
+                        <div class="col-4">
+                            Маршрут:<br>
+                            {{order.route.name}}<br>
+                            <br>
+                            Дата оплаты:<br>
+                            {{order.paymentDate}}<br><br>
+
+                            Требования:
+                            <ul>
+                                <li v-for="requirement in order.requirements">{{requirement}}</li>
+                            </ul>
+                            <br>
+                        </div>
+                        <div class="col-4">
+                            Обязательность:<br>{{order.orderObligation}}<br><br>
+                            Дата возврата документов:<br>
+                            {{order.documentReturnDate}} <br><br>
+                            Груз:
+                            <ul>
+                                <li v-for="cargoUnit in order.cargo">{{cargoUnit}}</li>
+                                <br>
+
+                            </ul>
+                        </div>
+                        <div class="col-4">
+
+                            Пункты доставки:
+                            <ol>
+                                <li v-for="routePoint in order.route.routePoints">{{routePoint.point.name}}</li>
+                            </ol>
+
+                        </div>
+                    </div>
+                </div>
                 <div class="col-3" id="pendingOrderAcceptForm" :hidden="(order==null)">
                     <div class="form-group">
                         <label for="orderTransportSelect">Транспорт</label>
@@ -105,7 +163,11 @@
                     <div class="form-group">
                         <label for="orderProposedPrice">Стоимость</label>
                         <input class="form-control" v-model="proposedPrice" id="orderProposedPrice">
-                        <span class="small text-muted">Если не устраивает стоимость,<br>выставленная диспетчером</span>
+                        <span class="small text-muted">Предложить свою стоимость</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="pendingOrderPriceComment">Комментарий к изменению цены</label>
+                        <textarea  class="form-control" v-model="proposedPriceComment" id="pendingOrderPriceComment"></textarea>
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" @click="acceptOrder()"
@@ -136,7 +198,7 @@
                         </a>
                     </div>
                 </div>
-                <div v-if="offer" class="col-10" id="pendingOrderInfo">
+                <div v-if="offer" class="col-10" id="managedOfferInfo">
                     <div class="row">
                         <div class="col-12">
                             <h5>Заявка: {{offer.orderNumber}}</h5>
@@ -188,6 +250,10 @@
                         </div>
                         <div class="col-4">
                             <div class="row">
+                                <div v-if="offer.dispatcherPrice!=offer.proposedPrice" class="col-12">
+                                    Комментарий перевозчика:<br>
+                                    {{offer.proposedPriceComment}}<br><br>
+                                </div>
                                 <div class="col-6">
                                     Назначенная диспетчером цена:<br>
                                     {{offer.dispatcherPrice}}<br><br>
@@ -233,6 +299,185 @@
                         <th>Рейтинг</th>
                         <th>Обязательность</th>
                         <th>Оплата</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-companies" class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Транспортные компании</h4>
+            <small class="text-muted text-sm">Зеленым подсвечены компании, созданные пользователем вашей компании
+            </small>
+            <div>
+                <table class="table table-hover  table-striped table-sm" id="transportCompaniesTable">
+                    <thead>
+                    <tr>
+
+                        <th>id</th>
+                        <th>Название</th>
+                        <th>Краткое название</th>
+                        <th>ИНН</th>
+                        <th>Кол-во ТС</th>
+                        <th>ФИО гл. бухгалтера</th>
+                        <th>ОКВЕД</th>
+                        <th>ОКПО</th>
+                        <th>ОГРН</th>
+                        <th>E-mail</th>
+                        <th>Налогообложение</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-routes" class="tab-pane">
+        <div class=" container-fluid spaced-container white table-responsive">
+            <h4>Маршруты</h4>
+            <div>
+                <table class="table table-hover table-striped " id="routesTable">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th>ТК</th>
+                        <th>Ст. за маршрут</th>
+                        <th>₽/км</th>
+                        <th>₽/коробка</th>
+                        <th>₽/пункт</th>
+                        <th>₽/час</th>
+                        <th>₽/паллета</th>
+                        <th>Темп. режим</th>
+                        <th>Тип кузова</th>
+                        <th>Объем</th>
+                        <th>Тоннаж</th>
+                        <th>Погрузка</th>
+                        <th>Комментарий</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div id="routesForm" style="display: flex">
+            <div class="row form-group">
+                <div class="col-12">
+                    <div data-editor-template="name"></div>
+                </div>
+                <div class="col-12">
+                    <div data-editor-template="company"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="totalCost"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="totalCostNds"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerBox"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerBoxNds"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerPoint"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerPointNds"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerHour"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerHourNds"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerPallet"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerPalletNds"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerKilometer"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="costPerKilometerNds"></div>
+                </div>
+                <div class="col-12">
+                    <div data-editor-template="loadingType"></div>
+                </div>
+                <div class="col-12">
+                    <div data-editor-template="vehicleType"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="tempFrom"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="tempTo"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="volume"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="tonnage"></div>
+                </div>
+
+                <div class="col-12">
+                    <div data-editor-template="comment"></div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="container-fluid spaced-container white">
+            <h4>Точки маршрута</h4>
+            <div>
+                <table class="table table-hover  table-striped " id="routePointsTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Пункт</th>
+                        <th>Адрес</th>
+                        <th>Контакт</th>
+                        <th>Расстояние</th>
+                        <th>Стоимость ПРР</th>
+                        <th>Время разгрузки</th>
+                        <th>Порядковый номер</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-contacts" class="tab-pane">
+        <div class=" container-fluid spaced-container white" >
+            <h4>Пункты</h4>
+            <div>
+                <table class="table table-hover table-striped " id="pointsTable">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Грузополучатель</th>
+                        <th>Адрес</th>
+                        <th>Полный адрес</th>
+                        <th>Комментарий</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="spaced-container white container-fluid">
+            <h4>Контакты</h4>
+            <div>
+                <table class="table table-hover  table-striped" id="contactsTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>ФИО</th>
+                        <th>Адрес</th>
+                        <th>Телефон</th>
+                        <th>E-mail</th>
+                        <th>Должность</th>
                     </tr>
                     </thead>
                 </table>

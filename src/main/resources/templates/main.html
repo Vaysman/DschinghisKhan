@@ -8,14 +8,9 @@
 
     <script src="/localization/localizeEditor.js"></script>
     <script src="/main/js/dispatcher/users.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
-    <script src="/main/js/dispatcher/transportCompanies.js"
-            sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
-    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
-            src="/main/js/dispatcher/points.js"></script>
-    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
-            src="/main/js/dispatcher/routes.js"></script>
-    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
-            src="/main/js/dispatcher/contacts.js"></script>
+
+
+
 
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/transports.js"></script>
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/drivers.js"></script>
@@ -28,28 +23,15 @@
 <nav class="logist-tabs">
     <div>
         <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
-            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
-                <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-contacts"><i
-                        class="fa fa-address-book" aria-hidden="true"></i> Контакты</a>
-            </li>
-            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
-                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-companies"><i
-                        class="fa fa-truck" aria-hidden="true"></i> Организации</a>
-            </li>
-            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
-                <a class="nav-link" data-toggle="tab" aria-selected="true" href="#tab-routes"><i
-                        class="fa fa-compass" aria-hidden="true"></i> Маршруты</a></li>
+
+
+
             <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-users"><i class="fa fa-users"
                                                                                                  aria-hidden="true"></i>
                     Пользователи</a>
             </li>
-            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
-                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-points"><i class="fa fa-map"
-                                                                                                  aria-hidden="true"></i>
-                    Пункты</a>
-            </li>
-            <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
+            <li class="nav-item">
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-info"><i
                         class="fa fa-user" aria-hidden="true"></i> Профиль</a>
             </li>
@@ -72,169 +54,11 @@
 </nav>
 
 <div class="tab-content" id="tabContent">
-    <div id="tab-contacts" class="tab-pane"
-         th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? '' : 'in active' ">
-        <div class="spaced-container white container-fluid">
-            <h4>Контакты</h4>
-            <div>
-                <table class="table table-hover  table-striped" id="contactsTable">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>Название</th>
-                        <th>Адрес</th>
-                        <th>Телефон</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div id="tab-companies" class="tab-pane">
-        <div class="spaced-container white container-fluid">
-            <h4>Транспортные компании</h4>
-            <small class="text-muted text-sm">Зеленым подсвечены компании, созданные пользователем вашей компании</small>
-            <div>
-                <table class="table table-hover  table-striped table-sm" id="transportCompaniesTable">
-                    <thead>
-                    <tr>
-
-                        <th>id</th>
-                        <th>Название</th>
-                        <th>Краткое название</th>
-                        <th>ИНН</th>
-                        <th>Кол-во ТС</th>
-                        <th>ФИО гл. бухгалтера</th>
-                        <th>ОКВЕД</th>
-                        <th>ОКПО</th>
-                        <th>ОГРН</th>
-                        <th>E-mail</th>
-                        <th>Налогообложение</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
 
 
-    <div id="tab-routes" class="tab-pane">
-        <div class=" container-fluid spaced-container white table-responsive">
-            <h4>Маршруты</h4>
-            <div>
-                <table class="table table-hover table-striped " id="routesTable">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Название</th>
-                        <th>ТК</th>
-                        <th>Ст. за маршрут</th>
-                        <th>₽/км</th>
-                        <th>₽/коробка</th>
-                        <th>₽/пункт</th>
-                        <th>₽/час</th>
-                        <th>₽/паллета</th>
-                        <th>Темп. режим</th>
-                        <th>Тип кузова</th>
-                        <th>Объем</th>
-                        <th>Тоннаж</th>
-                        <th>Погрузка</th>
-                        <th>Комментарий</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-        <div id="routesForm" style="display: flex">
-            <div class="row form-group" >
-                <div class="col-12">
-                    <div data-editor-template="name"></div>
-                </div>
-                <div class="col-12">
-                    <div data-editor-template="company"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="totalCost"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="totalCostNds"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerBox"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerBoxNds"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerPoint"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerPointNds"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerHour"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerHourNds"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerPallet"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerPalletNds"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerKilometer"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerKilometerNds"></div>
-                </div>
-                <div class="col-12">
-                    <div data-editor-template="loadingType"></div>
-                </div>
-                <div class="col-12">
-                    <div data-editor-template="vehicleType"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="tempFrom"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="tempTo"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="volume"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="tonnage"></div>
-                </div>
 
-                <div class="col-12">
-                    <div data-editor-template="comment"></div>
-                </div>
 
-            </div>
 
-        </div>
-        <div class="container-fluid spaced-container white">
-            <h4>Точки маршрута</h4>
-            <div>
-                <table class="table table-hover  table-striped " id="routePointsTable">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>Пункт</th>
-                        <th>Адрес</th>
-                        <th>Расстояние</th>
-                        <th>Стоимость</th>
-                        <th>Стоимость ПРР</th>
-                        <th>Время разгрузки</th>
-                        <th>Порядковый номер</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
 
     <div id="tab-users" class="tab-pane">
         <div class=" container-fluid spaced-container white">
@@ -255,20 +79,7 @@
         </div>
     </div>
     <div id="tab-points" class="tab-pane">
-        <div class=" container-fluid spaced-container white" style="min-width: 100%">
-            <h4>Пункты</h4>
-            <div>
-                <table class="table table-hover table-striped " id="pointsTable">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Название</th>
-                        <th>Адрес</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+
     </div>
     <div id="tab-info" class="tab-pane"
          th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? 'in active' : '' ">

@@ -8,4 +8,5 @@ public class OrderAcceptData {
     private Integer driverId;
     private Integer transportId;
     private Float proposedPrice;
+    private String proposedPriceComment;
 }

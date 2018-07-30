@@ -2,7 +2,6 @@ package ru.controller;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,12 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.dao.entity.Order;
 import ru.dao.entity.OrderOffer;
 import ru.dao.entity.Route;
+import ru.dao.entity.RoutePoint;
 import ru.dao.repository.OrderOfferRepository;
 import ru.dao.repository.OrderRepository;
 import ru.dao.repository.RouteRepository;
 
 @RestController
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 @RequestMapping("/data")
 public class DataController {
     private final RouteRepository routeRepository;
@@ -38,6 +38,9 @@ public class DataController {
         Hibernate.initialize(offer.getDriver());
         Hibernate.initialize(offer.getOrder().getRoute().getRoutePoints());
         Hibernate.initialize(offer.getTransport());
+        for(RoutePoint routePoint : offer.getOrder().getRoute().getRoutePoints()){
+            Hibernate.initialize(routePoint.getPoint());
+        }
         return offer;
     }
 
@@ -46,6 +49,10 @@ public class DataController {
         Order order = orderRepository.findById(orderId).orElse(null);
         Hibernate.initialize(order.getRoute());
         Hibernate.initialize(order.getRoute().getRoutePoints());
+        for(RoutePoint routePoint : order.getRoute().getRoutePoints()){
+            Hibernate.initialize(routePoint.getPoint());
+        }
+
         return order;
     }
 

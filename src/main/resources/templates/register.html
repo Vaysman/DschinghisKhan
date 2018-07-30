@@ -124,10 +124,10 @@
                     </div>
                     <div class="form-group">
                         <h6>Пункт отправки по умолчанию</h6>
-                        <small class="text-sm text-muted">Сэкономьте себе время и укажите пункт сразу</small>
+                        <small class="text-sm text-muted">Укажите основной склад доставки</small>
                     </div>
                     <div class="form-group">
-                        <label for="pointName" class="cols-sm-2 control-label">Название пункта</label>
+                        <label for="pointName" class="cols-sm-2 control-label">Склад отправки</label>
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:classappend="${pointNameError!=null} ? 'error-red' : ''"
@@ -139,7 +139,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pointAddress" class="cols-sm-2 control-label">Адрес пункта</label>
+                        <label for="pointAddress" class="cols-sm-2 control-label">Адрес склада отправки</label>
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:classappend="${pointAddressError!=null} ? 'error-red' : ''"

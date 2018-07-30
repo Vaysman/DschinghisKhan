@@ -52,18 +52,17 @@ public class User {
     @Column
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)
-//    @JsonView(DataTablesOutput.View.class)
     private UserRole userRole = UserRole.ROLE_TRANSPORT_COMPANY;
 
     @Column
     private Integer originator;
 
     @Column(name = "email")
+    @JsonView(DataTablesOutput.View.class)
     private String email;
 
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JsonView(DataTablesOutput.View.class)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
     @JoinColumn(name = "COMPANY_ID", referencedColumnName = "ID")
     private Company company;

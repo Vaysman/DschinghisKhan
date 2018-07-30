@@ -115,6 +115,7 @@ public class OrderLifecycleTest {
         orderAcceptData.setTransportId(companyTransport.getId());
         orderAcceptData.setDriverId(companyDriver.getId());
         orderAcceptData.setProposedPrice(100F);
+        orderAcceptData.setProposedPriceComment("Fgsfds");
 
 
         orderLifecycleService.accept(order.getId(),companyUser,orderAcceptData);

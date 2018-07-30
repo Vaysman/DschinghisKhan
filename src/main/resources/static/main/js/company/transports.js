@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     let transportEditor = new $.fn.dataTable.Editor({
         table: '#transportDataTable',
         idSrc: 'id',

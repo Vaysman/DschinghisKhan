@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+
     let statusChangeEditorOnAllOrders = new $.fn.dataTable.Editor({
         table: '#orderTable',
         idSrc: 'id',
@@ -244,7 +245,7 @@ $(document).ready(function () {
     });
 
 
-    var orderDataTable = $("#orderTable").DataTable({
+    var orderDataTable = $("table#orderTable").DataTable({
             processing: true,
             serverSide: true,
             searchDelay: 800,
@@ -255,7 +256,7 @@ $(document).ready(function () {
                     return JSON.stringify(d);
                 },
                 url: "dataTables/ordersForUser", // json datasource
-                type: "post"  // method  , by default get
+                type: "POST"  // method  , by default get
             },
             dom: 'Btp',
             language: {
@@ -313,31 +314,23 @@ $(document).ready(function () {
                     "name": "route.name",
                     "data": "route.name",
                     "targets": 3,
-                    searchable: false,
-                    orderable: false,
                     defaultContent: ""
                 },
                 {
                     "name": "company.name",
                     "data": "company.name",
-                    searchable: false,
-                    orderable: false,
                     "targets": 4,
                     defaultContent: ""
                 },
                 {
                     "name": "transport.number",
                     "data": "transport.number",
-                    searchable: false,
-                    orderable: false,
                     "targets": 5,
                     defaultContent: ""
                 },
                 {
                     "name": "driver.name",
                     "data": "driver.name",
-                    searchable: false,
-                    orderable: false,
                     "targets": 6,
                     defaultContent: ""
                 },
@@ -397,15 +390,15 @@ $(document).ready(function () {
                     orderable: false,
                     defaultContent: ""
                 }
-                // {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, "targets": 9,defaultContent: ""},
-                // {"name": "volume", "data": "volume", searchable:false, orderable: false, "targets": 10,defaultContent: "" , render: function (data, type, row, meta) {
+                // {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, defaultContent: ""},
+                // {"name": "volume", "data": "volume", searchable:false, orderable: false, defaultContent: "" , render: function (data, type, row, meta) {
                 //         return (data!==null) ? `${data}м<sup>3</sup>` : "";
                 //     }},
-                // {"name": "tonnage", "data": "tonnage", searchable:false, orderable: false, "targets": 11,defaultContent: "", render: function (data, type, row, meta) {
+                // {"name": "tonnage", "data": "tonnage", searchable:false, orderable: false, defaultContent: "", render: function (data, type, row, meta) {
                 //         return (data!==null) ? `${data}т` : "";
                 //     }},
-                // {"name": "loadingType", "data": "loadingType", searchable:false, orderable: false, "targets": 12,defaultContent: ""},
-                // {"name": "comment", "data": "comment", searchable:false, orderable: false, "targets": 13,defaultContent: ""},
+                // {"name": "loadingType", "data": "loadingType", searchable:false, orderable: false, defaultContent: ""},
+                // {"name": "comment", "data": "comment", searchable:false, orderable: false, defaultContent: ""},
             ]
         }
     );
