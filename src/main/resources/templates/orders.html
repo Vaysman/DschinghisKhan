@@ -50,6 +50,10 @@
                     <i class="fa fa-truck" aria-hidden="true"></i> Заявки в работе
                 </a>
             </li>
+            <li id="tab-contacts-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-contacts"><i
+                        class="fa fa-address-book" aria-hidden="true"></i> Грузополучатели</a>
+            </li>
             <li id="tab-companies-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-companies"><i
                         class="fa fa-truck" aria-hidden="true"></i> ТК</a>
@@ -57,10 +61,7 @@
             <li id="tab-routes-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="true" href="#tab-routes"><i
                         class="fa fa-compass" aria-hidden="true"></i> Маршруты</a></li>
-            <li id="tab-contacts-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
-                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-contacts"><i
-                        class="fa fa-address-book" aria-hidden="true"></i> Грузополучатели</a>
-            </li>
+
         </ul>
     </div>
 </nav>
@@ -88,6 +89,7 @@
                         <th>Рейтинг</th>
                         <th>Обязательность</th>
                         <th>Оплата</th>
+                        <th>Дата исполнения</th>
                     </tr>
                     </thead>
                 </table>
@@ -141,10 +143,15 @@
                         </div>
                         <div class="col-4">
 
-                            Пункты доставки:
+                            Пункты:
                             <ol>
-                                <li v-for="routePoint in order.route.routePoints">{{routePoint.point.name}}</li>
+                                <li v-for="routePoint in order.route.routePoints">
+                                    {{routePoint.point.name}}
+                                    {{routePoint.point.address}}
+                                </li>
                             </ol>
+                            Дата исполнения:<br>
+                            {{order.dispatchDate}}
 
                         </div>
                     </div>
@@ -241,7 +248,8 @@
                                     Пункты маршрута:
                                     <ol>
                                         <li v-for="routePoint in offer.order.route.routePoints">
-                                            {{routePoint.point.name}}
+                                            {{routePoint.point.name}}<br>
+                                            {{routePoint.point.address}}
                                         </li>
                                     </ol>
 
@@ -299,6 +307,7 @@
                         <th>Рейтинг</th>
                         <th>Обязательность</th>
                         <th>Оплата</th>
+                        <th>Дата исполнения</th>
                     </tr>
                     </thead>
                 </table>
@@ -478,6 +487,7 @@
                         <th>Телефон</th>
                         <th>E-mail</th>
                         <th>Должность</th>
+                        <th>Компания</th>
                     </tr>
                     </thead>
                 </table>

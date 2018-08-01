@@ -227,6 +227,13 @@ $(document).ready(function () {
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
+                },
+                {
+                    "name": "dispatchDate",
+                    "data": "dispatchDate",
+                    "targets": 14,
+                    searchable: false,
+                    defaultContent: ""
                 }
             ]
         }

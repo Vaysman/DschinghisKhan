@@ -33,6 +33,9 @@ $(document).ready(function () {
                             if (value['point'] == "") {
                                 delete value['point'];
                             }
+                            if (value['company'] == "") {
+                                delete value['company'];
+                            }
                             newdata = JSON.stringify(value);
                         });
                         console.log(newdata);
@@ -77,6 +80,28 @@ $(document).ready(function () {
                         },
                         loadThrottle: 500
                     }
+                },
+                {
+                    label: 'Компании', name: 'company', type: 'selectize',
+                    options: [],
+                    opts: {
+                        searchField: "label",
+                        create: false,
+                        placeholder: "Нажмите, чтобы изменить",
+                        maxItems: 1,
+                        loadThrottle: 400,
+                        load: function (query, callback) {
+                            $.get(`api/companies/search/findTop10ByNameContainingAndType/?name=${query}&type=TRANSPORT`,
+                                function (data) {
+                                    var companyOptions = [];
+                                    data._embedded.companies.forEach(function (entry) {
+                                        companyOptions.push({"label": entry.name, "value": entry._links.self.href});
+                                    });
+                                    callback(companyOptions);
+                                }
+                            );
+                        }
+                    },
                 },
                 {label: 'Телефон', name: 'phone', type: "text", attr:{maxlength: 20,placeholder:"+7 (000) 000 00-00"}},
                 {label: 'E-mail', name: 'email', type: "text", attr:{maxlength: 64}},
@@ -126,6 +151,7 @@ $(document).ready(function () {
                     {"name": "phone", "data": "phone", "targets": 3},
                     {"name": "email", "data": "email", "targets": 4},
                     {"name": "position", "data": "position", "targets": 5},
+                    {"name": "company.name", "data": "company.name", "targets": 6, defaultContent:""},
                 ]
             }
         );

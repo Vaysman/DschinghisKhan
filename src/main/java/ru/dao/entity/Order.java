@@ -1,5 +1,6 @@
 package ru.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
@@ -114,8 +115,14 @@ public class Order {
     private OrderPaymentType paymentType;
 
     @Column
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     @JsonView(DataTablesOutput.View.class)
     private Date statusChangeDate;
+
+    @Column
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @JsonView(DataTablesOutput.View.class)
+    private Date dispatchDate;
 
 
 

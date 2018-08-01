@@ -174,18 +174,10 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    label: 'Температура (От)', name: 'tempFrom', type: "mask", mask: "000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Температура (От)', name: 'tempFrom', type: "text",
                 },
                 {
-                    label: 'Темература (До)', name: 'tempTo', type: "mask", mask: "000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Темература (До)', name: 'tempTo', type: "text",
                 },
                 {
                     label: 'Объем м<sup>3</sup>', name: 'volume', type: "mask", mask: "000",
@@ -262,7 +254,7 @@ $(document).ready(function () {
                         searchable: false,
                         orderable: false,
                         render: function (data, type, full) {
-                            return (data.totalCost !== null && data.totalCostNds !== null) ? `${data.totalCost}/${data.totalCostNds}₽` : "";
+                            return (data.totalCost !== null && data.totalCostNds !== null) ? `${data.totalCost}/${data.totalCostNds}` : "";
                         }
                     },
                     {
@@ -272,7 +264,7 @@ $(document).ready(function () {
                         searchable: false,
                         orderable: false,
                         render: function (data, type, full) {
-                            return (data.costPerKilometer !== null && data.costPerKilometerNds !== null) ? `${data.costPerKilometer}₽/${data.costPerKilometerNds}₽` : "";
+                            return (data.costPerKilometer !== null && data.costPerKilometerNds !== null) ? `${data.costPerKilometer}/${data.costPerKilometerNds}` : "";
                         }
                     },
                     {
@@ -282,7 +274,7 @@ $(document).ready(function () {
                         searchable: false,
                         orderable: false,
                         render: function (data, type, full) {
-                            return (data.costPerBox !== null && data.costPerBoxNds !== null) ? `${data.costPerBox}/${data.costPerBoxNds}₽` : "";
+                            return (data.costPerBox !== null && data.costPerBoxNds !== null) ? `${data.costPerBox}/${data.costPerBoxNds}` : "";
                         }
                     },
                     {
@@ -292,7 +284,7 @@ $(document).ready(function () {
                         orderable: false,
                         "targets": 6,
                         render: function (data, type, full) {
-                            return (data.costPerPoint !== null && data.costPerPointNds !== null) ? `${data.costPerPoint}₽/${data.costPerPointNds}₽` : "";
+                            return (data.costPerPoint !== null && data.costPerPointNds !== null) ? `${data.costPerPoint}/${data.costPerPointNds}` : "";
                         }
                     },
                     {
@@ -302,7 +294,7 @@ $(document).ready(function () {
                         orderable: false,
                         "targets": 7,
                         render: function (data, type, full) {
-                            return (data.costPerHour !== null && data.costPerHourNds !== null) ? `${data.costPerHour}₽/${data.costPerHourNds}₽` : "";
+                            return (data.costPerHour !== null && data.costPerHourNds !== null) ? `${data.costPerHour}/${data.costPerHourNds}` : "";
                         }
                     },
                     {
@@ -312,7 +304,7 @@ $(document).ready(function () {
                         orderable: false,
                         "targets": 8,
                         render: function (data, type, full) {
-                            return (data.costPerPallet !== null && data.costPerPalletNds !== null) ? `${data.costPerPallet}/${data.costPerPalletNds}₽` : "";
+                            return (data.costPerPallet !== null && data.costPerPalletNds !== null) ? `${data.costPerPallet}/${data.costPerPalletNds}` : "";
                         }
                     },
                     {

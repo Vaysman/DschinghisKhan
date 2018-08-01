@@ -33,30 +33,34 @@ public class CompanyListener {
 
     @PrePersist
     private void prePersist(Company company) throws MessagingException {
-        if(!company.getType().equals(CompanyType.TRANSPORT)) return;
-        String userPassword = RandomStringGenerator.randomAlphaNumeric(8);
-        User user = User.builder()
-                .login(company.getShortName())
-                .userRole(UserRole.ROLE_TRANSPORT_COMPANY)
-                .username(company.getShortName())
-                .company(company)
-                .originator(company.getOriginator())
-                .email(company.getEmail())
-                .passAndSalt(userPassword)
-                .build();
-        Set<User> userList = new HashSet<>();
-        userList.add(user);
-        company.setUsers(userList);
-        MimeMessage message = sender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, false);
-        helper.setFrom("tarificationsquad@gmail.com");
-        helper.setTo(company.getEmail());
-        helper.setText("Зарегистрирован пользователь для транспортой компании: " +
-                company.getName()+
-        "\nЛогин: "+user.getLogin()+
-        "\nПароль: "+userPassword);
-        helper.setSubject("Регистрационные данные");
-        if(!company.getEmail().equals("test@tesе.test")) sender.send(message);
+        if(!company.getType().equals(CompanyType.TRANSPORT)) {
+            return;
+        }else {
+            String userPassword = RandomStringGenerator.randomAlphaNumeric(8);
+            User user = User.builder()
+                    .login(company.getShortName())
+                    .userRole(UserRole.ROLE_TRANSPORT_COMPANY)
+                    .username(company.getShortName())
+                    .company(company)
+                    .originator(company.getOriginator())
+                    .email(company.getEmail())
+                    .passAndSalt(userPassword)
+                    .build();
+            Set<User> userList = new HashSet<>();
+            userList.add(user);
+            company.setUsers(userList);
+            MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, false);
+            helper.setFrom("tarificationsquad@gmail.com");
+            helper.setTo(company.getEmail());
+            helper.setText("Зарегистрирован пользователь для транспортой компании: " +
+                    company.getName()+
+                    "\nЛогин: "+user.getLogin()+
+                    "\nПароль: "+userPassword);
+            helper.setSubject("Регистрационные данные");
+            if(!company.getEmail().equals("test@tesе.test")) sender.send(message);
+        }
+
 
     }
 }

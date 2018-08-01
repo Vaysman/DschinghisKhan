@@ -80,7 +80,7 @@ $(document).ready(function () {
                     maxItems: 10,
                     loadThrottle: 400,
                     load: function (query, callback) {
-                        $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
+                        $.get(`api/companies/search/findTop10ByNameContainingAndType/?name=${query}&type=TRANSPORT`,
                             function (data) {
                                 var companyOptions = [];
                                 data._embedded.companies.forEach(function (entry) {
@@ -96,7 +96,7 @@ $(document).ready(function () {
             {
                 label: 'Стоимость', name: 'dispatcherPrice', data: "routePrice", type: 'mask',
                 mask: "#",
-                fieldInfo: "Если стоимость отличается от указанной в маршруте - измените её здесь."
+                fieldInfo: "Стоимость без НДС<br>"
             }
         ]
     });
@@ -134,9 +134,6 @@ $(document).ready(function () {
                     $.each(d.data, function (key, value) {
                         if (value['route'] == "") {
                             delete value['route'];
-                        }
-                        if (value['assignedCompanies'].length === 0) {
-                            delete value['assignedCompanies'];
                         }
                         if (value['requirements'].length === 0) {
                             delete value['requirements'];
@@ -240,7 +237,8 @@ $(document).ready(function () {
                 }
             },
             {label: 'Обязательность заявки', name: 'orderObligation', type: "selectize", options: obligationOptions},
-            {label: "Оплата", name: "paymentType", type: "selectize", options: orderPaymentOptions}
+            {label: "Оплата", name: "paymentType", type: "selectize", options: orderPaymentOptions},
+            {label: "Дата исполнения", name: "dispatchDate", type: "datetime", format: "DD/MM/YYYY HH:mm", keyInput: false}
         ]
     });
 
@@ -279,7 +277,7 @@ $(document).ready(function () {
                     editor: orderEditor
                 }, {
 
-                    text: "Назначить компании",
+                    text: "Назначить перевозчика",
                     action: function (e, dt, node, config) {
                         orderAssignEditor.edit(orderDataTable.rows('.selected', {select: true}), 'Назначить компании', {
                             "label": "Назначить",
@@ -388,6 +386,13 @@ $(document).ready(function () {
                     "targets": 13,
                     searchable: false,
                     orderable: false,
+                    defaultContent: ""
+                },
+                {
+                    "name": "dispatchDate",
+                    "data": "dispatchDate",
+                    "targets": 14,
+                    searchable: false,
                     defaultContent: ""
                 }
                 // {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, defaultContent: ""},

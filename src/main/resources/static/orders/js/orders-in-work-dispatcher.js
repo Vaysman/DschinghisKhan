@@ -228,6 +228,13 @@ $(document).ready(function () {
                         searchable: false,
                         orderable: false,
                         defaultContent: ""
+                    },
+                    {
+                        "name": "dispatchDate",
+                        "data": "dispatchDate",
+                        "targets": 14,
+                        searchable: false,
+                        defaultContent: ""
                     }
                 ]
             }
@@ -237,12 +244,14 @@ $(document).ready(function () {
             let currentStatus = ordersInWorkDataTable.row(indexes[0]).data().status;
             if (changeableStatuses.includes(currentStatus)) {
                 dt.button(0).enable();
-                dt.button(1).enable();
+                if (currentStatus !== "Подтверждение доставки") {
+                    dt.button(1).enable();
+                }
             } else {
                 dt.button(0).disable();
                 dt.button(1).disable();
             }
-            if (currentStatus === "Ожидает возврата документов") {
+            if (currentStatus === "Ожидает возврата документов" || currentStatus === "Подтверждение доставки") {
                 dt.button(2).enable()
             } else {
                 dt.button(2).disable()

@@ -30,7 +30,6 @@ public class Contact {
     @JoinColumn(name="POINT_ID", referencedColumnName = "ID")
     private Point point;
 
-
     @Column
     @JsonView(DataTablesOutput.View.class)
     private String phone;
@@ -49,6 +48,13 @@ public class Contact {
     @Column
     @JsonView(DataTablesOutput.View.class)
     private String email;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonView(DataTablesOutput.View.class)
+    @JoinColumn(name="COMPANY_ID")
+    private Company company;
+
+
 
 
 

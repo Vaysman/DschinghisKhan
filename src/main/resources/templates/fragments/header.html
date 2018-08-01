@@ -120,7 +120,7 @@
 
     <!--</ul>-->
     <ul class="navbar-nav flex-row">
-        <li class="nav-item"><a class="nav-link" th:classappend="${#strings.equals(pageName,'orders')} ? 'active' : ''" href="/orders"><i class="fa fa-th-list" aria-hidden="true"></i>
+        <li class="nav-item"><a class="nav-link" th:classappend="${#strings.equals(pageName,'orders')} ? 'active' : ''" href="/orders">
             Заявки
             <span class="badge badge-primary" th:if="${managedOffers!=null && #lists.size(managedOffers) > 0}" th:text="${#lists.size(managedOffers)}"></span>
             <span class="badge badge-success" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}" th:text="${#lists.size(pendingOrders)}"></span>
@@ -128,14 +128,13 @@
         </li>
         <!--<li class="nav-item" th:classappend="${#strings.equals(pageName,'routes')} ? 'active' : ''" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_DISPATCHER')"><a class="nav-link" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск-->
             <!--маршрутов</a></li>-->
-        <li class="nav-item" th:classappend="${#strings.equals(pageName,'admin')} ? 'active' : ''" ><a class="nav-link" href="/main" target="_self"><i class="fa fa-cog"
-                                                                                aria-hidden="true"></i>
+        <li class="nav-item" th:classappend="${#strings.equals(pageName,'admin')} ? 'active' : ''" ><a class="nav-link" href="/main" target="_self">
             Настройки</a></li>
         <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link"
                                                                                                 href="/swagger-ui.html"
-                                                                                                target="_blank"><i
-                class="fa fa-code" aria-hidden="true"></i> API</a></li>
-        <li class="nav-item"  sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link" href="/pdf-info" target="_blank"><i class="fa fa-info" aria-hidden="true"></i> О программе</a></li>
+                                                                                                target="_blank">
+             API</a></li>
+        <li class="nav-item"  sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link" href="/pdf-info" target="_blank"> О программе</a></li>
     </ul>
 
     <ul class="navbar-nav ml-md-auto d-none flex-row d-md-flex">

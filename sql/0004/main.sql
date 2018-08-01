@@ -24,3 +24,5 @@ ALTER TABLE points ADD y DECIMAL(20,12) NULL;
 
 
 ALTER TABLE orders ADD dispatch_date DATETIME NULL;
+
+ALTER TABLE contacts ADD company_id int NULL;

@@ -69,19 +69,19 @@
                                    class="text-sm form-text red"></small>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="companyShortName" class="cols-sm-2 control-label">Краткое название компании<sup
-                                class="red">*</sup></label>
-                        <div class="cols-sm-10">
-                            <div class="input-group mb-3">
-                                <input type="text" th:classappend="${companyShortNameError!=null} ? 'error-red' : ''"
-                                       th:field="*{companyShortName}" class="form-control" id="companyShortName"
-                                       placeholder="Краткое Название"/>
-                            </div>
-                            <small th:if="${companyShortNameError!=null}" th:text="${companyShortNameError}"
-                                   class="text-sm form-text red"></small>
-                        </div>
-                    </div>
+                    <!--<div class="form-group">-->
+                        <!--<label for="companyShortName" class="cols-sm-2 control-label">Краткое название компании<sup-->
+                                <!--class="red">*</sup></label>-->
+                        <!--<div class="cols-sm-10">-->
+                            <!--<div class="input-group mb-3">-->
+                                <!--<input type="text" th:classappend="${companyShortNameError!=null} ? 'error-red' : ''"-->
+                                       <!--th:field="*{companyShortName}" class="form-control" id="companyShortName"-->
+                                       <!--placeholder="Краткое Название"/>-->
+                            <!--</div>-->
+                            <!--<small th:if="${companyShortNameError!=null}" th:text="${companyShortNameError}"-->
+                                   <!--class="text-sm form-text red"></small>-->
+                        <!--</div>-->
+                    <!--</div>-->
                     <div class="form-group">
                         <label for="email" class="cols-sm-2 control-label">E-mail</label>
                         <div class="cols-sm-10">
@@ -92,11 +92,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <h6>Пользователь компании</h6>
-                        <small class="text-sm text-muted">
-                            Пользователь, под которым будет заходить компания<br>
-                            После регистрации можно будет создать нескольких пользователей
-                        </small>
+
                     </div>
                     <div class="form-group">
                         <label for="login" class="cols-sm-2 control-label">Логин<sup class="red">*</sup></label>
@@ -107,6 +103,9 @@
                             </div>
                             <small th:if="${loginError!=null}" th:text="${loginError}"
                                    class="text-sm form-text red"></small>
+                            <small class="text-sm text-muted">
+                                После регистрации можно будет создать нескольких пользователей
+                            </small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -123,16 +122,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <h6>Пункт отправки по умолчанию</h6>
-                        <small class="text-sm text-muted">Укажите основной склад доставки</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="pointName" class="cols-sm-2 control-label">Склад отправки</label>
+                        <label for="pointName" class="cols-sm-2 control-label">Основной склад отправки</label>
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:classappend="${pointNameError!=null} ? 'error-red' : ''"
                                        th:field="*{pointName}" class="form-control" id="pointName"
-                                       placeholder="Название пункта"/>
+                                       placeholder="Название пункта, например 'РЦ Рязань'"/>
                             </div>
                             <small th:if="${pointNameError!=null}" th:text="${pointNameError}"
                                    class="text-sm form-text red"></small>
@@ -153,9 +148,6 @@
                             </div>
                             <small th:if="${pointAddressError!=null}" th:text="${pointAddressError}"
                                    class="text-sm form-text red"></small>
-                            <small th:if="${pointAddressError==null}" class="text-muted form-text">Указывайте как можно
-                                корректнее - этот адрес будет использоваться для интеграции с географическими сервисами
-                            </small>
                         </div>
                     </div>
                     <div class="form-group" id="addressCheckMap" style="height: 400px; display: none;"></div>
