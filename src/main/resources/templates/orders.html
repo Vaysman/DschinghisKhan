@@ -9,8 +9,10 @@
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/all-orders.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
             src="/orders/js/orders-in-work-dispatcher.js"></script>
-    <script src="/main/js/dispatcher/transportCompanies.js"
-            sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
+    <script src="/orders/js/all-companies-dispatcher.js"
+            sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")'></script>
+    <script src="/orders/js/all-companies-admin.js"
+            sec:authorize='hasAnyAuthority("ROLE_ADMIN")'></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
             src="/main/js/dispatcher/points.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'

@@ -46,7 +46,7 @@ public class Company {
     @JsonView(DataTablesOutput.View.class)
     private Point point;
 
-    @Column
+    @Column(unique = true)
     @JsonView(DataTablesOutput.View.class)
     private String inn;
 

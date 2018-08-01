@@ -24,7 +24,6 @@ $(document).ready(function () {
                 }
             },
             fields: [
-                {label: 'ИНН', name: 'inn', type: 'text'},
                 {label: 'Кол-во наемного  транспорта', name: 'numberOfTransports', type: 'mask', mask: "###"},
                 {label: 'Код ati.su', name: 'atiCode', type: 'text'},
                 {label: 'ФИО главного бухгалтера', name: 'accountantName', type: 'text'},
@@ -73,6 +72,7 @@ $(document).ready(function () {
 
                 {label: 'Название', name: 'name', type: 'text'},
                 {label: 'Краткое название', name: 'shortName', type: 'text', fieldInfo: "Будет использовано как логин"},
+                {label: 'ИНН', name: 'inn', type: 'text'},
                 {
                     label: "E-mail",
                     name: "email",
