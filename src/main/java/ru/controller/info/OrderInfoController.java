@@ -8,19 +8,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.dao.entity.Order;
 import ru.dao.repository.OrderRepository;
-import ru.dao.repository.RouteRepository;
 
 @Controller
 @RequestMapping("/info")
 public class OrderInfoController {
-    private final RouteRepository routeRepository;
 
     private final OrderRepository orderRepository;
 
     @Autowired
-    public OrderInfoController(OrderRepository orderRepository, RouteRepository routeRepository) {
+    public OrderInfoController(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.routeRepository = routeRepository;
     }
 
     @RequestMapping(value="/orders/{orderId}")
