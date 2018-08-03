@@ -1,5 +1,6 @@
 package ru.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
@@ -16,10 +17,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
-@Builder
-@Entity
 @Table(name = "orders",indexes = {
         @Index(name = "orders_number_uindex", columnList = "number", unique = true),
         @Index(name = "orders_transport_company_id_index", columnList = "transport_company_id"),
@@ -44,35 +45,35 @@ public class Order {
     @JsonView(DataTablesOutput.View.class)
     private OrderStatus status = OrderStatus.CREATED;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     @JsonView(DataTablesOutput.View.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROUTE_ID", referencedColumnName = "ID")
     private Route route;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     @JsonView(DataTablesOutput.View.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRANSPORT_COMPANY_ID", referencedColumnName = "ID")
     private Company company;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     @JsonView(DataTablesOutput.View.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DRIVER_ID", referencedColumnName = "ID")
     private Driver driver;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     @JsonView(DataTablesOutput.View.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRANSPORT_ID", referencedColumnName = "ID")
     private Transport transport;
 
 
+    @JsonView(DataTablesOutput.View.class)
     @Column(name = "requirements")
     @Convert(converter = StringSetToStringConverter.class)
-    @JsonView(DataTablesOutput.View.class)
     private Set<String> requirements = new HashSet<>();
 
+    @JsonView(DataTablesOutput.View.class)
     @Column(name = "cargo")
     @Convert(converter = StringSetToStringConverter.class)
-    @JsonView(DataTablesOutput.View.class)
     private Set<String> cargo = new HashSet<>();
 
     @Column
@@ -96,6 +97,7 @@ public class Order {
     private Float dispatcherPrice;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Float proposedPrice;
 
     @Column
@@ -104,14 +106,23 @@ public class Order {
     private OrderObligation orderObligation;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Integer originator;
 
     @Column
     @Enumerated(EnumType.STRING)
+    @JsonView(DataTablesOutput.View.class)
     private OrderPaymentType paymentType;
 
     @Column
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @JsonView(DataTablesOutput.View.class)
     private Date statusChangeDate;
+
+    @Column
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @JsonView(DataTablesOutput.View.class)
+    private Date dispatchDate;
 
 
 

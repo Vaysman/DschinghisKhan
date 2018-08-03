@@ -118,7 +118,7 @@ $(document).ready(function () {
     } );
 
 
-    var usersDataTable = $("#usersTable").DataTable({
+    var usersDataTable = $("#companyUsersTable").DataTable({
             processing: true,
             serverSide: true,
             searchDelay: 800,

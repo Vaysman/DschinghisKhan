@@ -1,5 +1,44 @@
 $(document).ready(function () {
 
+
+    let statusChangeEditorOnAllOrders = new $.fn.dataTable.Editor({
+        table: '#orderTable',
+        idSrc: 'id',
+        ajax: {
+            edit: {
+                contentType: 'application/json',
+                type: 'POST',
+                url: 'orderLifecycle/changeStatus/_id_',
+                data: function (d) {
+                    let newdata;
+                    $.each(d.data, function (key, value) {
+                        newdata = JSON.stringify(value);
+                    });
+                    return newdata;
+                },
+                success: function (response) {
+                    if (response === "Success") {
+                        orderDataTable.draw();
+                        statusChangeEditorOnAllOrders.close();
+                        orderDataTable.button(4).disable();
+                    } else {
+                        alert(response)
+                    }
+
+                },
+                error: function (jqXHR, exception) {
+                    alert(exception.responseText);
+                }
+            }
+        },
+        fields: [
+            {
+                label: 'Статус', name: 'status', data: "status", type: "selectize", options: statusesForDispatcherOptions
+            }
+        ]
+    });
+
+
     let orderAssignEditor = new $.fn.dataTable.Editor({
         table: '#orderTable',
         idSrc: 'id',
@@ -41,7 +80,7 @@ $(document).ready(function () {
                     maxItems: 10,
                     loadThrottle: 400,
                     load: function (query, callback) {
-                        $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
+                        $.get(`api/companies/search/findTop10ByNameContainingAndType/?name=${query}&type=TRANSPORT`,
                             function (data) {
                                 var companyOptions = [];
                                 data._embedded.companies.forEach(function (entry) {
@@ -57,7 +96,7 @@ $(document).ready(function () {
             {
                 label: 'Стоимость', name: 'dispatcherPrice', data: "routePrice", type: 'mask',
                 mask: "#",
-                fieldInfo: "Если стоимость отличается от указанной в маршруте - измените её здесь."
+                fieldInfo: "Стоимость без НДС<br>"
             }
         ]
     });
@@ -95,9 +134,6 @@ $(document).ready(function () {
                     $.each(d.data, function (key, value) {
                         if (value['route'] == "") {
                             delete value['route'];
-                        }
-                        if (value['assignedCompanies'].length === 0) {
-                            delete value['assignedCompanies'];
                         }
                         if (value['requirements'].length === 0) {
                             delete value['requirements'];
@@ -201,12 +237,13 @@ $(document).ready(function () {
                 }
             },
             {label: 'Обязательность заявки', name: 'orderObligation', type: "selectize", options: obligationOptions},
-            {label: "Оплата", name: "paymentType", type: "selectize", options: orderPaymentOptions}
+            {label: "Оплата", name: "paymentType", type: "selectize", options: orderPaymentOptions},
+            {label: "Дата исполнения", name: "dispatchDate", type: "datetime", format: "DD/MM/YYYY HH:mm", keyInput: false}
         ]
     });
 
 
-    var orderDataTable = $("#orderTable").DataTable({
+    var orderDataTable = $("table#orderTable").DataTable({
             processing: true,
             serverSide: true,
             searchDelay: 800,
@@ -217,7 +254,7 @@ $(document).ready(function () {
                     return JSON.stringify(d);
                 },
                 url: "dataTables/ordersForUser", // json datasource
-                type: "post"  // method  , by default get
+                type: "POST"  // method  , by default get
             },
             dom: 'Btp',
             language: {
@@ -240,7 +277,7 @@ $(document).ready(function () {
                     editor: orderEditor
                 }, {
 
-                    text: "Назначить компании",
+                    text: "Назначить перевозчика",
                     action: function (e, dt, node, config) {
                         orderAssignEditor.edit(orderDataTable.rows('.selected', {select: true}), 'Назначить компании', {
                             "label": "Назначить",
@@ -250,7 +287,19 @@ $(document).ready(function () {
                         });
                     },
                     enabled: false
-                }
+                },{
+
+                    text: "Изменить статус",
+                    action: function (e, dt, node, config) {
+                        statusChangeEditorOnAllOrders.edit(orderDataTable.rows('.selected', {select: true}), 'Изменить статус', {
+                            "label": "Изменить статус",
+                            "fn": function () {
+                                this.submit();
+                            }
+                        });
+                    },
+                    enabled: false
+                },
             ],
             "paging": 10,
             "columnDefs": [
@@ -263,31 +312,23 @@ $(document).ready(function () {
                     "name": "route.name",
                     "data": "route.name",
                     "targets": 3,
-                    searchable: false,
-                    orderable: false,
                     defaultContent: ""
                 },
                 {
                     "name": "company.name",
                     "data": "company.name",
-                    searchable: false,
-                    orderable: false,
                     "targets": 4,
                     defaultContent: ""
                 },
                 {
                     "name": "transport.number",
                     "data": "transport.number",
-                    searchable: false,
-                    orderable: false,
                     "targets": 5,
                     defaultContent: ""
                 },
                 {
                     "name": "driver.name",
                     "data": "driver.name",
-                    searchable: false,
-                    orderable: false,
                     "targets": 6,
                     defaultContent: ""
                 },
@@ -346,27 +387,43 @@ $(document).ready(function () {
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
+                },
+                {
+                    "name": "dispatchDate",
+                    "data": "dispatchDate",
+                    "targets": 14,
+                    searchable: false,
+                    defaultContent: ""
                 }
-                // {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, "targets": 9,defaultContent: ""},
-                // {"name": "volume", "data": "volume", searchable:false, orderable: false, "targets": 10,defaultContent: "" , render: function (data, type, row, meta) {
+                // {"name": "vehicleType", "data": "vehicleType", searchable:false, orderable: false, defaultContent: ""},
+                // {"name": "volume", "data": "volume", searchable:false, orderable: false, defaultContent: "" , render: function (data, type, row, meta) {
                 //         return (data!==null) ? `${data}м<sup>3</sup>` : "";
                 //     }},
-                // {"name": "tonnage", "data": "tonnage", searchable:false, orderable: false, "targets": 11,defaultContent: "", render: function (data, type, row, meta) {
+                // {"name": "tonnage", "data": "tonnage", searchable:false, orderable: false, defaultContent: "", render: function (data, type, row, meta) {
                 //         return (data!==null) ? `${data}т` : "";
                 //     }},
-                // {"name": "loadingType", "data": "loadingType", searchable:false, orderable: false, "targets": 12,defaultContent: ""},
-                // {"name": "comment", "data": "comment", searchable:false, orderable: false, "targets": 13,defaultContent: ""},
+                // {"name": "loadingType", "data": "loadingType", searchable:false, orderable: false, defaultContent: ""},
+                // {"name": "comment", "data": "comment", searchable:false, orderable: false, defaultContent: ""},
             ]
         }
     );
 
     orderDataTable.on('select', function (e, dt, type, indexes) {
-        if (orderDataTable.row(indexes[0]).data().status == "Создано") {
-            orderDataTable.button(3).enable();
-        } else {
-            orderDataTable.button(3).disable();
+            if (orderDataTable.row(indexes[0]).data().status == "Создано") {
+                dt.button(3).enable();
+            } else {
+                dt.button(3).disable();
+            }
+
+            let currentStatus = orderDataTable.row(indexes[0]).data().status;
+            if (changeableStatuses.includes(currentStatus)) {
+                dt.button(4).enable();
+            } else {
+                dt.button(4).disable();
+
+            }
         }
-    });
+        );
 
     orderDataTable.on('deselect', function () {
         orderDataTable.button(3).disable();

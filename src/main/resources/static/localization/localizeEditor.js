@@ -4,17 +4,17 @@ $('document').ready(function () {
 $.extend(true, $.fn.dataTable.Editor.defaults, {
     "i18n": {
         "create": {
-            "button": "Создать",
+            "button": "<i style='color: green' class='fa fa-plus'></i> Создать",
             "title": "Добавить новую запись",
             "submit": "Создать"
         },
         "edit": {
-            "button": "Изменить",
+            "button": "<i class='fa fa-edit'></i> Изменить",
             "title": "Изменить запись",
             "submit": "Обновить"
         },
         "remove": {
-            "button": "Удалить",
+            "button": "<i class='fa fa-minus'></i> Удалить",
             "title": "Удалить",
             "submit": "Удалить",
             "confirm": {

@@ -87,6 +87,22 @@ public class Route {
 
     @Column
     @JsonView(DataTablesOutput.View.class)
+    private Float costPerHour;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float costPerHourNds;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float costPerPoint;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float costPerPointNds;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
     private Integer tempTo;
 
     @Column
@@ -100,7 +116,7 @@ public class Route {
 
     @Column
     @Enumerated(EnumType.STRING)
-//    @JsonView(DataTablesOutput.View.class)
+    @JsonView(DataTablesOutput.View.class)
     private VehicleBodyType vehicleType= VehicleBodyType.TENT;
 
     @Column
@@ -145,12 +161,18 @@ public class Route {
         if(costPerKilometer!=null && costPerKilometerNds==null){
             costPerKilometerNds=calculateNds(costPerKilometer);
         }
-//        if(costPerPrr==null && costPerPrrNds!=null){
-//            costPerPrr=calculateNoNds(costPerPrrNds);
-//        }
-//        if(costPerPrr!=null && costPerPrrNds==null){
-//            costPerPrrNds=calculateNds(costPerPrr);
-//        }
+        if(costPerPoint==null && costPerPointNds!=null){
+            costPerPoint=calculateNoNds(costPerPointNds);
+        }
+        if(costPerPoint!=null && costPerPointNds==null){
+            costPerPointNds=calculateNds(costPerPoint);
+        }
+        if(costPerHour==null && costPerHourNds!=null){
+            costPerHour=calculateNoNds(costPerHourNds);
+        }
+        if(costPerHour!=null && costPerHourNds==null){
+            costPerHourNds=calculateNds(costPerHour);
+        }
         if(costPerPallet==null && costPerPalletNds!=null){
             costPerPallet=calculateNoNds(costPerPalletNds);
         }

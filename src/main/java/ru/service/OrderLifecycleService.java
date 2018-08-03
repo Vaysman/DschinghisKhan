@@ -195,6 +195,7 @@ public class OrderLifecycleService {
                     .company(company)
                     .proposedPrice(orderAcceptData.getProposedPrice())
                     .dispatcherPrice(order.getDispatcherPrice())
+                    .proposedPriceComment(orderAcceptData.getProposedPriceComment())
                     .orderNumber(order.getNumber())
                     .driver(driver)
                     .transport(transport)

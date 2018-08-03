@@ -3,49 +3,6 @@ function initReference(reference) {
 };
 
 
-Vue.component('pending-order-info', {
-    props: ['order'],
-    template:
-    '<div v-if="order" class="col-7" id="pendingOrderInfo">' +
-    '<h5 class="red-first-letter">{{order.number}}</h5>' +
-    '    <div class="row">' +
-    '      <div class="col-4">' +
-    '           Маршрут:<br>' +
-    '           {{order.route.name}}<br>' +
-    '       <br>' +
-    '         Дата оплаты:<br>' +
-    '         {{order.paymentDate}}<br><br>' +
-    '         ' +
-    '         Требования:' +
-    '         <ul>' +
-    '           <li v-for="requirement in order.requirements">{{requirement}}</li>' +
-    '         </ul>' +
-    '<br>' +
-    '         </div>' +
-    '       <div class="col-4">' +
-    '           Обязательность:<br>{{order.orderObligation}}<br><br>' +
-    '           Дата возврата документов:<br>' +
-    '           {{order.documentReturnDate}} <br><br>' +
-    '         Груз:' +
-    '       <ul>' +
-    '           <li v-for="cargoUnit in order.cargo">{{cargoUnit}}</li><br>' +
-    '                            ' +
-    '       </ul>' +
-    '       </div>' +
-    '       <div class="col-4">' +
-
-    '           Пункты доставки:' +
-    '           <ol>' +
-    '           <li v-for="routePoint in order.route.routePoints">{{routePoint.point.name}} </li>' +
-    '           </ol>' +
-    '              ' +
-    '                        </div>' +
-    '                    </div>' +
-    '                </div>',
-    mounted: function () {
-        console.log(this.order);
-    },
-});
 
 var orderList = new Vue({
     el: '#pendingOrders',
@@ -56,7 +13,8 @@ var orderList = new Vue({
         orderId: null,
         driverId: null,
         transportId: null,
-        proposedPrice: null
+        proposedPrice: null,
+        proposedPriceComment: ""
     },
     methods: {
         loadOrderInfo: function (orderId) {
@@ -80,7 +38,8 @@ var orderList = new Vue({
                         companyId: currentCompanyId,
                         driverId: this.driverId,
                         transportId: this.transportId,
-                        proposedPrice: this.proposedPrice
+                        proposedPrice: this.proposedPrice,
+                        proposedPriceComment: this.proposedPriceComment
                     }),
                 success: function (response) {
 
@@ -104,6 +63,14 @@ var orderList = new Vue({
                     alert(response)
                 }
             })
+        },
+        getOrderColor(isMandatory) {
+            console.log(isMandatory);
+            if (isMandatory == "true") {
+                return "list-group-item-danger"
+            } else {
+                return ""
+            }
         }
     },
     mounted: function () {

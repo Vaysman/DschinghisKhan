@@ -55,10 +55,17 @@ public class UserManagementService {
             pointRepository.save(point);
         }
 
+        String[] abbreviations = {"ОАО","ЗАО","ООО","ИП","\"","'","!","{","}","(",")","<",">"};
+        String shortName = registrationData.getCompanyName();
+
+        for(String abbreviation : abbreviations){
+            shortName = shortName.replace(abbreviation,"");
+        }
+
         Company company = Company
                 .builder()
                 .type(CompanyType.DISPATCHER)
-                .shortName(registrationData.getCompanyShortName())
+                .shortName(shortName.trim())
                 .name(registrationData.getCompanyName())
                 .email(registrationData.getEmail())
                 .point(point)

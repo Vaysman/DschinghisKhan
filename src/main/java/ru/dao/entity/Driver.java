@@ -30,6 +30,7 @@ public class Driver {
     private Integer id;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String name;
 
     @Column

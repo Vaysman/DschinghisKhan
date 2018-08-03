@@ -1,6 +1,7 @@
 package ru.dao.entity.specification;
 
 import org.springframework.data.jpa.domain.Specification;
+import ru.constant.CompanyType;
 import ru.dao.entity.Company;
 import ru.dao.entity.Route;
 
@@ -11,8 +12,8 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransportCompanies {
-    public static Specification<Company> transportCompaniesForRoute(final Route route) {
+public class Companies {
+    public static Specification<Company> companiesForRoute(final Route route) {
         return (final Root<Company> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> {
             final List<Predicate> predicates = new ArrayList<>();
 
@@ -27,5 +28,9 @@ public class TransportCompanies {
             predicates.add(criteriaBuilder.equal(root.get("originator"), originator));
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
+    }
+
+    public static Specification<Company> companiesByType(final CompanyType companyType){
+        return (final Root<Company> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> criteriaBuilder.equal(root.get("type"), companyType);
     }
 }

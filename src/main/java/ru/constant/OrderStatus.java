@@ -96,6 +96,8 @@ public enum  OrderStatus {
                 OrderStatus.LOADING,
                 OrderStatus.ACCIDENT,
                 OrderStatus.SITUATION,
+                OrderStatus.DELIVERED,
+                OrderStatus.DELIVERY_CONFD
         };
     }
 

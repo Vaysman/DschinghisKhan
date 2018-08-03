@@ -31,3 +31,4 @@ spring:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     open-in-view: true
     show-sql: true
+google-maps-key: AIzaSyCbWvhz07RoOhD8qs9dFtIxf3W4d_qQjAk

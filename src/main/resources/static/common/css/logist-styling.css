@@ -233,4 +233,20 @@ div.selectize-dropdown {
     color: #95ab8c;
 }
 
+.field-inline-button{
+    border-radius: 0;
+    border: none;
+    border-bottom: 2px solid rgba(26, 43, 109, 1);
+}
+
+.field-inline-button:hover{
+    background: rgba(26, 43, 109, 1);
+    border-bottom: 2px solid rgba(26, 43, 109, 1);
+    color: white;
+}
+
+/*.table{*/
+    /*width: 100%;*/
+/*}*/
+
 

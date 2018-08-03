@@ -26,17 +26,17 @@
         "sortDescending": ": активировать для сортировки столбца по убыванию"
     },
     "create": {
-        "button": "Создать",
+        "button": "<i class='fa fa-plus'></i> Создать",
         "title":  "Создать новую запись",
         "submit": "Создать"
     },
     "edit": {
-        "button": "Изменить",
+        "button": "<i class='fa fa-edit'></i>  Изменить",
         "title":  "Изменить запись",
         "submit": "Изменить"
     },
     "remove": {
-        "button": "Удалить",
+        "button": "<i class='fa fa-minus'></i> Удалить",
         "title":  "Удалить",
         "submit": "Удалить",
         "confirm": {
