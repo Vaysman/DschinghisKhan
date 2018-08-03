@@ -1,0 +1,1 @@
+ALTER TABLE points ADD work_time varchar(128) NULL;
