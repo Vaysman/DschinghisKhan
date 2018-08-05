@@ -52,9 +52,12 @@
         <div class="col-3"></div>
         <div class="white spaced-container col-lg-6" style="margin-top:70px">
             <div>
-                <form th:action="@{register/process}" th:object="${registrationData}" method="post">
+                <form th:action="@{register}" th:object="${registrationData}" method="post">
                     <div class="form-group">
                         <h5>Регистрация</h5>
+                    </div>
+                    <div th:if="${error!=null}" class="form-group red">
+                        <h5 th:text="${error}"></h5>
                     </div>
                     <div class="form-group">
                         <label for="companyName" class="cols-sm-2 control-label">Полное название компании<sup
@@ -69,19 +72,20 @@
                                    class="text-sm form-text red"></small>
                         </div>
                     </div>
-                    <!--<div class="form-group">-->
-                        <!--<label for="companyShortName" class="cols-sm-2 control-label">Краткое название компании<sup-->
-                                <!--class="red">*</sup></label>-->
-                        <!--<div class="cols-sm-10">-->
-                            <!--<div class="input-group mb-3">-->
-                                <!--<input type="text" th:classappend="${companyShortNameError!=null} ? 'error-red' : ''"-->
-                                       <!--th:field="*{companyShortName}" class="form-control" id="companyShortName"-->
-                                       <!--placeholder="Краткое Название"/>-->
-                            <!--</div>-->
-                            <!--<small th:if="${companyShortNameError!=null}" th:text="${companyShortNameError}"-->
-                                   <!--class="text-sm form-text red"></small>-->
-                        <!--</div>-->
-                    <!--</div>-->
+                    <div class="form-group">
+                        <label for="inn" class="cols-sm-2 control-label">
+                            ИНН<sup class="red">*</sup>
+                        </label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:classappend="${innError!=null} ? 'error-red' : ''"
+                                       th:field="*{inn}" class="form-control" id="inn"
+                                       placeholder="ИНН"/>
+                            </div>
+                            <small th:if="${innError!=null}" th:text="${innError}"
+                                   class="text-sm form-text red"></small>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="email" class="cols-sm-2 control-label">E-mail</label>
                         <div class="cols-sm-10">
@@ -151,9 +155,7 @@
                         </div>
                     </div>
                     <div class="form-group" id="addressCheckMap" style="height: 400px; display: none;"></div>
-                    <div th:if="${error!=null}" class="form-group">
-                        <h5 th:text="Ошибка:${error}"></h5>
-                    </div>
+
                     <div class="form-group ">
                         <input type="submit" class="btn btn-primary btn-block" value="Зарегистрироваться">
                     </div>

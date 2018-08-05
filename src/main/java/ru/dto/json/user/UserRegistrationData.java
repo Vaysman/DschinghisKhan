@@ -14,7 +14,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class UserRegistrationData {
     private String companyName;
-    private String companyShortName;
     private String email;
     private String inn;
     private String login;
@@ -27,6 +26,7 @@ public class UserRegistrationData {
 
         if (companyName.isEmpty()) errors.put("companyNameError", "Не указано название компании");
         if (login.isEmpty()) errors.put("loginError", "Не указан логин");
+        if (inn.isEmpty()) errors.put("innError", "Не указан ИНН");
         if (password.isEmpty()) errors.put("passwordError", "Не указан пароль");
         if (password.length() < 6) errors.put("passwordError", "Пароль меньше 6 символов");
         if (pointName.isEmpty() && !pointAddress.isEmpty()) errors.put("pointNameError","Если указан адрес - нужно так же указать название");

@@ -10,6 +10,7 @@ import ru.constant.CompanyType;
 import ru.dao.entity.Company;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CompanyRepository extends DataTablesRepository<Company, Integer> {
     @Override
@@ -18,6 +19,9 @@ public interface CompanyRepository extends DataTablesRepository<Company, Integer
     List<Company> findTop10ByNameContainingAndType(@Param("name") String name, @Param("type") CompanyType companyType);
     List<Company> findTop10ByNameContaining(@Param("name") String name);
     List<Company> findTop10ByNameContainingAndOriginator(@Param("name") String name, @Param("originator") Integer originator);
+
+
+    Optional<Company> findFirstByInn(String inn);
 
     @Override
     @PreAuthorize("hasAuthority('ADMIN')")

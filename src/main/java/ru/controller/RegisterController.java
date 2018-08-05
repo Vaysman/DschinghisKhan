@@ -13,16 +13,19 @@ import ru.service.UserManagementService;
 import java.util.Map;
 
 @Controller
+//@RequestMapping("/register")
 public class RegisterController {
 
     private final UserManagementService userManagementService;
 
     @Autowired
-    public RegisterController(UserManagementService userManagementService) {
+    public RegisterController(
+            UserManagementService userManagementService
+    ) {
         this.userManagementService = userManagementService;
     }
 
-    @PostMapping("/register/process")
+    @PostMapping("/register")
     public String process(@ModelAttribute UserRegistrationData registrationData, Model model) {
         Map<String, String> errors = registrationData.check();
 
@@ -31,13 +34,13 @@ public class RegisterController {
                 User registeredUser =userManagementService.register(registrationData);
                 if(registeredUser!=null) {
                     userManagementService.setAuthorized(registeredUser, registrationData.getPassword());
-                    return "redirect:../profile";
+                    return "redirect:/profile";
                 } else {
-                    model.addAttribute("error","Непредвиденная ошибка. Запишите введенные данные и свяжитесь с администратором");
+                    model.addAttribute("error","Непредвиденная ошибка. Запишите введенные данные и свяжитесь с поддержкой");
                     model.addAttribute("registrationData", registrationData);
                     return "register";
                 }
-            } catch (IllegalArgumentException exception) {
+            } catch (Exception exception) {
                 model.addAttribute("registrationData", registrationData);
                 model.addAttribute("error", exception.getMessage());
                 return "register";

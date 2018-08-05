@@ -1,7 +1,10 @@
 package ru.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.authentication.UserCredentials;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +21,8 @@ import ru.dao.repository.PointRepository;
 import ru.dao.repository.UserRepository;
 import ru.dto.json.user.UserRegistrationData;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.Collections;
 
 @Service
@@ -25,12 +30,16 @@ public class UserManagementService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final PointRepository pointRepository;
+    private final JavaMailSender sender;
+    private final ResourceLoader resourceLoader;
 
     @Autowired
-    public UserManagementService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository) {
+    public UserManagementService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, JavaMailSender sender, ResourceLoader resourceLoader) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.pointRepository = pointRepository;
+        this.sender = sender;
+        this.resourceLoader = resourceLoader;
     }
 
 
@@ -43,8 +52,13 @@ public class UserManagementService {
 
 
     @Transactional
-    public User register(UserRegistrationData registrationData){
-        if (userRepository.findByLogin(registrationData.getLogin()).isPresent()) throw new IllegalArgumentException("Данный пользователь уже существует");
+    public User register(UserRegistrationData registrationData) throws Exception {
+        userRepository.findByLogin(registrationData.getLogin()).ifPresent((x)->{
+            throw new IllegalArgumentException("Данный пользователь уже существует");
+        });
+        companyRepository.findFirstByInn(registrationData.getInn()).ifPresent((x) -> {
+            throw new IllegalArgumentException(String.format("Компания с таким ИНН уже существует\n(%s/%s)",x.getName(),x.getEmail()));
+        });
 
         Point point = null;
         if(!registrationData.getPointAddress().isEmpty() && !registrationData.getPointName().isEmpty()){
@@ -81,12 +95,31 @@ public class UserManagementService {
                 .login(registrationData.getLogin())
                 .email(registrationData.getEmail())
                 .originator(company.getId())
-                .username(registrationData.getCompanyShortName())
+                .username(company.getShortName())
                 .userRole(UserRole.ROLE_DISPATCHER)
                 .passAndSalt(registrationData.getPassword())
                 .company(company)
                 .build();
         userRepository.save(user);
+
+        if(!company.getEmail().equals("test@test.test")) {
+            try {
+                MimeMessage message = sender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true);
+                helper.setFrom("tarificationsquad@gmail.com");
+                helper.setTo(company.getEmail());
+                helper.setSubject("Регистрация прошла успешно!");
+                helper.setText("Теперь вам доступен весь функционал сервиса \"Кулуртай\"!\n" +
+                        "Ведите работу с вашими перевозчиками, добавляйте новых, обменивайтесь информацией онлайн.\n" +
+                        "В приложении подробная инструкция по работе с сервисом. В любое время вам поможет служба поддержки пользователей." +
+                        "\n\nС уважением,\n" +
+                        "команда проекта \"Курултай\".\n");
+                helper.addAttachment("Kurulway.pdf", resourceLoader.getResource("classpath:Kurulway.pdf").getFile());
+                sender.send(message);
+            } catch (MessagingException e) {
+                throw new IllegalArgumentException(String.format("Невозможно отослать письмо о регистрации:\n%s", e.getMessage()));
+            }
+        }
 
 
         return user;
