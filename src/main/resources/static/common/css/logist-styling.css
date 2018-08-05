@@ -249,4 +249,16 @@ div.selectize-dropdown {
     /*width: 100%;*/
 /*}*/
 
+.clipped {
+    overflow: hidden;
+    display: inline-block;
+}
+.r-half {
+    position: relative;
+    left: -30%;
+}
+.l-half {
+    position: relative;
+    left: 30%;
+}
 

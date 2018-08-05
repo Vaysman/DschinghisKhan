@@ -63,13 +63,13 @@ $(document).ready(function () {
 
             fields: [
                 {
-                    label: 'Название',
+                    label: 'Название<sup class="red">*</sup>',
                     name: 'name',
                     type: 'text',
                     fieldInfo: "Краткая информация о маршруте, например: Москва-Рязань, 20т 15 000 рублей без НДС, тент"
                 },
                 {
-                    label: 'ТК',
+                    label: 'ТК<sup class="red">*</sup>',
                     name: 'company',
                     type: 'selectize',
                     options: [],
@@ -85,19 +85,18 @@ $(document).ready(function () {
                                     callback(companyOptions);
                                 }
                             );
-
                         }
                     }
                 },
                 {
-                    label: 'Стоимость за маршрут', name: 'totalCost', type: "mask", mask: "#",
+                    label: 'Стоимость за маршрут<span class="clipped"><sup class="red l-half">*</sup></span>', name: 'totalCost', type: "mask", mask: "#",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за маршрут + НДС', name: 'totalCostNds', type: "mask", mask: "#",
+                    label: 'Стоимость за маршрут + НДС<span class="clipped"><sup class="red r-half">*</sup></span>', name: 'totalCostNds', type: "mask", mask: "#",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
@@ -174,10 +173,10 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    label: 'Температура (От)', name: 'tempFrom', type: "text",
+                    label: 'Температура (От)<sup class="red">*</sup>', name: 'tempFrom', type: "text",
                 },
                 {
-                    label: 'Темература (До)', name: 'tempTo', type: "text",
+                    label: 'Темература (До)<sup class="red">*</sup>', name: 'tempTo', type: "text",
                 },
                 {
                     label: 'Объем м<sup>3</sup>', name: 'volume', type: "mask", mask: "000",
@@ -193,8 +192,19 @@ $(document).ready(function () {
                         placeholder: ""
                     }
                 },
-                {label: 'Тип погрузки', name: 'loadingType', type: "selectize", options: loadingTypeOptions},
-                {label: 'Тип транспорта', name: 'vehicleType', type: "selectize", options: vehicleBodyTypeOptions},
+                {label: 'Тип погрузки<sup class="red">*</sup>', name: 'loadingType', type: "selectize", options: loadingTypeOptions,
+                },
+                {label: 'Тип транспорта<sup class="red">*</sup>', name: 'vehicleType', type: "selectize", options: vehicleBodyTypeOptions,
+                    opts:{
+                    onChange:function (value) {
+                        if(value==="Рефрижератор"){
+                            routeEditor.field('tempTo').show();
+                            routeEditor.field('tempFrom').show();
+                        } else {
+                            routeEditor.field('tempTo').hide();
+                            routeEditor.field('tempFrom').hide();
+                        }
+                    }}},
                 {label: 'Комментарий', name: 'comment', type: "textarea"},
 
             ]
@@ -620,8 +630,8 @@ $(document).ready(function () {
         }
 
         routeEditor.on('open', function () {
-            $('#routesForm').closest(".DTE_Action_Edit").parent().parent().css('max-width', '750px');
-            $('#routesForm').closest(".DTE_Action_Create").parent().parent().css('max-width', '750px');
+            $('#routesForm').closest(".DTE_Action_Edit").parent().parent().css('max-width', '775px');
+            $('#routesForm').closest(".DTE_Action_Create").parent().parent().css('max-width', '775px');
         });
 
 
