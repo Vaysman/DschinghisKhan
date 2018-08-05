@@ -169,16 +169,18 @@
                         <div class="col-4">
 
                             Пункты:
-                            <ol>
-                                <li v-for="routePoint in order.route.routePoints">
-                                    {{routePoint.point.name}}
+                                <div class="row" v-for="routePoint in order.route.routePoints">
+                                    <div class="col-4">
+                                        {{routePoint.queueNumber==0 ? 'Склад отправки' : routePoint.queueNumber}}
+
+                                    </div>
+                                    <div class="col-6">
+                                        {{routePoint.point.name}}
                                     {{routePoint.point.address}}
-                                </li>
-                            </ol>
+                                    </div>
+                                </div>
                             Дата исполнения:<br>
                             {{order.dispatchDate}}
-
-                        </div>
                     </div>
                 </div>
                 <div class="col-3" id="pendingOrderAcceptForm" :hidden="(order==null)">
@@ -212,6 +214,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <div id="tab-managed-offers" class="tab-pane">
         <div class="spaced-container white container-fluid">
