@@ -207,6 +207,9 @@ $(document).ready(function () {
                             routeEditor.field('tempFrom').hide();
                         }
                     }}},
+                {
+                    label: 'Догруз', name: 'afterLoad', type: "radio", options: [{ label:"Отдельная машина", value:false}, {label:"Возможен догруз",value:true}]
+                },
                 {label: 'Комментарий', name: 'comment', type: "textarea"},
 
             ]
@@ -368,11 +371,22 @@ $(document).ready(function () {
                         defaultContent: ""
                     },
                     {
+                        "name": "afterLoad",
+                        "data": "afterLoad",
+                        searchable: false,
+                        orderable: false,
+                        "targets": 14,
+                        render: function (data) {
+                            return (data) ? "Возможен догруз" : "Отдельная машина"
+                        },
+                        defaultContent: ""
+                    },
+                    {
                         "name": "comment",
                         "data": "comment",
                         searchable: false,
                         orderable: false,
-                        "targets": 14,
+                        "targets": 15,
                         defaultContent: ""
                     },
                 ]

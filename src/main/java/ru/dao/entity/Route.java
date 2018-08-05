@@ -134,6 +134,9 @@ public class Route {
     @OrderBy("queueNumber ASC")
     private SortedSet<RoutePoint> routePoints = new TreeSet<>();
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Boolean afterLoad;
 
     @Column
     private Integer originator;

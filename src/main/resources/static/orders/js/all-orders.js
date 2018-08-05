@@ -248,6 +248,9 @@ $(document).ready(function () {
                 type: 'numeric'
             },
             {
+                label: 'Догруз', name: 'afterLoad', type: "radio", options: [{ label:"Отдельная машина", value:false}, {label:"Возможен догруз",value:true}]
+            },
+            {
                 label: 'Кол-во паллет',
                 name: 'numberOfPallets',
                 type: 'mask',
@@ -435,9 +438,20 @@ $(document).ready(function () {
                     defaultContent: ""
                 },
                 {
+                    "name": "afterLoad",
+                    "data": "afterLoad",
+                    searchable: false,
+                    orderable: false,
+                    "targets": 14,
+                    render: function (data) {
+                        return (data) ? "Возможен догруз" : "Отдельная машина"
+                    },
+                    defaultContent: ""
+                },
+                {
                     "name": "paymentDate",
                     "data": "paymentDate",
-                    "targets": 14,
+                    "targets": 15,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -445,7 +459,7 @@ $(document).ready(function () {
                 {
                     "name": "documentReturnDate",
                     "data": "documentReturnDate",
-                    "targets": 15,
+                    "targets": 16,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -453,7 +467,7 @@ $(document).ready(function () {
                 {
                     "name": "rating",
                     "data": "rating",
-                    "targets": 16,
+                    "targets": 17,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -461,7 +475,7 @@ $(document).ready(function () {
                 {
                     "name": "orderObligation",
                     "data": "orderObligation",
-                    "targets": 17,
+                    "targets": 18,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -469,15 +483,16 @@ $(document).ready(function () {
                 {
                     "name": "paymentType",
                     "data": "paymentType",
-                    "targets": 18,
+                    "targets": 19,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
                 },
+
                 {
                     "name": "dispatchDate",
                     "data": "dispatchDate",
-                    "targets": 19,
+                    "targets": 20,
                     searchable: false,
                     defaultContent: ""
                 }

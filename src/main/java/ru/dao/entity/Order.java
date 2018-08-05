@@ -153,6 +153,9 @@ public class Order {
     @JsonView(DataTablesOutput.View.class)
     private Float cargoLength;
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Boolean afterLoad;
 
 
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
