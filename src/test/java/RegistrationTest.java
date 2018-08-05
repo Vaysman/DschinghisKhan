@@ -41,15 +41,16 @@ public class RegistrationTest {
 
     @Test
     public void registerUser_thenGetCompany_thenGetPoint_thenGetUser_thenCheckPassword(){
+        try {
         UserRegistrationData registrationData = UserRegistrationData.builder()
-                .companyName("tCompany")
-                .companyShortName("tcompany")
+                .companyName("ИП tCompany")
                 .email("test@test.test")
                 .login("tcomp")
                 .password("test")
                 .pointName("testPointName")
                 .pointAddress("Москва")
                 .build();
+
         User registeredUser = userManagementService.register(registrationData);
 
         List<Company> foundCompanies = companyRepository.findTop10ByNameContaining("tCompany");
@@ -67,6 +68,7 @@ public class RegistrationTest {
         assertThat(user.getSalt()).isNotEmpty();
         assertThat(user.getOriginator()).isEqualTo(company.getId());
         assertThat(user).isEqualTo(registeredUser);
+        assertThat(user).isEqualTo("tCompany");
 
         String correctPassAndSalt = DigestUtils.md5DigestAsHex((DigestUtils.md5DigestAsHex(("test").getBytes())+user.getSalt()).getBytes());
         assertThat(user.getPassAndSalt()).isEqualTo(correctPassAndSalt);
@@ -79,6 +81,9 @@ public class RegistrationTest {
         userManagementService.setAuthorized(registeredUser,"test");
         assertThat(SecurityContextHolder.getContext().getAuthentication().isAuthenticated()).isTrue();
         //If you made it here - congrats
+        } catch (Exception e){
+            assertThat(false).isEqualTo(true);
+        }
     }
 
 
