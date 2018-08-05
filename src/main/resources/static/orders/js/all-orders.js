@@ -79,6 +79,7 @@ $(document).ready(function () {
                     placeholder: "Нажмите, чтобы изменить",
                     maxItems: 10,
                     loadThrottle: 400,
+                    preload: true,
                     load: function (query, callback) {
                         $.get(`api/companies/search/findTop10ByNameContainingAndType/?name=${query}&type=TRANSPORT`,
                             function (data) {
@@ -172,7 +173,9 @@ $(document).ready(function () {
                 label: 'Маршрут', name: 'route', type: 'selectize',
                 options: [],
                 opts: {
-                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить", loadThrottle: 400,
+                    searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                    loadThrottle: 400,
+                    preload: true,
                     load: function (query, callback) {
                         $.get(`api/routes/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
                             function (data) {
@@ -198,6 +201,7 @@ $(document).ready(function () {
                     maxItems: 10,
                     placeholder: "Нажмите, чтобы изменить",
                     loadThrottle: 400,
+                    preload: true,
                     load: function (query, callback) {
                         $.get(`api/cargoTypes/search/findTop10ByNameStartingWith/?name=${query}`,
                             function (data) {

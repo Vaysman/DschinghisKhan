@@ -78,6 +78,7 @@ $(document).ready(function () {
                                 }
                             )
                         },
+                        preload: true,
                         loadThrottle: 500
                     }
                 },
@@ -89,6 +90,7 @@ $(document).ready(function () {
                         create: false,
                         placeholder: "Нажмите, чтобы изменить",
                         maxItems: 1,
+                        preload: true,
                         loadThrottle: 400,
                         load: function (query, callback) {
                             $.get(`api/companies/search/findTop10ByNameContainingAndType/?name=${query}&type=TRANSPORT`,

@@ -85,7 +85,9 @@ $(document).ready(function () {
                                     callback(companyOptions);
                                 }
                             );
-                        }
+                        },
+                        loadThrottle: 400,
+                        preload: true,
                     }
                 },
                 {
@@ -476,6 +478,7 @@ $(document).ready(function () {
                                         }
                                     )
                                 },
+                                preload: true,
                                 loadThrottle: 500
                             }
                         },
@@ -518,6 +521,7 @@ $(document).ready(function () {
                                         }
                                     )
                                 },
+                                preload: true,
                                 loadThrottle: 500
                             }
                         }
