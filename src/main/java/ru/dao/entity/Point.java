@@ -51,4 +51,8 @@ public class Point {
 
     @Column
     private Double y;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String workTime;
 }

@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Заявки</title>
+
     <th:block th:include="fragments/header :: scripts"></th:block>
+    <script src="/media/DataTables/numeric-plugin.js"></script>
     <script src="/media/vue.min.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/all-orders.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
@@ -86,6 +88,11 @@
                         <th>Водитель</th>
                         <th>Требования</th>
                         <th>Груз</th>
+                        <th>Описание груза</th>
+                        <th>Вес груза</th>
+                        <th>Объем груза</th>
+                        <th>Кол-во паллет</th>
+                        <th>Размеры груза</th>
                         <th>Дни для оплаты</th>
                         <th>Дни для возврата<br>документов</th>
                         <th>Рейтинг</th>
@@ -139,9 +146,25 @@
                             Груз:
                             <ul>
                                 <li v-for="cargoUnit in order.cargo">{{cargoUnit}}</li>
-                                <br>
-
                             </ul>
+                            {{order.cargoDescription}}
+                            <div v-if="order.cargoWeight && order.cargoVolume" class="row">
+
+                                <div class="col">
+                                    <br>
+                                    Вес:
+                                    {{order.cargoWeight}}кг
+                                </div>
+                                <div class="col">
+                                    <br>
+                                    Объем:
+                                    {{order.cargoVolume}}м<sup>3</sup>
+                                </div>
+                            </div>
+                            <div v-if="order.cargoHeight && order.cargoWidth && order.cargoLength">
+                            <br>Размер:<br>
+                            {{order.cargoHeight}}м x {{order.cargoWidth}}м х {{order.cargoLength}}м
+                            </div>
                         </div>
                         <div class="col-4">
 
@@ -304,6 +327,11 @@
                         <th>Водитель</th>
                         <th>Требования</th>
                         <th>Груз</th>
+                        <th>Описание груза</th>
+                        <th>Вес груза</th>
+                        <th>Объем груза</th>
+                        <th>Кол-во паллет</th>
+                        <th>Размеры груза</th>
                         <th>Дни для оплаты</th>
                         <th>Дни для возврата<br>документов</th>
                         <th>Рейтинг</th>
@@ -462,7 +490,7 @@
     </div>
     <div id="tab-contacts" class="tab-pane">
         <div class=" container-fluid spaced-container white" >
-            <h4>Пункты</h4>
+            <h4>Грузополучатели</h4>
             <div>
                 <table class="table table-hover table-striped " id="pointsTable">
                     <thead>
@@ -472,6 +500,7 @@
                         <th>Адрес</th>
                         <th>Полный адрес</th>
                         <th>Комментарий</th>
+                        <th>Рабочее время</th>
                     </tr>
                     </thead>
                 </table>

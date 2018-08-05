@@ -213,6 +213,44 @@ $(document).ready(function () {
                 }
             },
             {
+                label: 'Подробное описание груза',
+                name: 'cargoDescription',
+                type: 'text',
+                attr: {maxlength: 512}
+            },
+            {
+                label: 'Вес груза',
+                name: 'cargoWeight',
+                type: 'numeric'
+            },
+            {
+                label: 'Объем груза',
+                name: 'cargoVolume',
+                type: 'numeric',
+            },
+            {
+                label: 'Высота груза',
+                name: 'cargoHeight',
+                type: 'numeric',
+            },
+            {
+                label: 'Ширина груза',
+                name: 'cargoWidth',
+                type: 'numeric',
+            },
+            {
+                label: 'Длина груза',
+                name: 'cargoLength',
+                type: 'numeric'
+            },
+            {
+                label: 'Кол-во паллет',
+                name: 'numberOfPallets',
+                type: 'mask',
+                removeMaskOnSubmit:false,
+                mask: '09999',
+            },
+            {
                 label: 'Требования',
                 name: 'requirements',
                 type: 'selectize',
@@ -229,6 +267,7 @@ $(document).ready(function () {
                 label: 'Дней для возврата документов', name: 'documentReturnDate', type: "mask", mask: "#",
                 fieldInfo:"Через сколько дней статус заявки сменится с 'Доставлено'/'Подтверждение доставки' на 'Ожидает возврата документов'"
             },
+
             {
                 label: 'Коэф. изменения рейтинга', name: 'rating', type: "mask", mask: "###",
                 maskOptions: {
@@ -349,9 +388,52 @@ $(document).ready(function () {
                     defaultContent: ""
                 },
                 {
+                    "name": "cargoDescription",
+                    "data":"cargoDescription",
+                    "targets": 9,
+                    searchable: false,
+                    orderable: false,
+                    defaultContent: ""
+                },
+                {
+                    "name": "cargoWeight",
+                    data: "cargoWeight",
+                    "targets": 10,
+                    searchable: false,
+                    orderable: false,
+                    defaultContent: ""
+                },
+                {
+                    "name": "cargoVolume",
+                    data: "cargoVolume",
+                    "targets": 11,
+                    searchable: false,
+                    orderable: false,
+                    defaultContent: ""
+                },
+                {
+                    "name": "numberOfPallets",
+                    data:"numberOfPallets",
+                    "targets": 12,
+                    searchable: false,
+                    orderable: false,
+                    defaultContent: ""
+                },
+                {
+                    "name": "cargoSize",
+                    data: null,
+                    render: function (data, type, full) {
+                        return (data.cargoHeight !== null && data.cargoWidth !== null && data.cargoLength !== null) ? `${data.cargoHeight}x${data.cargoWidth}x${data.cargoLength}` : "";
+                    },
+                    "targets": 13,
+                    searchable: false,
+                    orderable: false,
+                    defaultContent: ""
+                },
+                {
                     "name": "paymentDate",
                     "data": "paymentDate",
-                    "targets": 9,
+                    "targets": 14,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -359,7 +441,7 @@ $(document).ready(function () {
                 {
                     "name": "documentReturnDate",
                     "data": "documentReturnDate",
-                    "targets": 10,
+                    "targets": 15,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -367,7 +449,7 @@ $(document).ready(function () {
                 {
                     "name": "rating",
                     "data": "rating",
-                    "targets": 11,
+                    "targets": 16,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -375,7 +457,7 @@ $(document).ready(function () {
                 {
                     "name": "orderObligation",
                     "data": "orderObligation",
-                    "targets": 12,
+                    "targets": 17,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -383,7 +465,7 @@ $(document).ready(function () {
                 {
                     "name": "paymentType",
                     "data": "paymentType",
-                    "targets": 13,
+                    "targets": 18,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -391,7 +473,7 @@ $(document).ready(function () {
                 {
                     "name": "dispatchDate",
                     "data": "dispatchDate",
-                    "targets": 14,
+                    "targets": 19,
                     searchable: false,
                     defaultContent: ""
                 }
