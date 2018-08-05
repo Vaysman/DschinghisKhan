@@ -125,6 +125,35 @@ public class Order {
     private Date dispatchDate;
 
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String cargoDescription;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float cargoWeight;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float cargoVolume;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Integer numberOfPallets;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float cargoHeight;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float cargoWidth;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Float cargoLength;
+
+
 
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
     @JsonIgnore
