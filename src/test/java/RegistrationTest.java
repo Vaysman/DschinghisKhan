@@ -68,7 +68,6 @@ public class RegistrationTest {
         assertThat(user.getSalt()).isNotEmpty();
         assertThat(user.getOriginator()).isEqualTo(company.getId());
         assertThat(user).isEqualTo(registeredUser);
-        assertThat(user).isEqualTo("tCompany");
 
         String correctPassAndSalt = DigestUtils.md5DigestAsHex((DigestUtils.md5DigestAsHex(("test").getBytes())+user.getSalt()).getBytes());
         assertThat(user.getPassAndSalt()).isEqualTo(correctPassAndSalt);

@@ -18,6 +18,9 @@ import javax.persistence.PrePersist;
 import java.util.HashSet;
 import java.util.Set;
 
+import static ru.util.Translit.cyr2lat;
+import static ru.util.Translit.removeAbbreviations;
+
 @Component
 public class CompanyListener {
 
@@ -36,9 +39,14 @@ public class CompanyListener {
         if(!company.getType().equals(CompanyType.TRANSPORT)) {
             return;
         }else {
+            company.setShortName(removeAbbreviations(company.getName()));
+            String companyUserLogin = cyr2lat(company.getShortName().replaceAll(" ",""));
+            while (userRepository.findByLogin(companyUserLogin).isPresent()){
+                companyUserLogin= companyUserLogin+"1";
+            }
             String userPassword = RandomStringGenerator.randomAlphaNumeric(8);
             User user = User.builder()
-                    .login(company.getShortName())
+                    .login(companyUserLogin)
                     .userRole(UserRole.ROLE_TRANSPORT_COMPANY)
                     .username(company.getShortName())
                     .company(company)

@@ -71,7 +71,6 @@ $(document).ready(function () {
             fields: [
 
                 {label: 'Название', name: 'name', type: 'text'},
-                {label: 'Краткое название', name: 'shortName', type: 'text', fieldInfo: "Будет использовано как логин"},
                 {label: 'ИНН', name: 'inn', type: 'text'},
                 {
                     label: "E-mail",
