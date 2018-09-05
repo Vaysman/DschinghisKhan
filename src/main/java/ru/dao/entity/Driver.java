@@ -34,37 +34,48 @@ public class Driver {
     private String name;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String phone;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String passportNumber;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String licenseNumber;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Integer rating;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Boolean hasMobileApp;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String mobileAppNumber;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Boolean isTracked;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String trackingNumber;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Boolean isHired;
 
     @Column
     @Enumerated(EnumType.STRING)
+    @JsonView(DataTablesOutput.View.class)
     private DriverPaymentType paymentType;
 
     //Company id
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Integer originator;
 }

@@ -42,7 +42,7 @@ var offerList = new Vue({
                 success: function (response) {
                     that.managedOffers = that.managedOffers.filter(mOffer => mOffer.id !== that.offerId);
                     that.offer = null;
-                    alert(response)
+                    // alert(response)
                 },
                 error: function (fgsfds, error) {
                     alert(error)
@@ -51,7 +51,7 @@ var offerList = new Vue({
         },
         getOfferColor(isPriceChanged) {
             console.log(isPriceChanged);
-            if (isPriceChanged != "false") {
+            if (isPriceChanged == "false") {
                 return ""
             } else {
                 return "list-group-item-danger"

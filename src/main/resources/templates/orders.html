@@ -7,7 +7,8 @@
 
     <th:block th:include="fragments/header :: scripts"></th:block>
     <script src="/media/DataTables/numeric-plugin.js"></script>
-    <script src="/media/vue.min.js"></script>
+    <!--<script src="/media/vue.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/all-orders.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
             src="/orders/js/orders-in-work-dispatcher.js"></script>
@@ -31,10 +32,12 @@
 <nav class="logist-tabs">
     <div>
         <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
-            <li id="tab-all-orders-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+            <li id="tab-all-orders-link" class="nav-item"
+                sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-all-orders"><i
                         class="fa fa-user" aria-hidden="true"></i> Все заявки</a>
             </li>
+
             <li id="tab-pending-orders-link" class="nav-item" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-pending-orders"><span
                         class="badge badge-light" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}"
@@ -54,17 +57,19 @@
                     <i class="fa fa-truck" aria-hidden="true"></i> Заявки в работе
                 </a>
             </li>
+            <li id="tab-routes-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="true" href="#tab-routes"><i
+                        class="fa fa-compass" aria-hidden="true"></i> Маршруты</a></li>
             <li id="tab-contacts-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-contacts"><i
                         class="fa fa-address-book" aria-hidden="true"></i> Грузополучатели</a>
             </li>
-            <li id="tab-companies-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+            <li id="tab-companies-link" class="nav-item"
+                sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-companies"><i
-                        class="fa fa-truck" aria-hidden="true"></i> ТК</a>
+                        class="fa fa-truck" aria-hidden="true"></i> Перевозчики</a>
             </li>
-            <li id="tab-routes-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
-                <a class="nav-link" data-toggle="tab" aria-selected="true" href="#tab-routes"><i
-                        class="fa fa-compass" aria-hidden="true"></i> Маршруты</a></li>
+
 
         </ul>
     </div>
@@ -124,9 +129,9 @@
                         </a>
                     </div>
                 </div>
-                <div v-if="order" class="col-7" id="pendingOrderInfo">
-                    <h5 class="red-first-letter">{{order.number}}</h5>
-                    <div class="row">
+                <div class="col-7" id="pendingOrderInfo">
+                    <h5 v-if="order" class="red-first-letter">{{order.number}}</h5>
+                    <div class="row" v-if="order">
                         <div class="col-4">
                             Маршрут:<br>
                             {{order.route.name}}<br>
@@ -163,25 +168,26 @@
                                 </div>
                             </div>
                             <div v-if="order.cargoHeight && order.cargoWidth && order.cargoLength">
-                            <br>Размер:<br>
-                            {{order.cargoHeight}}м x {{order.cargoWidth}}м х {{order.cargoLength}}м
+                                <br>Размер:<br>
+                                {{order.cargoHeight}}м x {{order.cargoWidth}}м х {{order.cargoLength}}м
                             </div>
                         </div>
                         <div class="col-4">
 
                             Пункты:
-                                <div class="row" v-for="routePoint in order.route.routePoints">
-                                    <div class="col-4">
-                                        {{routePoint.queueNumber==0 ? 'Склад отправки' : routePoint.queueNumber}}
+                            <div class="row" v-for="routePoint in order.route.routePoints">
+                                <div class="col-4">
+                                    {{routePoint.queueNumber==0 ? 'Склад отправки' : 'Разгрузка '+routePoint.queueNumber}}
 
-                                    </div>
-                                    <div class="col-6">
-                                        {{routePoint.point.name}}
-                                    {{routePoint.point.address}}
-                                    </div>
                                 </div>
+                                <div class="col-6">
+                                    {{routePoint.point.name}}
+                                    {{routePoint.point.address}}
+                                </div>
+                            </div>
                             Дата исполнения:<br>
                             {{order.dispatchDate}}
+                        </div>
                     </div>
                 </div>
                 <div class="col-3" id="pendingOrderAcceptForm" :hidden="(order==null)">
@@ -196,13 +202,15 @@
 
                     </div>
                     <div class="form-group">
-                        <label for="orderProposedPrice">Стоимость</label>
+                        <label for="orderProposedPrice">Стоимость<sup class="red">*</sup></label>
                         <input class="form-control" v-model="proposedPrice" id="orderProposedPrice">
-                        <span class="small text-muted">Предложить свою стоимость</span>
+                        <span class="small text-muted">Предложить свою стоимость</span><br>
+                        <span class="small text-muted"><span class="red">*</span> - Стоимость без НДС</span>
                     </div>
                     <div class="form-group">
                         <label for="pendingOrderPriceComment">Комментарий к изменению цены</label>
-                        <textarea  class="form-control" v-model="proposedPriceComment" id="pendingOrderPriceComment"></textarea>
+                        <textarea class="form-control" v-model="proposedPriceComment"
+                                  id="pendingOrderPriceComment"></textarea>
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" @click="acceptOrder()"
@@ -213,9 +221,9 @@
                         </button>
                     </div>
                 </div>
+
             </div>
         </div>
-    </div>
     </div>
     <div id="tab-managed-offers" class="tab-pane">
         <div class="spaced-container white container-fluid">
@@ -331,11 +339,6 @@
                         <th>Водитель</th>
                         <th>Требования</th>
                         <th>Груз</th>
-                        <th>Описание груза</th>
-                        <th>Вес груза</th>
-                        <th>Объем груза</th>
-                        <th>Кол-во паллет</th>
-                        <th>Размеры груза</th>
                         <th>Дни для оплаты</th>
                         <th>Дни для возврата<br>документов</th>
                         <th>Рейтинг</th>
@@ -496,7 +499,7 @@
         </div>
     </div>
     <div id="tab-contacts" class="tab-pane">
-        <div class=" container-fluid spaced-container white" >
+        <div class=" container-fluid spaced-container white">
             <h4>Грузополучатели</h4>
             <div>
                 <table class="table table-hover table-striped " id="pointsTable">

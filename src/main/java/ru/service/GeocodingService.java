@@ -18,9 +18,10 @@ public class GeocodingService {
 
     public GeocodingResult[] getAddressCoordinates(String address) throws IOException, InterruptedException, ApiException {
         GeoApiContext geoApiContext = new GeoApiContext.
-                Builder().
-                apiKey(apiKey).
-                build();
+                Builder()
+                .apiKey(apiKey)
+                .maxRetries(3)
+                .build();
         return GeocodingApi.geocode(geoApiContext,address).await();
     }
 }

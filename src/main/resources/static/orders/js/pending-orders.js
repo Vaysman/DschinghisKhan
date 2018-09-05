@@ -28,26 +28,33 @@ var orderList = new Vue({
         },
         acceptOrder: function () {
             let that = this;
-            $.ajax({
-                url: `/orderLifecycle/accept/${this.orderId}`,
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data:
-                    JSON.stringify({
-                        companyId: currentCompanyId,
-                        driverId: this.driverId,
-                        transportId: this.transportId,
-                        proposedPrice: this.proposedPrice,
-                        proposedPriceComment: this.proposedPriceComment
-                    }),
-                success: function (response) {
+            if(this.driverId==null||this.transportId==null) {
+                if (confirm("Вы не указали транспорт/водителя\n Вы можете указать их в течении 2-х часов на вкладке с предложениями по заявкам. \nЕсли данные не будут указаны - предложение будет отклонено автоматическии.")){
 
-                    that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id !== that.orderId);
-                    that.order = null;
-                    alert(response)
                 }
-            })
+            } else {
+                $.ajax({
+                    url: `/orderLifecycle/accept/${this.orderId}`,
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data:
+                        JSON.stringify({
+                            companyId: currentCompanyId,
+                            driverId: this.driverId,
+                            transportId: this.transportId,
+                            proposedPrice: this.proposedPrice,
+                            proposedPriceComment: this.proposedPriceComment
+                        }),
+                    success: function (response) {
+
+                        that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id !== that.orderId);
+                        that.order = null;
+                        alert(response)
+                    }
+                })
+            }
+
         },
         rejectOrder: function () {
             let that = this;
@@ -80,6 +87,7 @@ var orderList = new Vue({
             labelField: "label",
             valueField: "value",
             loadThrottle: 400,
+            preload: true,
             maxItems: 1,
             create: false,
             load: function (query, callback) {
@@ -104,6 +112,7 @@ var orderList = new Vue({
             labelField: "label",
             valueField: "value",
             loadThrottle: 400,
+            preload: true,
             maxItems: 1,
             create: false,
             load: function (query, callback) {

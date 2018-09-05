@@ -1,0 +1,1 @@
+ALTER TABLE contacts ADD type VARCHAR(16) NULL;

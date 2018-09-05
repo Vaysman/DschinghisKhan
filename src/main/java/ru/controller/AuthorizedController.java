@@ -6,13 +6,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.configuration.authentication.AuthToken;
 import ru.constant.*;
+import ru.dao.entity.Company;
+import ru.dao.entity.Contact;
+import ru.dao.entity.Point;
+import ru.dao.entity.User;
 import ru.dao.repository.CompanyRepository;
+import ru.dao.repository.ContactRepository;
+import ru.dao.repository.UserRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,21 +32,48 @@ import java.util.stream.Collectors;
 public class AuthorizedController {
 
     private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
+    private final ContactRepository contactRepository;
 
     @Autowired
-    public AuthorizedController(CompanyRepository companyRepository) {
+    public AuthorizedController(CompanyRepository companyRepository, UserRepository userRepository, ContactRepository contactRepository) {
         this.companyRepository = companyRepository;
+        this.userRepository = userRepository;
+        this.contactRepository = contactRepository;
     }
 
-    @RequestMapping("/profile")
+
+    //Abandoned
+    @GetMapping("/profile")
     @Transactional
-    public String profile() {
+    public String profile(Model modelAndView) {
+        AuthToken authentication = (AuthToken) SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findById(authentication.getUser().getId()).orElse(null);
+        assert user != null;
+        Company company = user.getCompany();
+        Contact contact = contactRepository.findFirstByCompanyAndType(company,ContactType.PRIMARY).orElse(null);
+        Point point = company.getPoint();
+        modelAndView.addAttribute("company",company);
+        modelAndView.addAttribute("contact",contact);
+        modelAndView.addAttribute("user",user);
+        modelAndView.addAttribute("point",point);
         return "companyProfile";
     }
 
 
     @RequestMapping("/main")
-    public String main() {
+    public String main(Model modelAndView)
+    {
+        AuthToken authentication = (AuthToken) SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findById(authentication.getUser().getId()).orElse(null);
+        assert user != null;
+        Company company = user.getCompany();
+        Contact contact = contactRepository.findFirstByCompanyAndType(company,ContactType.PRIMARY).orElse(null);
+        Point point = company.getPoint();
+        modelAndView.addAttribute("company",company);
+        modelAndView.addAttribute("contact",contact);
+        modelAndView.addAttribute("user",user);
+        modelAndView.addAttribute("point",point);
         return "main";
     }
 
