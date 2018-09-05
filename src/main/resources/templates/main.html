@@ -27,14 +27,14 @@
 
 
 
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-info"><i
+                        class="fa fa-user" aria-hidden="true"></i> Профиль</a>
+            </li>
             <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-users"><i class="fa fa-users"
                                                                                                  aria-hidden="true"></i>
                     Пользователи</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-info"><i
-                        class="fa fa-user" aria-hidden="true"></i> Профиль</a>
             </li>
             <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-transports"><i
@@ -181,7 +181,7 @@
                                 <div id="addressCheckMap" style="height:330px; display: none;" ></div>
                             </div>
 
-                            <button id="editPoint" class="btn btn-primary">Обновить</button>
+                            <button id="editPoint"  class="btn btn-primary">Обновить</button>
                         </div>
                     </div>
                 </div>

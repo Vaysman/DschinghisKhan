@@ -1,5 +1,8 @@
 $(document).ready(function () {
     $("#editUser").on("click",function () {
+        $(this).prop("disabled", true);
+        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> "+$(this).text());
+        let that = this;
         let userData = {};
 
         let userId = $("#userId").val();
@@ -28,11 +31,15 @@ $(document).ready(function () {
             data:
                 JSON.stringify(userData),
             success: function (response) {
-                alert(response)
+                $(that).html("<i class='fa fa-check'></i> Обновлено!");
+                $(that).prop("disabled", false);
             }})
-    })
+    });
 
     $("#editCompany").on("click",function () {
+        $(this).prop("disabled", true);
+        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> "+$(this).text());
+
         let companyData = {};
 
         let companyId = $("#companyId").val();
@@ -49,6 +56,8 @@ $(document).ready(function () {
             }
         }
 
+        //i hate this
+        let that = this;
         $.ajax({
             url: `/api/companies/${companyId}`,
             type: "PATCH",
@@ -57,12 +66,17 @@ $(document).ready(function () {
             data:
                 JSON.stringify(companyData),
             success: function (response) {
-                console.log(response);
+                $(that).html("<i class='fa fa-check'></i> Обновлено!");
+                $(that).prop("disabled", false);
             }})
+
 
     });
 
     $("#editPoint").on("click", function () {
+        $(this).prop("disabled", true);
+        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> "+$(this).text());
+        let that = this;
         let pointData = {};
 
         let pointId = $("#pointId").val();
@@ -77,11 +91,15 @@ $(document).ready(function () {
             data:
                 JSON.stringify(pointData),
             success: function (response) {
-                console.log(response);
+                $(that).html("<i class='fa fa-check'></i> Обновлено!");
+                $(that).prop("disabled", false);
             }})
     });
 
     $("#editContact").on("click", function () {
+        $(this).prop("disabled", true);
+        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> "+$(this).text());
+        let that = this;
         let contactData = {};
 
         let contactId = $("#contactId").val();
@@ -99,7 +117,8 @@ $(document).ready(function () {
             data:
                 JSON.stringify(contactData),
             success: function (response) {
-                console.log(response);
+                $(that).html("<i class='fa fa-check'></i> Обновлено!");
+                $(that).prop("disabled", false);
             }})
 
     });
@@ -134,7 +153,6 @@ $(document).ready(function () {
             $('#addressCheckMap').show();
 
         } else {
-            console.log("fgsfds");
         }
     });
 
