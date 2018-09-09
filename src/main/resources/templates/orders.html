@@ -24,6 +24,8 @@
             src="/main/js/dispatcher/contacts.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'
             src="/orders/js/orders-in-work-company.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'
+            src="/main/js/company/dispatched-offers.js"></script>
 
 
 </head>
@@ -43,6 +45,11 @@
                         class="badge badge-light" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}"
                         th:text="${#lists.size(pendingOrders)}"></span>
                     <i class="fa fa-th-list" aria-hidden="true"></i> Предложенные заявки
+                </a>
+            </li>
+            <li id="tab-dispatched-offers-link" class="nav-item" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-dispatched-offers">
+                    Высланные предложения
                 </a>
             </li>
             <li id="tab-managed-offers-link" class="nav-item" sec:authorize="hasAuthority('ROLE_DISPATCHER')">
@@ -214,7 +221,7 @@
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" @click="acceptOrder()"
-                                :disabled="(order==null||proposedPrice==null||driverId==null||transportId==null)">
+                                :disabled="(order==null||proposedPrice==null)">
                             Принять
                         </button>
                         <button class="btn btn-default" @click="rejectOrder()" :disabled="(order==null)">Отклонить
@@ -322,10 +329,30 @@
             </div>
         </div>
     </div>
+    <div id="tab-dispatched-offers" class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Высланные предложения</h4>
+            <div>
+                <table class="table table-striped table-sm" id="dispatchedOffersTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Номер заявки</th>
+                        <th>Предложенная цена</th>
+                        <th>Цена от диспетчера</th>
+                        <th>Водитель</th>
+                        <th>Транспорт</th>
+                        <th>Комментарий</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
     <div id="tab-orders-in-work"
          class="tab-pane">
         <div class="spaced-container white container-fluid" style="overflow-x: scroll">
-            <h4>Все заявки</h4>
+            <h4>Заявки в работе</h4>
             <div>
                 <table class="table table-sm table-striped " id="ordersInWorkTable">
                     <thead>

@@ -2,7 +2,7 @@ $(document).ready(function () {
     let currentCompany;
     $.get(`/api/companies/${currentCompanyId}`).success(function (data) {
         currentCompany = data;
-        console.log(currentCompany);
+        // console.log(currentCompany);
     });
         // console.log(JSON.stringify(userRoles));
         let usersEditor = new $.fn.dataTable.Editor({

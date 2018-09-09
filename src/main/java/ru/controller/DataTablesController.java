@@ -39,6 +39,8 @@ public class DataTablesController {
 
     private final DriverRepository driverRepository;
 
+    private final OrderOfferRepository orderOfferRepository;
+
     @Autowired
     public DataTablesController(OrderHistoryRepository orderHistoryRepository,
                                 OrderRepository orderRepository,
@@ -49,7 +51,8 @@ public class DataTablesController {
                                 RouteRepository routeRepository,
                                 ContactRepository contactRepository,
                                 TransportRepository transportRepository,
-                                DriverRepository driverRepository) {
+                                DriverRepository driverRepository,
+                                OrderOfferRepository orderOfferRepository) {
         this.orderHistoryRepository = orderHistoryRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
@@ -60,6 +63,7 @@ public class DataTablesController {
         this.contactRepository = contactRepository;
         this.transportRepository = transportRepository;
         this.driverRepository = driverRepository;
+        this.orderOfferRepository = orderOfferRepository;
     }
 
     @JsonView(DataTablesOutput.View.class)
@@ -144,6 +148,17 @@ public class DataTablesController {
     public DataTablesOutput<Order> getOrdersForUser(@Valid @RequestBody DataTablesInput input) {
         try {
             return orderRepository.findAll(input, Orders.ordersForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value="/dispatchedOffers", method = RequestMethod.POST)
+    public DataTablesOutput<OrderOffer> getDispatchedOffersForCompany(@Valid @RequestBody DataTablesInput input){
+        try {
+            return orderOfferRepository.findAll(input, OrderOffers.orderOffersForCompany(AuthToken.getCurrentAuthToken().getCompanyId()));
         } catch (Exception e){
             e.printStackTrace();
             return null;

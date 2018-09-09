@@ -29,7 +29,26 @@ var orderList = new Vue({
         acceptOrder: function () {
             let that = this;
             if(this.driverId==null||this.transportId==null) {
-                if (confirm("Вы не указали транспорт/водителя\n Вы можете указать их в течении 2-х часов на вкладке с предложениями по заявкам. \nЕсли данные не будут указаны - предложение будет отклонено автоматическии.")){
+                if (confirm("Вы не указали транспорт/водителя\n Вы можете указать их в течении 2-х часов на вкладке с высланными предложениями. \nЕсли данные не будут указаны - предложение будет отклонено автоматическии.")){
+                    $.ajax({
+                        url: `/orderLifecycle/accept/${this.orderId}`,
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data:
+                            JSON.stringify({
+                                companyId: currentCompanyId,
+                                driverId: this.driverId,
+                                transportId: this.transportId,
+                                proposedPrice: this.proposedPrice,
+                                proposedPriceComment: this.proposedPriceComment
+                            }),
+                        success: function (response) {
+                            that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id !== that.orderId);
+                            that.order = null;
+                            alert(response)
+                        }
+                    })
 
                 }
             } else {
@@ -47,7 +66,6 @@ var orderList = new Vue({
                             proposedPriceComment: this.proposedPriceComment
                         }),
                     success: function (response) {
-
                         that.pendingOrders = that.pendingOrders.filter(pOrder => pOrder.id !== that.orderId);
                         that.order = null;
                         alert(response)

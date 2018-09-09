@@ -55,7 +55,7 @@ public class Contact {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private ContactType type;
+    private ContactType type = ContactType.SECONDARY;
 
 
 }

@@ -23,7 +23,7 @@ public class PointListener {
     @PrePersist
     @PreUpdate
     private void loadCoordinates(Point point) {
-        if (!point.getAddress().isEmpty()) {
+        if (point.getAddress()!=null&&!point.getAddress().isEmpty()) {
             try {
                 GeocodingResult[] geocodingResults = geocodingService.getAddressCoordinates(point.getAddress());
                 if (geocodingResults.length > 0) {

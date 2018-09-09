@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -29,6 +30,7 @@ public class OrderOffer {
     private Order order;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String orderNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,24 +38,33 @@ public class OrderOffer {
     private Company company;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name = "TRANSPORT_ID")
     private Transport transport;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name = "DRIVER_ID")
     private Driver driver;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Float proposedPrice;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private Float dispatcherPrice;
 
     @Column
+    @JsonView(DataTablesOutput.View.class)
     private String proposedPriceComment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MANAGER_COMPANY_ID")
     private Company managerCompany;
+
+    @Column
+    private LocalDateTime offerDatetime;
+
 
 }
