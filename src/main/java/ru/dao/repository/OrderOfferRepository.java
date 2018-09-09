@@ -10,6 +10,6 @@ import java.util.List;
 public interface OrderOfferRepository extends DataTablesRepository<OrderOffer, Integer> {
     List<OrderOffer> findAllByOrder(Order order);
 
-    @Query(value = "SELECT * FROM order_offers WHERE (driver_id IS NULL OR transport_id IS NULL) AND (NOW() >= TIMESTAMPADD(HOUR, 4,offer_datetime))", nativeQuery = true)
+    @Query(value = "SELECT * FROM order_offers WHERE (driver_id IS NULL OR transport_id IS NULL) AND (NOW() >= TIMESTAMPADD(HOUR, 5,offer_datetime))", nativeQuery = true)
     List<OrderOffer> getOutdatedOffers();
 }

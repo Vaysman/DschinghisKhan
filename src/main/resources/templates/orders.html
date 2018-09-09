@@ -271,8 +271,10 @@
                                 </div>
                                 <div class="col-4">
                                     Водитель:<br>
-                                    {{offer.driver.name}} <br>
-                                    Транспорт:<br>{{offer.transport.number}}/{{offer.transport.type}}<br><br>
+                                    <span v-if="offer.driver">{{offer.driver.name}} </span>
+                                    <span v-else>Не указан</span><br>
+                                    Транспорт:<br><span v-if="offer.transport">{{offer.transport.number}}/{{offer.transport.type}}</span>
+                                    <span v-else>Не указан</span><br><br>
                                 </div>
                                 <div class="col-4">
                                     Требования:
