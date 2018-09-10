@@ -6,16 +6,23 @@
     <title>Личный кабинет</title>
     <th:block th:include="fragments/header :: scripts"></th:block>
     <!--<script src="/media/vue.min.js"></script>-->
-    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/transports.js"></script>
-    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/drivers.js"></script>
-    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/company-users.js"></script>
+    <!--<script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/transports.js"></script>-->
+    <!--<script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/drivers.js"></script>-->
+    <!--<script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/profile/js/company-users.js"></script>-->
+    <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <script src="/profile/profile.js"></script>
+    <style>
+        label{
+            width:100%;
+        }
+    </style>
 
 
 </head>
 <body class="grey">
 <div th:insert="fragments/header :: header ('profile')"></div>
 
-<nav class="logist-tabs" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
+<nav class="logist-tabs" hidden>
     <div>
         <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
             <li class="nav-item">
@@ -32,8 +39,9 @@
                     Водители</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-company-users"><i class="fa fa-users"
-                                                                                                   aria-hidden="true"></i>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-company-users"><i
+                        class="fa fa-users"
+                        aria-hidden="true"></i>
                     Пользователи</a>
             </li>
         </ul>
@@ -42,26 +50,141 @@
 <div class="tab-content" id="tabContent">
     <div id="tab-info" class="tab-pane in active">
         <div class="spaced-container white container-fluid">
-            <h4>Данные</h4>
-            <form>
-                <div class="form-group">
-                    <label>Email address
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                               placeholder="Enter email">
-                    </label>
-                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.
-                    </small>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-3">
+                    <h4>Пользователь</h4>
+                    <div>
+                        <input th:value="${user.id}" id="userId" hidden>
+                        <div class="form-group">
+                            <label>E-mail
+                                <input type="text" class="form-control" id="userEmail" th:value="${user.email}"
+                                       placeholder="E-mail">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Имя пользователя
+                                <input type="text" class="form-control" id="username" th:value="${user.username}">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Изменить пароль
+                                <input type="text" class="form-control" id="newPassword"
+                                       placeholder="Новый пароль">
+                            </label>
+                        </div>
+                        <button id="editUser" class="btn btn-primary">Обновить</button>
+                    </div>
+
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                <div class="col-6" >
+                    <h4>Компания</h4>
+                    <div class="row">
+                        <div class="col-6">
+                            <input th:value="${company.id}" id="companyId" hidden>
+                            <div class="form-group">
+                                <label>E-mail
+                                    <input type="text" class="form-control" id="companyEmail"
+                                           th:value="${company.email}"
+                                           placeholder="E-mail">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Краткое название
+                                    <input type="text" class="form-control" id="shortName"
+                                           th:value="${company.shortName}">
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Код ATI.su
+                                    <input type="text" class="form-control" id="atiCode" th:value="${company.atiCode}">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>ОКВЕД
+                                    <input type="text" class="form-control" id="ocved" th:value="${company.ocved}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>ОКПО
+                                    <input type="text" class="form-control" id="ocpo" th:value="${company.ocpo}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>ОГРН
+                                    <input type="text" class="form-control" id="ogrn" th:value="${company.ogrn}">
+                                </label>
+                            </div>
+                            <button id="editCompany" class="btn btn-primary">Обновить</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-3">
+                    <div>
+                        <h4>Пункт</h4>
+                        <div>
+                            <input th:value="${point.id}" id="pointId" hidden>
+                            <div class="form-group">
+                                <label>Название пункта
+                                    <input type="text" class="form-control" id="pointName" th:value="${point.name}"
+                                           placeholder="E-mail">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Адрес
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" id="pointAddress"
+                                               th:value="${point.address}">
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-outline-secondary field-inline-button"
+                                                    id="checkAddress">Проверить адрес
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </label>
+                            </div>
+                            <div id="addressCheckMap" hidden></div>
+                            <button id="editPoint" class="btn btn-primary">Обновить</button>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Обновить</button>
-            </form>
+
+                <div class="col-3">
+                    <h4>Контакт</h4>
+                    <div>
+                        <input th:value="${contact.id}" id="contactId" hidden>
+                        <div class="form-group">
+                            <label>Телефон
+                                <input type="text" class="form-control" id="phone" th:value="${contact.phone}">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Имя
+                                <input type="text" class="form-control" id="contactName" th:value="${contact.name}">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Должность
+                                 <input type="text" class="form-control" id="position" th:value="${contact.position}">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>E-mail
+                                <input type="text" class="form-control" id="contactEmail" th:value="${contact.email}">
+                            </label>
+                        </div>
+                        <button id="editContact" class="btn btn-primary">Обновить</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div id="tab-transports" class="tab-pane">

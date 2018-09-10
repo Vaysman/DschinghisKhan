@@ -1,6 +1,8 @@
 package ru.service;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.authentication.UserCredentials;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,11 +14,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.configuration.authentication.AuthToken;
 import ru.constant.CompanyType;
+import ru.constant.ContactType;
 import ru.constant.UserRole;
 import ru.dao.entity.Company;
+import ru.dao.entity.Contact;
 import ru.dao.entity.Point;
 import ru.dao.entity.User;
 import ru.dao.repository.CompanyRepository;
+import ru.dao.repository.ContactRepository;
 import ru.dao.repository.PointRepository;
 import ru.dao.repository.UserRepository;
 import ru.dto.json.user.UserRegistrationData;
@@ -32,14 +37,16 @@ public class UserManagementService {
     private final PointRepository pointRepository;
     private final JavaMailSender sender;
     private final ResourceLoader resourceLoader;
+    private final ContactRepository contactRepository;
 
     @Autowired
-    public UserManagementService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, JavaMailSender sender, ResourceLoader resourceLoader) {
+    public UserManagementService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, JavaMailSender sender, ResourceLoader resourceLoader, ContactRepository contactRepository) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.pointRepository = pointRepository;
         this.sender = sender;
         this.resourceLoader = resourceLoader;
+        this.contactRepository = contactRepository;
     }
 
 
@@ -60,14 +67,11 @@ public class UserManagementService {
             throw new IllegalArgumentException(String.format("Компания с таким ИНН уже существует\n(%s/%s)",x.getName(),x.getEmail()));
         });
 
-        Point point = null;
-        if(!registrationData.getPointAddress().isEmpty() && !registrationData.getPointName().isEmpty()){
-            point = Point.builder()
+        Point point = Point.builder()
                     .address(registrationData.getPointAddress())
                     .name(registrationData.getPointName())
                     .build();
-            pointRepository.save(point);
-        }
+        pointRepository.save(point);
 
         String[] abbreviations = {"ОАО","ЗАО","ООО","ИП","\"","'","!","{","}","(",")","<",">"};
         String shortName = registrationData.getCompanyName();
@@ -114,12 +118,23 @@ public class UserManagementService {
                         "В приложении подробная инструкция по работе с сервисом. В любое время вам поможет служба поддержки пользователей." +
                         "\n\nС уважением,\n" +
                         "команда проекта \"Курултай\".\n");
-                helper.addAttachment("Kurulway.pdf", resourceLoader.getResource("classpath:Kurulway.pdf").getFile());
+                helper.addAttachment("Kurulway.pdf", new ByteArrayResource(IOUtils.toByteArray(resourceLoader.getResource("classpath:Kurulway.pdf").getInputStream())));
                 sender.send(message);
             } catch (MessagingException e) {
                 throw new IllegalArgumentException(String.format("Невозможно отослать письмо о регистрации:\n%s", e.getMessage()));
             }
         }
+
+        Contact contact = Contact
+                .builder()
+                .company(company)
+                .email(company.getEmail())
+                .point(point)
+                .type(ContactType.PRIMARY)
+                .build();
+
+        contactRepository.save(contact);
+
 
 
         return user;

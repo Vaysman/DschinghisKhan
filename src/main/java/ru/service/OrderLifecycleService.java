@@ -1,6 +1,8 @@
 package ru.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,10 @@ import ru.dao.repository.*;
 import ru.dto.json.order.OrderAcceptData;
 import ru.dto.json.order.OrderAssignData;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -23,6 +29,7 @@ public class OrderLifecycleService {
     private final TransportRepository transportRepository;
     private final OrderHistoryRepository orderHistoryRepository;
     private final OrderOfferRepository orderOfferRepository;
+    private final JavaMailSender sender;
 
     @Autowired
     public OrderLifecycleService(
@@ -31,13 +38,14 @@ public class OrderLifecycleService {
             DriverRepository driverRepository,
             TransportRepository transportRepository,
             OrderHistoryRepository orderHistoryRepository,
-            OrderOfferRepository orderOfferRepository) {
+            OrderOfferRepository orderOfferRepository, JavaMailSender sender) {
         this.orderRepository = orderRepository;
         this.companyRepository = companyRepository;
         this.driverRepository = driverRepository;
         this.transportRepository = transportRepository;
         this.orderHistoryRepository = orderHistoryRepository;
         this.orderOfferRepository = orderOfferRepository;
+        this.sender = sender;
     }
 
     public void confirmPayment(User currentUser, Integer orderId) {
@@ -101,6 +109,36 @@ public class OrderLifecycleService {
         }
     }
 
+    @Scheduled(fixedRate = 300000)
+    public void clearUnfinishedOffers(){
+        try{
+            orderOfferRepository.getOutdatedOffers()
+                    .forEach(x->{
+                        this.notifyCompanyOfDecline(x);
+                        this.declineOffer(x);
+                    });
+        } catch (Exception e){
+            System.out.println("Unable to clear unfinished offers:\n"+e.getMessage());
+        }
+    }
+
+    @Transactional
+    void notifyCompanyOfDecline(OrderOffer offer){
+        try {
+            MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, false);
+            helper.setFrom("tarificationsquad@gmail.com");
+            helper.setTo(offer.getCompany().getEmail());
+            helper.setText("Вы не заполнили данные в указанный срок для заявки " +
+                    offer.getOrderNumber() +
+                    " компании " + offer.getManagerCompany().getName() +
+                    " по маршруту " + offer.getOrder().getRoute().getName() +
+            ".\nВаше предложение было отклонено автоматически.");
+            helper.setSubject("Предложение отклонено");
+        } catch (MessagingException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public void confirmDelivery(User currentUser, Integer orderId) {
         Order order = orderRepository.findFirstByIdAndStatusIn(orderId, OrderStatus.getChangeableStatuses())
@@ -130,13 +168,40 @@ public class OrderLifecycleService {
         saveActionHistory(OrderLifecycleActions.STATUS_TRANSIT, order);
     }
 
-    public void declineOffer(User currentUser, Integer offerId) {
-        OrderOffer orderOffer = orderOfferRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку"));
-        Order order = orderOffer.getOrder();
+
+    private void declineOffer(OrderOffer offer){
+        Order order = offer.getOrder();
+
         if (!order.getStatus().equals(OrderStatus.ACCEPTED) && !order.getStatus().equals(OrderStatus.PRICE_CHANGED))
             throw new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку");
 
-        order.getOffers().remove(orderOffer);
+        order.getOffers().remove(offer);
+        checkForMoreOffers(order);
+        saveOrder(order);
+
+        orderOfferRepository.delete(offer);
+
+        saveActionHistory(OrderLifecycleActions.DECLINE_OFFER, order);
+    }
+
+
+
+    public void declineOffer(User currentUser, Integer offerId) {
+        OrderOffer offer = orderOfferRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку"));
+        Order order = offer.getOrder();
+        if (!order.getStatus().equals(OrderStatus.ACCEPTED) && !order.getStatus().equals(OrderStatus.PRICE_CHANGED))
+            throw new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку");
+
+        order.getOffers().remove(offer);
+        checkForMoreOffers(order);
+        saveOrder(order);
+
+        orderOfferRepository.delete(offer);
+
+        saveActionHistory(OrderLifecycleActions.DECLINE_OFFER, currentUser, order);
+    }
+
+    private void checkForMoreOffers(Order order) {
         if (order.getOffers().size() == 0) {
             if (order.getAssignedCompanies().size() == 0) {
                 order.setStatus(OrderStatus.CREATED);
@@ -145,11 +210,6 @@ public class OrderLifecycleService {
             }
             order.setProposedPrice(null);
         }
-        saveOrder(order);
-
-        orderOfferRepository.delete(orderOffer);
-
-        saveActionHistory(OrderLifecycleActions.DECLINE_OFFER, currentUser, order);
     }
 
     public void confirm(User currentUser, Integer offerId) {
@@ -178,10 +238,15 @@ public class OrderLifecycleService {
                 .orElseThrow(() -> new IllegalArgumentException("Данной заявки не существует"));
         Company company = companyRepository.findById(orderAcceptData.getCompanyId())
                 .orElseThrow(() -> new IllegalArgumentException("Данный пользователь не привязан к компании"));
-        Driver driver = driverRepository.findById(orderAcceptData.getDriverId())
-                .orElseThrow(() -> new IllegalArgumentException("Не указан водитель"));
-        Transport transport = transportRepository.findById(orderAcceptData.getTransportId())
-                .orElseThrow(() -> new IllegalArgumentException("Не указан транспорт"));
+        Driver driver = null;
+        if(Optional.ofNullable(orderAcceptData.getDriverId()).isPresent()){
+            driver = driverRepository.findById(orderAcceptData.getDriverId()).orElseThrow(()->new IllegalArgumentException("Данного водителя не существует"));
+        }
+
+        Transport transport = null;
+        if(Optional.ofNullable(orderAcceptData.getTransportId()).isPresent()){
+            transport = transportRepository.findById(orderAcceptData.getTransportId()).orElseThrow(()->new IllegalArgumentException("Данного транспорта не существует"));
+        }
 
 
         if ((order.getStatus().equals(OrderStatus.ASSIGNED) || order.getStatus().equals(OrderStatus.PRICE_CHANGED))
@@ -200,6 +265,7 @@ public class OrderLifecycleService {
                     .driver(driver)
                     .transport(transport)
                     .managerCompany(managerCompany)
+                    .offerDatetime(LocalDateTime.now(ZoneId.of("Europe/Moscow")))
                     .build();
             orderOfferRepository.save(orderOffer);
 
@@ -221,7 +287,6 @@ public class OrderLifecycleService {
 
         saveActionHistory(OrderLifecycleActions.ACCEPTED, currentUser, order, orderAcceptData.getProposedPrice());
     }
-
 
     public void reject(Integer orderId, User currentUser, Integer companyId) throws IllegalArgumentException, IllegalStateException {
         Order order = orderRepository.findById(orderId)

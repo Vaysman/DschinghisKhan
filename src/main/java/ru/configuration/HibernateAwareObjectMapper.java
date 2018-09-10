@@ -11,6 +11,7 @@ class HibernateAwareObjectMapper extends ObjectMapper {
     public HibernateAwareObjectMapper() {
         Hibernate5Module module = new Hibernate5Module();
         module.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
+        this.enable(SerializationFeature.INDENT_OUTPUT);
         this.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         this.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         this.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);

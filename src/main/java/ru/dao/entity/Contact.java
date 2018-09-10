@@ -1,16 +1,15 @@
 package ru.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import ru.constant.ContactType;
 
 import javax.persistence.*;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
 @Table(name = "contacts", indexes = {
@@ -54,8 +53,9 @@ public class Contact {
     @JoinColumn(name="COMPANY_ID")
     private Company company;
 
-
-
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ContactType type = ContactType.SECONDARY;
 
 
 }

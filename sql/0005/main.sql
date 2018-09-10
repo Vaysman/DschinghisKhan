@@ -10,3 +10,5 @@ ALTER TABLE orders ADD cargo_description VARCHAR(512) NULL;
 
 ALTER TABLE routes ADD after_load BOOL NULL;
 ALTER TABLE orders ADD after_load BOOL NULL;
+
+CREATE UNIQUE INDEX transport_companies_inn_uindex ON transport_companies (inn);

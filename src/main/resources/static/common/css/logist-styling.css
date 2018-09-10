@@ -17,13 +17,22 @@ body{
     font-weight: normal;
 }
 
-input.form-control:matches([type=text], [type=password]){
+/*input.form-control:matches([type=text], [type=password]){*/
+    /*border: none;*/
+    /*border-radius: 0;*/
+    /*border-bottom: 2px solid rgba(26, 43, 109, 1);*/
+/*}*/
+input.form-control{
     border: none;
     border-radius: 0;
     border-bottom: 2px solid rgba(26, 43, 109, 1);
 }
 
-input.form-control:matches([type=text], [type=password]).error-red{
+/*input.form-control:matches([type=text], [type=password]).error-red{*/
+    /*border-bottom: 1px solid #D41317;*/
+/*}*/
+
+input.form-control.error-red{
     border-bottom: 1px solid #D41317;
 }
 

@@ -95,7 +95,7 @@ $(document).ready(function () {
                 fieldInfo: "Можно указать до 10 компаний. Если заявка обязательная - то только 1."
             },
             {
-                label: 'Стоимость', name: 'dispatcherPrice', data: "routePrice", type: 'mask',
+                label: 'Стоимость', name: 'dispatcherPrice', data: "route.totalCost", type: 'mask',
                 mask: "#",
                 fieldInfo: "Стоимость без НДС<br>"
             }

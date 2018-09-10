@@ -11,6 +11,7 @@ $(document).ready(function () {
                         $.each(d.data, function (key, value) {
                             value.originator = currentCompanyId;
                             newdata = JSON.stringify(value);
+                            value.type="RECEIVER";
                         });
                         return newdata;
                     },

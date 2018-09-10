@@ -34,7 +34,7 @@ public class RegisterController {
                 User registeredUser =userManagementService.register(registrationData);
                 if(registeredUser!=null) {
                     userManagementService.setAuthorized(registeredUser, registrationData.getPassword());
-                    return "redirect:/profile";
+                    return "redirect:/main";
                 } else {
                     model.addAttribute("error","Непредвиденная ошибка. Запишите введенные данные и свяжитесь с поддержкой");
                     model.addAttribute("registrationData", registrationData);

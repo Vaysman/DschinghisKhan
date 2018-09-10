@@ -2,6 +2,90 @@ $(document).ready(function () {
     $('#tab-orders-in-work-link a').one('shown.bs.tab',function () {
     console.log("tab-orders-in-work-link shown");
 
+        let transportAndDriverEditor = new $.fn.dataTable.Editor({
+            table: '#ordersInWorkTable',
+            idSrc: 'id',
+            ajax: {
+                edit: {
+                    contentType: 'application/json',
+                    type: 'PATCH',
+                    url: 'api/orders/_id_',
+                    data: function (d) {
+                        let newdata;
+                        $.each(d.data, function (key, value) {
+                            if(value.transport==null){
+                                delete value["transport"]
+                            }
+                            if(value.driver==null){
+                                delete value['driver']
+                            }
+                            newdata = JSON.stringify(value);
+                        });
+                        return newdata;
+                    },
+                    success: function (response) {
+
+                        ordersInWorkDataTable.draw();
+                        transportAndDriverEditor.close();
+
+                    },
+                    error: function (jqXHR, exception) {
+                        alert(exception.responseText);
+                    }
+                }
+            },
+            fields: [
+                {
+                    label: 'Водитель', name: 'driver', type: 'selectize',
+                    options: [],
+                    opts: {
+                        searchField: "label",
+                        create: false,
+                        placeholder: "Нажмите, чтобы изменить",
+                        maxItems: 1,
+                        loadThrottle: 400,
+                        preload: true,
+                        load: function (query, callback) {
+                            $.get(`api/drivers/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
+                                function (data) {
+                                    console.log(data);
+                                    var driverOptions = [];
+                                    data._embedded.drivers.forEach(function (entry) {
+                                        driverOptions.push({"label": entry.name, "value": entry._links.self.href});
+                                    });
+                                    callback(driverOptions);
+                                }
+                            );
+                        },
+                    }
+                },
+                {
+                    label: "Транспорт", name: 'transport', type: 'selectize',
+                    options: [],
+                    opts: {
+                        placeholder: "Нажмите, чтобы измнить",
+                        labelField: "label",
+                        loadThrottle: 400,
+                        preload: true,
+                        maxItems: 1,
+                        create: false,
+                        load: function (query, callback) {
+                            $.get(`api/transports/search/findTop10ByNumberContainingAndOriginator/?number=${query}&originator=${currentCompanyId}`,
+                                function (data) {
+                                    console.log(data);
+                                    var transportOptions = [];
+                                    data._embedded.transports.forEach(function (entry) {
+                                        transportOptions.push({"label": entry.number, "value": entry._links.self.href});
+                                    });
+                                    callback(transportOptions);
+                                }
+                            );
+                        },
+                    }
+                }
+            ]
+        });
+
     let statusChangeEditor = new $.fn.dataTable.Editor({
         table: '#ordersInWorkTable',
         idSrc: 'id',
@@ -60,6 +144,12 @@ $(document).ready(function () {
                 style: 'single'
             },
             "buttons": [
+                {
+                    text: "Назначить транспорт/водители",
+                    extend: "edit",
+                    editor: transportAndDriverEditor
+                }
+                ,
                 {
 
                     text: "Изменить статус",

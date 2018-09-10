@@ -23,14 +23,16 @@ public class PointListener {
     @PrePersist
     @PreUpdate
     private void loadCoordinates(Point point) {
-        try {
-            GeocodingResult[] geocodingResults = geocodingService.getAddressCoordinates(point.getAddress());
-            if (geocodingResults.length > 0) {
-                point.setX(geocodingResults[0].geometry.location.lat);
-                point.setY(geocodingResults[0].geometry.location.lng);
+        if (point.getAddress()!=null&&!point.getAddress().isEmpty()) {
+            try {
+                GeocodingResult[] geocodingResults = geocodingService.getAddressCoordinates(point.getAddress());
+                if (geocodingResults.length > 0) {
+                    point.setX(geocodingResults[0].geometry.location.lat);
+                    point.setY(geocodingResults[0].geometry.location.lng);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
