@@ -136,6 +136,7 @@ public class OrderLifecycleService {
             ".\nВаше предложение было отклонено автоматически.");
             helper.setSubject("Предложение отклонено");
         } catch (MessagingException e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }

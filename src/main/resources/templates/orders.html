@@ -37,7 +37,7 @@
             <li id="tab-all-orders-link" class="nav-item"
                 sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-all-orders"><i
-                        class="fa fa-user" aria-hidden="true"></i> Все заявки</a>
+                        class="fa fa-" aria-hidden="true"></i> Все заявки</a>
             </li>
 
             <li id="tab-pending-orders-link" class="nav-item" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
@@ -56,7 +56,7 @@
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-managed-offers">
                     <span class="badge badge-primary" th:if="${managedOffers!=null && #lists.size(managedOffers) > 0}"
                           th:text="${#lists.size(managedOffers)}"></span>
-                    <i class="fa fa-truck" aria-hidden="true"></i> Предложения
+                    <i class="fa fa-wpforms" aria-hidden="true"></i> Предложения
                 </a>
             </li>
             <li id="tab-orders-in-work-link" class="nav-item">
