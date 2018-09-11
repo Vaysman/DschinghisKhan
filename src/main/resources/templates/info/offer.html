@@ -1,10 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title th:text="${offer.getOrderNumber()}"></title>
     <th:block th:include="fragments/header :: scripts-no-const"></th:block>
-    <script src="/info/order/order.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_DISPATCHER')">
+        let offerId = [[${offer.id}]];
+        let orderId = [[${offer.order.id}]];
+        function accept() {
+            let that = this;
+            $.ajax({
+                url: `/orderLifecycle/confirm/${offerId}`,
+                type: "POST",
+                success: function (response) {
+                    if (response == "Success") {
+                        alert("Заявка принята в работу");
+                        window.location.href = `../orders/${orderId}`;
+                    } else {
+                        alert(response)
+                    }
+                },
+                error: function (fgsfds, error) {
+                    alert(error)
+                }
+            })
+        };
+        function decline() {
+            let that = this;
+            $.ajax({
+                url: `/orderLifecycle/declineOffer/${offerId}`,
+                type: "POST",
+                success: function (response) {
+                    if (response == "Success") {
+                        alert("Предложение отклонено");
+                        window.location.href = `../orders/${orderId}`;
+                    } else {
+                        alert(response)
+                    }
+                },
+                error: function (fgsfds, error) {
+                    alert(error)
+                }
+            })
+        };
+    </script>
 </head>
 <body class="grey">
 <div class="container-fluid">
@@ -51,8 +90,9 @@
                     </div>
                     <div class="col-4"></div>
                     <div class="col-4"></div>
-                    <div class="col-4">
-                        <button id="printButton" class="btn btn-secondary btn-block">Печать</button>
+                    <div th:if="${currentCompanyId==offer.getManagerCompany().getId()}" class="col-4">
+                        <button onclick="accept()" class="btn btn-primary btn-block">Утвердить</button>
+                        <button onclick="decline()" class="btn btn-secondary btn-block">Отклонить</button>
                     </div>
 
                 </div>
