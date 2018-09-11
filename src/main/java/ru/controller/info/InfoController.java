@@ -36,6 +36,9 @@ public class InfoController {
         Hibernate.initialize(order.getRoute());
         Hibernate.initialize(order.getCompany());
         Hibernate.initialize(order.getOffers());
+        for(OrderOffer offer : order.getOffers()){
+            Hibernate.initialize(offer.getCompany());
+        }
         modelMap.addAttribute("order",order);
         return "info/order";
     }

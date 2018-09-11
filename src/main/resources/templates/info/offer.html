@@ -68,9 +68,10 @@
                         Обязательность: <span th:text="${offer.getOrder().getOrderObligation().getObligationName()}"></span><br>
                     </div>
                     <div class="col-6">
-                        <h4 th:text="'ТК: '+${offer.getCompany().getName()}"></h4>
-                        Цена диспетчера: <span th:text="${offer.getDispatcherPrice()}"></span><br>
+                        <h4>Предложение</h4>
+                        ТК: <span th:text="${offer.getCompany().getName()}"></span>
                         Цена ТК: <span th:text="${offer.getProposedPrice()}"></span><br>
+                        Цена диспетчера: <span th:text="${offer.getDispatcherPrice()}"></span><br>
                         Водитель: <div th:if="${offer.driver}">
                         <span th:text="${offer.getDriver().getName()}"></span>
                     </div>

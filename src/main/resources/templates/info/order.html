@@ -39,7 +39,18 @@
                     Обязательность: <span th:text="${order.getOrderObligation().getObligationName()}"></span><br>
 
                 </div>
-                <div class="col-4"></div>
+                <div class="col-4">
+                    <div th:if="${order.getOffers().size()>0}">
+                    <h4>Предложения:</h4>
+                        <ul>
+                            <th:block th:each="offer : ${order.getOffers()}">
+                                <li>
+                                    <a th:href="@{../offers/}+${offer.id}" th:text="${offer.company.name}"></a>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
                 <div class="col-4"></div>
                 <div class="col-4"><button id="printButton" class="btn btn-secondary btn-block">Печать</button></div>
                 <div class="col-12">
