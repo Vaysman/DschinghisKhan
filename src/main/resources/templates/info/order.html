@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title th:text="${order.getNumber()}"></title>
@@ -39,7 +39,18 @@
                     Обязательность: <span th:text="${order.getOrderObligation().getObligationName()}"></span><br>
 
                 </div>
-                <div class="col-4"></div>
+                <div class="col-4">
+                    <div sec:authorize="hasAuthority('ROLE_DISPATCHER')" th:if="${order.getOffers().size()>0}">
+                    <h4>Предложения:</h4>
+                        <ul>
+                            <th:block th:each="offer : ${order.getOffers()}">
+                                <li>
+                                    <a th:href="@{../offers/}+${offer.id}" th:text="${offer.company.name}"></a>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
                 <div class="col-4"></div>
                 <div class="col-4"><button id="printButton" class="btn btn-secondary btn-block">Печать</button></div>
                 <div class="col-12">

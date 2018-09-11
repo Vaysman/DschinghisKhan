@@ -76,7 +76,7 @@ $(document).ready(function () {
                     opts: {
                         searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
                         load: function (query, callback) {
-                            $.get(`api/companies/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
+                            $.get(`api/companies/search/findTop10ByNameContainingAndType/?name=${query}&type=TRANSPORT`,
                                 function (data) {
                                     var companyOptions = [];
                                     data._embedded.companies.forEach(function (entry) {

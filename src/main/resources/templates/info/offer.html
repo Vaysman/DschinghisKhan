@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${offer.getOrderNumber()}"></title>
+    <th:block th:include="fragments/header :: scripts-no-const"></th:block>
+    <script sec:authorize="hasAuthority('ROLE_DISPATCHER')">
+        let offerId = [[${offer.id}]];
+        let orderId = [[${offer.order.id}]];
+        function accept() {
+            let that = this;
+            $.ajax({
+                url: `/orderLifecycle/confirm/${offerId}`,
+                type: "POST",
+                success: function (response) {
+                    if (response == "Success") {
+                        alert("Заявка принята в работу");
+                        window.location.href = `../orders/${orderId}`;
+                    } else {
+                        alert(response)
+                    }
+                },
+                error: function (fgsfds, error) {
+                    alert(error)
+                }
+            })
+        };
+        function decline() {
+            let that = this;
+            $.ajax({
+                url: `/orderLifecycle/declineOffer/${offerId}`,
+                type: "POST",
+                success: function (response) {
+                    if (response == "Success") {
+                        alert("Предложение отклонено");
+                        window.location.href = `../orders/${orderId}`;
+                    } else {
+                        alert(response)
+                    }
+                },
+                error: function (fgsfds, error) {
+                    alert(error)
+                }
+            })
+        };
+    </script>
+</head>
+<body class="grey">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8 container white spaced-container">
+                <div class="row">
+                    <div class="col-6">
+                        <h4 th:text="'Заявка: '+${offer.getOrder().getNumber()}"></h4>
+                        Статус: <span th:text="${offer.order.status.getStatusName()}"></span><br>
+                        Дней для оплаты: <span th:text="${offer.order.getPaymentDate()}"></span><br>
+                        Дней для возврата документов: <span th:text="${offer.order.getDocumentReturnDate()}"></span><br>
+                        Груз:
+                        <ul>
+                            <th:block th:each="cargoUnit : ${offer.getOrder().getCargo()}">
+                                <li th:text="${cargoUnit}"></li>
+                            </th:block>
+                        </ul>
+
+                        Маршрут: <span th:text="${offer.getOrder().getRoute().getName()}"></span><br>
+                        Рейтинг: <span th:text="${offer.getOrder().getRating()}"></span><br>
+                        Обязательность: <span th:text="${offer.getOrder().getOrderObligation().getObligationName()}"></span><br>
+                    </div>
+                    <div class="col-6">
+                        <h4>Предложение</h4>
+                        ТК: <span th:text="${offer.getCompany().getName()}"></span>
+                        Цена ТК: <span th:text="${offer.getProposedPrice()}"></span><br>
+                        Цена диспетчера: <span th:text="${offer.getDispatcherPrice()}"></span><br>
+                        Водитель: <div th:if="${offer.driver}">
+                        <span th:text="${offer.getDriver().getName()}"></span>
+                    </div>
+                        <div th:unless="${offer.driver}">
+                            Не указан
+                        </div>
+                        Транспорт: <div th:if="${offer.transport}">
+                        <span th:text="${offer.getTransport().getNumber()}"></span>
+                    </div>
+                        <div th:unless="${offer.transport}">
+                            Не указан
+                        </div>
+                        Комментарий перевозчика:
+                        <div th:text="${offer.getProposedPriceComment()}"></div>
+
+                        <br>
+                    </div>
+                    <div class="col-4"></div>
+                    <div class="col-4"></div>
+                    <div th:if="${currentCompanyId==offer.getManagerCompany().getId()}" class="col-4">
+                        <button onclick="accept()" class="btn btn-primary btn-block">Утвердить</button>
+                        <button onclick="decline()" class="btn btn-secondary btn-block">Отклонить</button>
+                    </div>
+
+                </div>
+
+        </div>
+        <div class="col-2"></div>
+    </div>
+
+</div>
+
+</body>
+</html>
