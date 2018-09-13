@@ -53,6 +53,11 @@ public class Contact {
     @JoinColumn(name="COMPANY_ID")
     private Company company;
 
+    //in case of receiver type
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String companyName;
+
     @Column
     @Enumerated(EnumType.STRING)
     private ContactType type = ContactType.SECONDARY;

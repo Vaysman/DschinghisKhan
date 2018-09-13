@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.configuration.authentication.AuthToken;
 import ru.constant.CompanyType;
+import ru.constant.ContactType;
 import ru.constant.OrderStatus;
 import ru.dao.entity.*;
 import ru.dao.entity.specification.*;
@@ -193,7 +194,18 @@ public class DataTablesController {
     public DataTablesOutput<Contact> getContactsForUser(@Valid @RequestBody DataTablesInput input) {
         try {
 
-            return contactRepository.findAll(input, Contacts.contactsForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
+            return contactRepository.findAll(input, Contacts.contactsForUser(AuthToken.getCurrentAuthToken().getCompanyId()), Contacts.contactsByType(ContactType.RECEIVER));
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @PostMapping(value = "/contactsForCompany/{companyId}")
+    public DataTablesOutput<Contact> getContactsForCompany(@Valid @RequestBody DataTablesInput input, @PathVariable Integer companyId){
+        try {
+            return contactRepository.findAll(input, Contacts.contactsForCompany(companyId), Contacts.contactsByType(ContactType.SECONDARY));
         } catch (Exception e){
             e.printStackTrace();
             return null;
