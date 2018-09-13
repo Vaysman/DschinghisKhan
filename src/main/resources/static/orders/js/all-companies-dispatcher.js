@@ -61,7 +61,15 @@ $(document).ready(function () {
                         // alert(response.responseText);
                     },
                     error: function (jqXHR, exception) {
-                        alert(response.responseText);
+                        console.log(jqXHR);
+                        console.log(exception);
+                        var cause = jqXHR.responseJSON.cause.cause.message;
+                        if (cause.includes("Duplicate entry")){
+                            companyEditor.field("inn").error("Указанный ИНН уже существует");
+                        } else {
+                            companyInfoEditor.field("email").error(cause);
+                        }
+
                     }
                 }
             },
@@ -166,5 +174,141 @@ $(document).ready(function () {
                 },
             },
         );
+
+        companiesTable.on('select', function (e, dt, type, indexes) {
+            if (type === 'row') {
+                var data = companiesTable.rows(indexes).data('id');
+
+                if(currentCompanyId==data[0].originator){
+                    $('#companyContactsTableWrapper').show();
+                    reInitCompanyContactsTable(data[0].id);
+                } else {
+                    $('#companyContactsTableWrapper').hide();
+                }
+
+            }
+        });
+
+        function reInitCompanyContactsTable(id) {
+            $.get(`api/companies/${id}`).success(function (companyData) {
+                let companyHref = companyData._links.self.href;
+
+                var companyContactsEditor = new $.fn.dataTable.Editor({
+                    ajax: {
+                        create: {
+                            type: 'POST',
+                            contentType: 'application/json',
+                            url: 'api/contacts',
+                            data: function (d) {
+                                let newdata;
+                                $.each(d.data, function (key, value) {
+                                    value.originator = currentCompanyId;
+                                    value.company = companyHref;
+                                    value.type="SECONDARY";
+                                    newdata = JSON.stringify(value);
+                                });
+                                return newdata;
+                            },
+                            success: function (response) {
+                                companyContactsTable.draw();
+                                companyContactsEditor.close();
+                                // alert(response.responseText);
+                            },
+                            error: function (jqXHR, exception) {
+                                alert(response.responseText);
+                            }
+                        },
+                        edit: {
+                            contentType: 'application/json',
+                            type: 'PATCH',
+                            url: 'api/contacts/_id_',
+                            data: function (d) {
+                                let newdata;
+                                $.each(d.data, function (key, value) {
+                                    newdata = JSON.stringify(value);
+                                });
+                                console.log(newdata);
+                                return newdata;
+                            },
+                            success: function (response) {
+                                companyContactsTable.draw();
+                                companyContactsEditor.close();
+                            },
+                            error: function (jqXHR, exception) {
+                                alert(response.responseText);
+                            }
+                        }
+                        ,
+                        remove: {
+                            type: 'DELETE',
+                            contentType: 'application/json',
+                            url: 'api/contacts/_id_',
+                            data: function (d) {
+                                return '';
+                            }
+                        }
+                    },
+                    table: '#companyContactsTable',
+                    idSrc: 'id',
+
+                    fields: [
+                        {label: 'ФИО контакта', name: 'name', type: 'text', attr:{maxlength: 128}},
+                        {label: 'Телефон', name: 'phone', type: "text", attr:{maxlength: 20,placeholder:"+7 (000) 000 00-00"}},
+                        {label: 'E-mail', name: 'email', type: "text", attr:{maxlength: 64}},
+                        {label: 'Должность', name: 'position', type: "text", attr:{maxlength: 64}},
+                    ]
+                });
+
+                var companyContactsTable = $("#companyContactsTable").DataTable({
+                        processing: true,
+                        serverSide: true,
+                        destroy: true,
+                        searchDelay: 800,
+                        ajax: {
+                            contentType: 'application/json',
+                            processing: true,
+                            data: function (d) {
+                                return JSON.stringify(d);
+                            },
+                            url: `dataTables/contactsForCompany/${id}`, // json datasource
+                            type: "post"  // method  , by default get
+                        },
+                        dom: 'Bfrtip',
+                        language: {
+                            url: '/localization/dataTablesRus.json'
+                        },
+                        select: {
+                            style: 'single'
+                        },
+                        "buttons": [
+                            {
+                                extend: "create",
+                                editor: companyContactsEditor
+                            },
+                            {
+                                extend: "edit",
+                                editor: companyContactsEditor
+                            },
+                            {
+                                extend: "remove",
+                                editor: companyContactsEditor
+                            }
+                        ],
+                        "paging": 10,
+                        "columnDefs": [
+                            {"name": "id", "data": "id", "targets": 0, visible: false},
+                            {"name": "name", "data": "name", "targets": 1},
+                            {"name": "phone", "data": "phone", "targets": 2},
+                            {"name": "email", "data": "email", "targets": 3},
+                            {"name": "position", "data": "position", "targets": 4},
+                        ]
+                    }
+                );
+
+            });
+
+
+        }
+
     });
 });

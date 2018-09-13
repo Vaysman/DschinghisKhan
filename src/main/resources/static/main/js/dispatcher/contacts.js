@@ -10,8 +10,8 @@ $(document).ready(function () {
                         let newdata;
                         $.each(d.data, function (key, value) {
                             value.originator = currentCompanyId;
-                            newdata = JSON.stringify(value);
                             value.type="RECEIVER";
+                            newdata = JSON.stringify(value);
                         });
                         return newdata;
                     },
@@ -64,6 +64,7 @@ $(document).ready(function () {
             idSrc: 'id',
 
             fields: [
+                {label: "Название компании", name:"companyName", type:'text', attr:{maxlength:128}},
                 {label: 'ФИО', name: 'name', type: 'text', attr:{maxlength: 128}},
                 {
                     label: 'Пункт', name: 'point', type: 'selectize', options: [], opts: {
@@ -83,29 +84,29 @@ $(document).ready(function () {
                         loadThrottle: 500
                     }
                 },
-                {
-                    label: 'Компании', name: 'company', type: 'selectize',
-                    options: [],
-                    opts: {
-                        searchField: "label",
-                        create: false,
-                        placeholder: "Нажмите, чтобы изменить",
-                        maxItems: 1,
-                        preload: true,
-                        loadThrottle: 400,
-                        load: function (query, callback) {
-                            $.get(`api/companies/search/findTop10ByNameContainingAndType/?name=${query}&type=TRANSPORT`,
-                                function (data) {
-                                    var companyOptions = [];
-                                    data._embedded.companies.forEach(function (entry) {
-                                        companyOptions.push({"label": entry.name, "value": entry._links.self.href});
-                                    });
-                                    callback(companyOptions);
-                                }
-                            );
-                        }
-                    },
-                },
+                // {
+                //     label: 'Компания', name: 'company', type: 'selectize',
+                //     options: [],
+                //     opts: {
+                //         searchField: "label",
+                //         create: false,
+                //         placeholder: "Нажмите, чтобы изменить",
+                //         maxItems: 1,
+                //         preload: true,
+                //         loadThrottle: 400,
+                //         load: function (query, callback) {
+                //             $.get(`api/companies/search/findTop10ByNameContainingAndType/?name=${query}&type=TRANSPORT`,
+                //                 function (data) {
+                //                     var companyOptions = [];
+                //                     data._embedded.companies.forEach(function (entry) {
+                //                         companyOptions.push({"label": entry.name, "value": entry._links.self.href});
+                //                     });
+                //                     callback(companyOptions);
+                //                 }
+                //             );
+                //         }
+                //     },
+                // },
                 {label: 'Телефон', name: 'phone', type: "text", attr:{maxlength: 20,placeholder:"+7 (000) 000 00-00"}},
                 {label: 'E-mail', name: 'email', type: "text", attr:{maxlength: 64}},
                 {label: 'Должность', name: 'position', type: "text", attr:{maxlength: 64}},
@@ -149,12 +150,13 @@ $(document).ready(function () {
                 "paging": 10,
                 "columnDefs": [
                     {"name": "id", "data": "id", "targets": 0, visible: false},
-                    {"name": "name", "data": "name", "targets": 1},
-                    {"name": "point.address", "data": "point.address", "targets": 2, defaultContent: ""},
-                    {"name": "phone", "data": "phone", "targets": 3},
-                    {"name": "email", "data": "email", "targets": 4},
-                    {"name": "position", "data": "position", "targets": 5},
-                    {"name": "company.name", "data": "company.name", "targets": 6, defaultContent:""},
+                    {name: "companyName", data:"companyName",targets:1},
+                    {"name": "name", "data": "name", "targets": 2},
+                    {"name": "point.address", "data": "point.address", "targets": 3, defaultContent: ""},
+                    {"name": "phone", "data": "phone", "targets": 4},
+                    {"name": "email", "data": "email", "targets": 5},
+                    {"name": "position", "data": "position", "targets": 6},
+                    // {"name": "company.name", "data": "company.name", "targets": 6, defaultContent:""},
                 ]
             }
         );
