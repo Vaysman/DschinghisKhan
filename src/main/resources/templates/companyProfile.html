@@ -77,10 +77,10 @@
                     </div>
 
                 </div>
-                <div class="col-6" >
+                <div class="col-8" >
                     <h4>Компания</h4>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <input th:value="${company.id}" id="companyId" hidden>
                             <div class="form-group">
                                 <label>E-mail
@@ -102,7 +102,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="form-group">
                                 <label>ОКВЕД
                                     <input type="text" class="form-control" id="ocved" th:value="${company.ocved}">
@@ -119,6 +119,9 @@
                                 </label>
                             </div>
                             <button id="editCompany" class="btn btn-primary">Обновить</button>
+                        </div>
+                        <div class="">
+
                         </div>
                     </div>
                 </div>

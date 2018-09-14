@@ -49,6 +49,13 @@ $(document).ready(function () {
         companyData.ocved = $("#ocved").val();
         companyData.ocpo = $("#ocpo").val();
         companyData.ogrn = $("#ogrn").val();
+        companyData.kpp = $("#kpp").val();
+        companyData.bik = $("#bik").val();
+        companyData.corresAccount = $("#corresAccount").val();
+        companyData.curAccount = $("#curAccount").val();
+        companyData.bankName = $("#bankName").val();
+        companyData.directorFullname = $("#directorFullname").val();
+        companyData.chiefAccFullname = $("#chiefAccFullname").val();
 
         for(let key in companyData){
             if (companyData[key]==null || companyData[key]==""){

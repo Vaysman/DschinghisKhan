@@ -118,6 +118,27 @@ public class Company {
     @Enumerated(EnumType.STRING)
     private TaxationType taxationType;
 
+    @Column
+    private String kpp = "";
+
+    @Column
+    private String bik = "";
+
+    @Column
+    private String corresAccount = "";
+
+    @Column
+    private String curAccount = "";
+
+    @Column
+    private String bankName = "";
+
+    @Column
+    private String directorFullname = "";
+
+    @Column
+    private String chiefAccFullname = "";
+
 }
 
 

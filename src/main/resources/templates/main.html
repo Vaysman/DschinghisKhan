@@ -77,11 +77,12 @@
 
     </div>
     <div id="tab-info" class="tab-pane in active">
-        <div class="spaced-container white container-fluid" style="input">
+        <div class="spaced-container white container-fluid">
             <div class="row">
                 <div class="col-1"></div>
                 <div class="col-3">
                     <h4>Пользователь</h4>
+                    <br>
                     <div>
                         <input th:value="${user.id}" id="userId" hidden>
                         <div class="form-group">
@@ -105,45 +106,86 @@
                     </div>
 
                 </div>
-                <div class="col-6" >
+                <div class="col-8" >
                     <h4>Компания</h4>
+                    <br>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <input th:value="${company.id}" id="companyId" hidden>
                             <div class="form-group">
                                 <label>E-mail
-                                    <input type="text" class="form-control" id="companyEmail"
+                                    <input type="text" class="form-control" maxlength="64" id="companyEmail"
                                            th:value="${company.email}"
                                            placeholder="E-mail">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>Краткое название
-                                    <input type="text" class="form-control" id="shortName"
+                                    <input type="text" class="form-control" maxlength="64" id="shortName"
                                            th:value="${company.shortName}">
                                 </label>
                             </div>
 
                             <div class="form-group">
                                 <label>Код ATI.su
-                                    <input type="text" class="form-control" id="atiCode" th:value="${company.atiCode}">
+                                    <input type="text" class="form-control" id="atiCode" maxlength="64" th:value="${company.atiCode}">
                                 </label>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="form-group">
                                 <label>ОКВЕД
-                                    <input type="text" class="form-control" id="ocved" th:value="${company.ocved}">
+                                    <input type="text" class="form-control" id="ocved" maxlength="64" th:value="${company.ocved}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>ОКПО
-                                    <input type="text" class="form-control" id="ocpo" th:value="${company.ocpo}">
+                                    <input type="text" class="form-control" id="ocpo" maxlength="64" th:value="${company.ocpo}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>ОГРН
-                                    <input type="text" class="form-control" id="ogrn" th:value="${company.ogrn}">
+                                    <input type="text" class="form-control" id="ogrn" maxlength="64" th:value="${company.ogrn}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>КПП
+                                    <input type="text" class="form-control" id="kpp" maxlength="64" th:value="${company.kpp}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>БИК
+                                    <input type="text" class="form-control" id="bik" maxlength="64" th:value="${company.bik}">
+                                </label>
+                            </div>
+
+
+                        </div>
+                        <div class="col-4">
+
+                            <div class="form-group">
+                                <label>Корреспондентский счет
+                                    <input type="text" class="form-control" id="corresAccount" maxlength="64" th:value="${company.corresAccount}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Рассчетный счет
+                                    <input type="text" class="form-control" id="curAccount" maxlength="64" th:value="${company.curAccount}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Наименование банка
+                                    <input type="text" class="form-control" id="bankName" maxlength="64" th:value="${company.bankName}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>ФИО директора
+                                    <input type="text" class="form-control" id="directorFullname" maxlength="64" th:value="${company.directorFullname}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>ФИО глав. бухгалтера
+                                    <input type="text" class="form-control" id="chiefAccFullname" maxlength="64" th:value="${company.chiefAccFullname}">
                                 </label>
                             </div>
                             <button id="editCompany" class="btn btn-primary">Обновить</button>
@@ -157,6 +199,7 @@
                 <div class="col-3">
                     <div>
                         <h4>Пункт</h4>
+                        <br>
                         <div>
                             <input th:value="${point.id}" id="pointId" hidden>
                             <div class="form-group">
@@ -188,6 +231,7 @@
 
                 <div class="col-3">
                     <h4>Контакт</h4>
+                    <br>
                     <div>
                         <input th:value="${contact.id}" id="contactId" hidden>
                         <div class="form-group">

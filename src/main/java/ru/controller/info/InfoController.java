@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.configuration.authentication.AuthToken;
 import ru.dao.entity.Order;
 import ru.dao.entity.OrderOffer;
+import ru.dao.repository.CompanyRepository;
+import ru.dao.repository.ContactRepository;
 import ru.dao.repository.OrderOfferRepository;
 import ru.dao.repository.OrderRepository;
 
@@ -22,24 +24,34 @@ public class InfoController {
 
     private final OrderRepository orderRepository;
     private final OrderOfferRepository orderOfferRepository;
+    private final ContactRepository contactRepository;
+    private final CompanyRepository companyRepository;
 
     @Autowired
-    public InfoController(OrderRepository orderRepository, OrderOfferRepository orderOfferRepository) {
+    public InfoController(OrderRepository orderRepository, OrderOfferRepository orderOfferRepository, ContactRepository contactRepository, CompanyRepository companyRepository) {
         this.orderRepository = orderRepository;
         this.orderOfferRepository = orderOfferRepository;
+        this.contactRepository = contactRepository;
+        this.companyRepository = companyRepository;
     }
 
     @RequestMapping(value="/orders/{orderId}")
     private String getFullOrder(@PathVariable Integer orderId, ModelMap modelMap){
         Order order = orderRepository.findById(orderId).orElse(null);
         assert order != null;
+
         Hibernate.initialize(order.getRoute());
         Hibernate.initialize(order.getCompany());
         Hibernate.initialize(order.getOffers());
+        Hibernate.initialize(order.getCompany());
+
+
+
         for(OrderOffer offer : order.getOffers()){
             Hibernate.initialize(offer.getCompany());
         }
         modelMap.addAttribute("order",order);
+
         return "info/order";
     }
 

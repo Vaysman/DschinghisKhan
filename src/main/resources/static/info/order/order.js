@@ -36,38 +36,34 @@ $(document).ready(function () {
 
 
         $.get(`/data/orders/${currentOrderId}`)
-            .success(function (order) {
-                console.log(order);
-                $.get(`/data/companies/${order.originator}`)
-                    .success(function (dispatcherCompany) {
-                        console.log(dispatcherCompany);
-                        makePdf(order,dispatcherCompany);
-                    })
+            .success(function (map) {
+                console.log(map);
+                makePdf(map);
             });
     })
-    function makePdf(order, dispatcherCompany) {
+    function makePdf(map, dispatcherCompany) {
         var dd = {
             content: [
-                {text: `Поручение-заявка на предоставление ТС №${order.transport.number} от ${order.dispatchDate} к договору 323`, style: 'bold'},
+                {text: `Поручение-заявка на предоставление ТС №${map.order.transport.number} от ${map.order.dispatchDate} к договору 323`, style: 'bold'},
                 {
                     style: 'tableExample',
                     table: {
                         widths: [44,44,63,80,88,63,80],
                         body: [
                             [{text:'ИСПОЛНИТЕЛЬ', style: "bold", colSpan:4},{},{},{}, {text:'ЗАКАЗЧИК',style:'bold',colSpan:3},{},{}],
-                            [{text:`${order.company.name}`, colSpan:4, style: 'bold'},{},{},{}, {text:`${dispatcherCompany.name}`,colSpan:3, style: 'bold'},{},{}],
-                            [{text:'КОНТАКТ \nИСПОЛНИТЕЛЯ', style: 'bold',rowSpan: 2,colSpan:2},{},{text:`Где взять основной контакт компании?`,style:"veryFuckingSmall"},`Где взять номер компании?`,{text:'КОНТАКТ \nЗАКАЗЧИКА', style: 'bold',rowSpan: 2},{text:'Где взять основной контакт компании?',style:'veryFuckingSmall'},'Где взять номер компании?'],
-                            [{},{},{colSpan:2,text:`${order.company.email}`},{},{},{colSpan:2,text:`${dispatcherCompany.email}`},{}],
-                            [{text:`Адрес: ${order.company.point.address}`,colSpan:4},{},{},{},{text:`Адрес: ${dispatcherCompany.point.address}`,colSpan:3},{},{}],
-                            [{text:`Почтовый адрес: ${order.company.point.address}`,colSpan:4},{},{},{},{text:``,colSpan:3},{},{}],
-                            [{text:`ИНН/КПП: ${order.company.inn}/`,colSpan:4},{},{},{},{text:`ИНН/КПП: ${dispatcherCompany.inn}/`,colSpan:3},{},{}],
-                            [{text:`Р/с: Где взять рассчетный счет?`,colSpan:4},{},{},{},{text:`Р/с: Где взять рассчетный счет?`,colSpan:3},{},{}],
-                            [{text:`Где взять адрес банка?`,colSpan:4},{},{},{},{text:`Где взять всё это?`,colSpan:3},{},{}],
-                            [{text:`К/с: где взять корреспондентский счет?`,colSpan:4},{},{},{},{text:`К/с:`,colSpan:3},{},{}],
-                            [{text:`Тел.: Телефон банка? Компании? Контакта?`,colSpan:4},{},{},{},{text:`Тел.: ???`,colSpan:3},{},{}],
-                            [{text:"ГРУЗ",style:"bold",colSpan:2},{},{text:`${order.cargo.join(", ")};`,colSpan:5,style: "bold"},{},{},{},{}],
-                            [{text:"ТРАНСПОРТ",style:"bold",colSpan:2},{},{text:`Тип кузова: ${order.transport.bodyType}; способ загрузки/разгрузки: ${order.transport.loadingType.join(", ")}; объем: ${order.transport.volume}м`,colSpan:5, style:"bold"},{},{},{},{}],
-                            [{text:"УСЛОВИЯ",style:"bold",colSpan:2},{},{text:`ОБЯЗАТЕЛЬНОЕ НАЛИЧИЕ У ВОДИТЕЛЯ: ${order.requirements.join(", ")}`,style:"bold",colSpan:5},{},{},{},{}],
+                            [{text:`${map.order.company.name}`, colSpan:4, style: 'bold'},{},{},{}, {text:`${map.dispatcherCompany.name}`,colSpan:3, style: 'bold'},{},{}],
+                            [{text:'КОНТАКТ \nИСПОЛНИТЕЛЯ', style: 'bold',rowSpan: 2,colSpan:2},{},{text:`${map.companyContact.name}`,style:"veryFuckingSmall"},`${map.companyContact.phone}`,{text:'КОНТАКТ \nЗАКАЗЧИКА', style: 'bold',rowSpan: 2},{text:`${map.dispatcherContact.name}`,style:'veryFuckingSmall'},`${map.dispatcherContact.phone}`],
+                            [{},{},{colSpan:2,text:`${map.order.company.email}`},{},{},{colSpan:2,text:`${map.dispatcherCompany.email}`},{}],
+                            [{text:`Адрес: ${map.order.company.point.address}`,colSpan:4},{},{},{},{text:`Адрес: ${map.dispatcherCompany.point.address}`,colSpan:3},{},{}],
+                            [{text:`Почтовый адрес: ${map.order.company.point.address}`,colSpan:4},{},{},{},{text:``,colSpan:3},{},{}],
+                            [{text:`ИНН/КПП: ${map.order.company.inn}/${map.order.company.kpp}`,colSpan:4},{},{},{},{text:`ИНН/КПП: ${map.dispatcherCompany.inn}/${map.dispatcherCompany.kpp}`,colSpan:3},{},{}],
+                            [{text:`Р/С: ${map.order.company.curAccount}`,colSpan:4},{},{},{},{text:`Р/с: ${map.dispatcherCompany.curAccount}`,colSpan:3},{},{}],
+                            [{text:`${map.order.company.bankName}`,colSpan:4},{},{},{},{text:`${map.dispatcherCompany.bankName}`,colSpan:3},{},{}],
+                            [{text:`К/с: ${map.order.company.corresAccount}`,colSpan:4},{},{},{},{text:`К/с: ${map.dispatcherCompany.corresAccount}`,colSpan:3},{},{}],
+                            [{text:`Тел.:${map.companyContact.phone}`,colSpan:4},{},{},{},{text:`Тел.: ${map.dispatcherContact.phone}`,colSpan:3},{},{}],
+                            [{text:"ГРУЗ",style:"bold",colSpan:2},{},{text:`${map.order.cargo.join(", ")};`,colSpan:5,style: "bold"},{},{},{},{}],
+                            [{text:"ТРАНСПОРТ",style:"bold",colSpan:2},{},{text:`Тип кузова: ${map.order.transport.bodyType}; способ загрузки/разгрузки: ${map.order.transport.loadingType.join(", ")}; объем: ${map.order.transport.volume}м; грузоподъемность: ${map.order.transport.tonnage}т.`,colSpan:5, style:"bold"},{},{},{},{}],
+                            [{text:"УСЛОВИЯ",style:"bold",colSpan:2},{},{text:`ОБЯЗАТЕЛЬНОЕ НАЛИЧИЕ У ВОДИТЕЛЯ: ${map.order.requirements.join(", ")}`,style:"bold",colSpan:5},{},{},{},{}],
                             [{text:"ШТРАФЫ",style:"bold",colSpan:2},{},{text:'Неполадка ТС - штраф в размере нанесенных убытков, или 20: от ставки. Опоздание ТС: до 2х часов - штраф в размере понес. убытков, или 10% от ставки; свыше 2х часов - штраф в размере понес. убытков или 20% от ставки.',colSpan:5},{},{},{},{}],
 
                         ]
@@ -79,9 +75,9 @@ $(document).ready(function () {
                         widths: [50,75,100, 265],
                         body: [
                             [{text:"Сведения о водителе и машине", style: "header",colSpan:4},{},{},{}],
-                            [{text:`${order.driver.name}`, colSpan:4,style:"center"},{},{},{}],
-                            [`${order.transport.type}`,`${order.transport.number}`,'Паспортные данные', `${order.driver.passportNumber}`],
-                            ['','','Телефон',`${order.driver.phone}`]
+                            [{text:`${map.order.driver.name}`, colSpan:4,style:"center"},{},{},{}],
+                            [`${map.order.transport.type}`,`${map.order.transport.number}`,'Паспортные данные', `${map.order.driver.passportNumber}`],
+                            ['','','Телефон',`${map.order.driver.phone}`]
                         ]
                     }
                 },
@@ -91,8 +87,8 @@ $(document).ready(function () {
                         widths: [120,140,63,167],
                         body: [
                             [{text:"Стоимость перевозки",style: "header",colSpan:4},{},{},{}],
-                            ['Сумма',`${order.proposedPrice}₽`, {text:`Без НДС`,colSpan:2},{}],
-                            ['Сроки и способ оплаты', {text:`Безналичная ${order.paymentDate} банковских дней с момента получения ${(order.paymentType=="По оригиналам")? "оригиналов":"копий"} документов`,colSpan:3},{},{}],
+                            ['Сумма',`${map.order.proposedPrice}₽`, {text:`Без НДС`,colSpan:2},{}],
+                            ['Сроки и способ оплаты', {text:`Безналичная ${map.order.paymentDate} банковских дней с момента получения ${(map.order.paymentType=="По оригиналам")? "оригиналов":"копий"} документов`,colSpan:3},{},{}],
                         ]
                     }
                 },
