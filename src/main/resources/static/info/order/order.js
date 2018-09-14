@@ -58,7 +58,7 @@ $(document).ready(function () {
                             [{text:`Почтовый адрес: ${map.order.company.point.address}`,colSpan:4},{},{},{},{text:``,colSpan:3},{},{}],
                             [{text:`ИНН/КПП: ${map.order.company.inn}/${map.order.company.kpp}`,colSpan:4},{},{},{},{text:`ИНН/КПП: ${map.dispatcherCompany.inn}/${map.dispatcherCompany.kpp}`,colSpan:3},{},{}],
                             [{text:`Р/С: ${map.order.company.curAccount}`,colSpan:4},{},{},{},{text:`Р/с: ${map.dispatcherCompany.curAccount}`,colSpan:3},{},{}],
-                            [{text:`${map.order.company.bankName}`,colSpan:4},{},{},{},{text:`${map.dispatcherCompany.bankName}`,colSpan:3},{},{}],
+                            [{text:`Название банка: ${map.order.company.bankName}`,colSpan:4},{},{},{},{text:`${map.dispatcherCompany.bankName}`,colSpan:3},{},{}],
                             [{text:`К/с: ${map.order.company.corresAccount}`,colSpan:4},{},{},{},{text:`К/с: ${map.dispatcherCompany.corresAccount}`,colSpan:3},{},{}],
                             [{text:`Тел.:${map.companyContact.phone}`,colSpan:4},{},{},{},{text:`Тел.: ${map.dispatcherContact.phone}`,colSpan:3},{},{}],
                             [{text:"ГРУЗ",style:"bold",colSpan:2},{},{text:`${map.order.cargo.join(", ")};`,colSpan:5,style: "bold"},{},{},{},{}],

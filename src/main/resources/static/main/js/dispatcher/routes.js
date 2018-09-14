@@ -181,14 +181,14 @@ $(document).ready(function () {
                     label: 'Темература (До)<sup class="red">*</sup>', name: 'tempTo', type: "text",
                 },
                 {
-                    label: 'Объем м<sup>3</sup>', name: 'volume', type: "mask", mask: "000",
+                    label: 'Объем м<sup>3</sup>', name: 'volume<sup class="red">*</sup>', type: "mask", mask: "000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Тоннаж<sup>Т.</sup>', name: 'tonnage', type: "mask", mask: "000",
+                    label: 'Тоннаж<sup>Т.</sup>', name: 'tonnage<sup class="red">*</sup>', type: "mask", mask: "000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
