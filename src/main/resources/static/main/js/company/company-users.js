@@ -1,10 +1,5 @@
 $(document).ready(function () {
-    let currentCompany;
-    $.get(`/api/companies/${currentCompanyId}`).success(function (data) {
-        currentCompany = data;
-        console.log(currentCompany);
-    });
-    // console.log(JSON.stringify(userRoles));
+
     let usersEditor = new $.fn.dataTable.Editor({
         ajax: {
             create: {
@@ -17,6 +12,7 @@ $(document).ready(function () {
                     $.each(d.data, function (key, value) {
                         value.originator = currentCompanyId;
                         value.company = currentCompany._links.self.href;
+                        value.userRole = "ТЭК";
                         newdata = JSON.stringify(value);
                     });
                     console.log(newdata);
@@ -54,7 +50,7 @@ $(document).ready(function () {
                     // alert(response.responseText);
                 },
                 error: function (jqXHR, exception) {
-                    alert(response.responseText);
+                    alert(jqXHR.errorJSON.cause.cause.message);
                 }
             }
             ,
@@ -62,12 +58,12 @@ $(document).ready(function () {
                 type: 'DELETE',
                 contentType: 'application/json',
                 url: 'api/users/_id_',
-                data: function (d) {
+                data: function () {
                     return '';
                 }
             }
         },
-        table: '#usersTable',
+        table: '#companyUsersTable',
         idSrc: 'id',
 
 
@@ -87,38 +83,9 @@ $(document).ready(function () {
         ]
     });
 
-    usersEditor.on( 'preSubmit', function ( e, o, action ) {
-        if ( action !== 'remove' ) {
-            var username = this.field( 'username' );
-            var login = this.field( 'login' );
-            var passAndSalt = this.field( 'passAndSalt' );
-            var userRole = this.field( 'userRole' );
-
-            // Only validate user input values - different values indicate that
-            // the end user has not entered a value
-            if(!username.val()){
-                username.error("Имя пользователя должно быть указано")
-            }
-            if(!login.val()){
-                login.error("Логин должен быть указан")
-            }
-            if(action!=='edit'&&(!passAndSalt.val() || passAndSalt.val()==="dummy") ){
-                passAndSalt.error("Пароль должен быть указан")
-            }
-            if(!userRole.val()){
-                userRole.error("Роль должна быть указана")
-            }
-            // ... additional validation rules
-
-            // If any error was reported, cancel the submission so it can be corrected
-            if ( this.inError() ) {
-                return false;
-            }
-        }
-    } );
 
 
-    var usersDataTable = $("#companyUsersTable").DataTable({
+    let usersDataTable = $("#companyUsersTable").DataTable({
             processing: true,
             serverSide: true,
             searchDelay: 800,
@@ -165,5 +132,38 @@ $(document).ready(function () {
             ]
         }
     );
+    let currentCompany;
+    $.get(`/api/companies/${currentCompanyId}`).success(function (data) {
+        currentCompany = data;
+        console.log(currentCompany);
+    });
+    // console.log(JSON.stringify(userRoles));
+
+    usersEditor.on( 'preSubmit', function ( e, o, action ) {
+        if ( action !== 'remove' ) {
+            let username = this.field('username');
+            let login = this.field('login');
+            let passAndSalt = this.field('passAndSalt');
+
+            // Only validate user input values - different values indicate that
+            // the end user has not entered a value
+            if(!username.val()){
+                username.error("Имя пользователя должно быть указано")
+            }
+            if(!login.val()){
+                login.error("Логин должен быть указан")
+            }
+            if(action!=='edit'&&(!passAndSalt.val() || passAndSalt.val()==="dummy") ){
+                passAndSalt.error("Пароль должен быть указан")
+            }
+            // ... additional validation rules
+
+            // If any error was reported, cancel the submission so it can be corrected
+            if ( this.inError() ) {
+                return false;
+            }
+        }
+    } );
+
 
 });

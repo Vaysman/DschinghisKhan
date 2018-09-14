@@ -42,26 +42,7 @@ public class AuthorizedController {
         this.contactRepository = contactRepository;
     }
 
-
-    //Abandoned
-    @GetMapping("/profile")
-    @Transactional
-    public String profile(Model modelAndView) {
-        AuthToken authentication = (AuthToken) SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findById(authentication.getUser().getId()).orElse(null);
-        assert user != null;
-        Company company = user.getCompany();
-        Contact contact = contactRepository.findFirstByCompanyAndType(company,ContactType.PRIMARY).orElse(null);
-        Point point = company.getPoint();
-        modelAndView.addAttribute("company",company);
-        modelAndView.addAttribute("contact",contact);
-        modelAndView.addAttribute("user",user);
-        modelAndView.addAttribute("point",point);
-        return "companyProfile";
-    }
-
-
-    @RequestMapping("/main")
+    @RequestMapping({"/main","/index","/"})
     public String main(Model modelAndView)
     {
         AuthToken authentication = (AuthToken) SecurityContextHolder.getContext().getAuthentication();

@@ -26,16 +26,6 @@ public class AuthController {
     @Autowired
     GeocodingService geoService;
 
-    @GetMapping("/")
-    public String root() {
-        return "main";
-    }
-
-    @GetMapping("/index")
-    public String index() {
-        return "main";
-    }
-
 
     @RequestMapping(value = "/login")
     public String login() {
