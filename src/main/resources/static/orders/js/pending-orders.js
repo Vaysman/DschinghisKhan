@@ -19,7 +19,7 @@ var orderList = new Vue({
     methods: {
         loadOrderInfo: function (orderId) {
             let that = this;
-            $.get(`/data/orders/${orderId}`).then((orderInfo) => {
+            $.get(`/data/orders/forAccept/${orderId}`).then((orderInfo) => {
                 that.orderId = orderId;
                 that.order = orderInfo;
                 that.proposedPrice = orderInfo.dispatcherPrice;

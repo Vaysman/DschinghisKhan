@@ -1,5 +1,6 @@
 package ru.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.constant.DriverPaymentType;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -78,4 +81,17 @@ public class Driver {
     @Column
     @JsonView(DataTablesOutput.View.class)
     private Integer originator;
+
+    @JsonIgnore
+    @ManyToMany(cascade = { CascadeType.ALL})
+    @JoinTable(
+            name = "files_to_drivers",
+            joinColumns = { @JoinColumn(name = "driver_id") },
+            inverseJoinColumns = { @JoinColumn(name = "file_id") },
+            indexes = {@Index(name = "files_to_drivers_driver_id_index", columnList = "driver_id"),
+                    @Index(name = "files_to_drivers_file_id_index", columnList = "file_id")}
+    )
+    private Set<File> files = new HashSet<>();
+
+
 }
