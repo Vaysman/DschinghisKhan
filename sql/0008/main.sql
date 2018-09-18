@@ -21,3 +21,12 @@ CREATE TABLE files_to_drivers
 );
 CREATE INDEX files_to_drivers_file_id_index ON files_to_drivers (file_id);
 CREATE INDEX files_to_drivers_driver_id_index ON files_to_drivers (driver_id);
+
+
+CREATE TABLE files_to_orders
+(
+  order_id int,
+  file_id int
+);
+CREATE INDEX files_to_orders_order_id_index ON files_to_orders (order_id);
+CREATE INDEX files_to_orders_file_id_index ON files_to_orders (file_id);

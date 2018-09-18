@@ -173,6 +173,17 @@ public class Order {
     @JsonIgnore
     private Set<OrderOffer> offers = new HashSet<>();
 
+    @JsonIgnore
+    @ManyToMany(cascade = { CascadeType.ALL})
+    @JoinTable(
+            name = "files_to_orders",
+            joinColumns = { @JoinColumn(name = "order_id") },
+            inverseJoinColumns = { @JoinColumn(name = "file_id") },
+            indexes = {@Index(name = "files_to_orders_order_id_index", columnList = "order_id"),
+                    @Index(name = "files_to_orders_file_id_index", columnList = "file_id")}
+    )
+    Set<File> files;
+
     @PrePersist
     private void setPricing(){
         routePrice = route.getTotalCostNds();
