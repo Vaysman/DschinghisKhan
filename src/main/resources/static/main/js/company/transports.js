@@ -1,4 +1,55 @@
 $(document).ready(function () {
+
+    $("#uploadTransportDocument").click(function (event) {
+
+        //stop submit the form, we will post it manually.
+        event.preventDefault();
+
+
+        // Get form
+        var form = $('#transportDocumentUploadForm')[0];
+
+        // Create an FormData object
+        var data = new FormData(form);
+
+        // If you want to add an extra field for the FormData
+        // data.append("CustomField", "This is some extra data, testing");
+
+        let id = data.get("id");
+        console.log(id);
+        console.log(data);
+
+
+        // disabled the submit button
+        $("#submit").prop("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: `/upload/transport/${id}`,
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+
+                $("#uploadTransportDocument").prop("disabled", false);
+                $("#transportDocumentUploadModal").modal('hide');
+                document.getElementById("transportDocumentUploadForm").reset();
+
+            },
+            error: function (e) {
+                console.log("ERROR : ", e);
+                $("#uploadTransportDocument").prop("disabled", false);
+                $("#transportDocumentUploadModal").modal('hide');
+                document.getElementById("transportDocumentUploadForm").reset();
+
+            }
+        });
+
+    });
+
     let transportEditor = new $.fn.dataTable.Editor({
         table: '#transportDataTable',
         idSrc: 'id',
@@ -136,6 +187,15 @@ $(document).ready(function () {
                 {
                     extend: "edit",
                     editor: transportEditor
+                },
+                {
+                    extend: 'selectedSingle',
+                    text: '<i class="fa fa-file"></i> Прикрепить документ',
+                    action: function (e, dt, node, config) {
+                        $("#transportIdInput").val(dt.rows( { selected: true } ).data()[0].id);
+                        $("#transportDocumentUploadModal").modal();
+                        console.log(dt.rows( { selected: true } ).data()[0].id);
+                    }
                 },
                 {
                     extend: "remove",

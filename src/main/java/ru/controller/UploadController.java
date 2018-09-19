@@ -4,7 +4,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +17,7 @@ import ru.dao.repository.OrderRepository;
 import ru.dao.repository.TransportRepository;
 import ru.service.StorageService;
 
-@Controller
+@RestController
 @RequestMapping("/upload")
 public class UploadController {
     private final DriverRepository driverRepository;

@@ -10,8 +10,6 @@
     <script src="/main/js/dispatcher/users.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
 
 
-
-
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/transports.js"></script>
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/drivers.js"></script>
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/company-users.js"></script>
@@ -24,7 +22,6 @@
 <nav class="logist-tabs">
     <div>
         <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
-
 
 
             <li class="nav-item">
@@ -46,8 +43,9 @@
                     Водители</a>
             </li>
             <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
-                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-company-users"><i class="fa fa-users"
-                                                                                                         aria-hidden="true"></i>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-company-users"><i
+                        class="fa fa-users"
+                        aria-hidden="true"></i>
                     Пользователи</a>
             </li>
         </ul>
@@ -106,7 +104,7 @@
                     </div>
 
                 </div>
-                <div class="col-8" >
+                <div class="col-8">
                     <h4>Компания</h4>
                     <br>
                     <div class="row">
@@ -128,34 +126,40 @@
 
                             <div class="form-group">
                                 <label>Код ATI.su
-                                    <input type="text" class="form-control" id="atiCode" maxlength="64" th:value="${company.atiCode}">
+                                    <input type="text" class="form-control" id="atiCode" maxlength="64"
+                                           th:value="${company.atiCode}">
                                 </label>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-group">
                                 <label>ОКВЕД
-                                    <input type="text" class="form-control" id="ocved" maxlength="64" th:value="${company.ocved}">
+                                    <input type="text" class="form-control" id="ocved" maxlength="64"
+                                           th:value="${company.ocved}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>ОКПО
-                                    <input type="text" class="form-control" id="ocpo" maxlength="64" th:value="${company.ocpo}">
+                                    <input type="text" class="form-control" id="ocpo" maxlength="64"
+                                           th:value="${company.ocpo}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>ОГРН
-                                    <input type="text" class="form-control" id="ogrn" maxlength="64" th:value="${company.ogrn}">
+                                    <input type="text" class="form-control" id="ogrn" maxlength="64"
+                                           th:value="${company.ogrn}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>КПП
-                                    <input type="text" class="form-control" id="kpp" maxlength="64" th:value="${company.kpp}">
+                                    <input type="text" class="form-control" id="kpp" maxlength="64"
+                                           th:value="${company.kpp}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>БИК
-                                    <input type="text" class="form-control" id="bik" maxlength="64" th:value="${company.bik}">
+                                    <input type="text" class="form-control" id="bik" maxlength="64"
+                                           th:value="${company.bik}">
                                 </label>
                             </div>
 
@@ -165,27 +169,32 @@
 
                             <div class="form-group">
                                 <label>Корреспондентский счет
-                                    <input type="text" class="form-control" id="corresAccount" maxlength="64" th:value="${company.corresAccount}">
+                                    <input type="text" class="form-control" id="corresAccount" maxlength="64"
+                                           th:value="${company.corresAccount}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>Рассчетный счет
-                                    <input type="text" class="form-control" id="curAccount" maxlength="64" th:value="${company.curAccount}">
+                                    <input type="text" class="form-control" id="curAccount" maxlength="64"
+                                           th:value="${company.curAccount}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>Наименование банка
-                                    <input type="text" class="form-control" id="bankName" maxlength="64" th:value="${company.bankName}">
+                                    <input type="text" class="form-control" id="bankName" maxlength="64"
+                                           th:value="${company.bankName}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>ФИО директора
-                                    <input type="text" class="form-control" id="directorFullname" maxlength="64" th:value="${company.directorFullname}">
+                                    <input type="text" class="form-control" id="directorFullname" maxlength="64"
+                                           th:value="${company.directorFullname}">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>ФИО глав. бухгалтера
-                                    <input type="text" class="form-control" id="chiefAccFullname" maxlength="64" th:value="${company.chiefAccFullname}">
+                                    <input type="text" class="form-control" id="chiefAccFullname" maxlength="64"
+                                           th:value="${company.chiefAccFullname}">
                                 </label>
                             </div>
                             <button id="editCompany" class="btn btn-primary">Обновить</button>
@@ -221,10 +230,10 @@
                                     </div>
 
                                 </label>
-                                <div id="addressCheckMap" style="height:330px; display: none;" ></div>
+                                <div id="addressCheckMap" style="height:330px; display: none;"></div>
                             </div>
 
-                            <button id="editPoint"  class="btn btn-primary">Обновить</button>
+                            <button id="editPoint" class="btn btn-primary">Обновить</button>
                         </div>
                     </div>
                 </div>
@@ -265,7 +274,8 @@
         <div class="container-fluid spaced-container white">
             <h4>Транспорт</h4>
             <div>
-                <table class="table table-hover  table table-striped table-bordered" style="width: 100%" id="transportDataTable">
+                <table class="table table-hover  table table-striped table-bordered" style="width: 100%"
+                       id="transportDataTable">
                     <thead>
                     <tr>
                         <th>id</th>
@@ -282,6 +292,37 @@
                     </tr>
                     </thead>
                 </table>
+            </div>
+        </div>
+        <div class="modal" id="transportDocumentUploadModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Загрузить документ</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="transportDocumentUploadForm">
+
+                            <input id="transportIdInput" name="id" hidden>
+                            <div class="row">
+                                <div class="col-4">Название файла<sup class="red">*</sup></div>
+                                <div class="col-8"><input class="form-control" type="text" name="fileName"></div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-4">Файл<sup class="red">*</sup></div>
+                                <div class="col-8"><input type="file" name="file"></div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="uploadTransportDocument" class="btn btn-primary">Загрузить</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
