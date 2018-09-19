@@ -2,6 +2,56 @@
 
 $(document).ready(function () {
 
+    $("#uploadOrderDocument").click(function (event) {
+
+        //stop submit the form, we will post it manually.
+        event.preventDefault();
+
+
+        // Get form
+        var form = $('#orderDocumentUploadForm')[0];
+
+        // Create an FormData object
+        var data = new FormData(form);
+
+        // If you want to add an extra field for the FormData
+        // data.append("CustomField", "This is some extra data, testing");
+
+        let id = data.get("id");
+        console.log(id);
+        console.log(data);
+
+
+        // disabled the submit button
+        $("#uploadOrderDocument").prop("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: `/upload/order/${id}`,
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+
+                $("#uploadOrderDocument").prop("disabled", false);
+                $("#orderDocumentUploadModal").modal('hide');
+                document.getElementById("driverDocumentUploadForm").reset();
+
+            },
+            error: function (e) {
+                console.log("ERROR : ", e);
+                $("#uploadOrderDocument").prop("disabled", false);
+                $("#orderDocumentUploadModal").modal('hide');
+                document.getElementById("orderDocumentUploadForm").reset();
+
+            }
+        });
+
+    });
+
 
 
     let statusChangeEditorOnAllOrders = new $.fn.dataTable.Editor({
@@ -350,6 +400,14 @@ $(document).ready(function () {
                         });
                     },
                     enabled: false
+                },{
+                    extend: 'selectedSingle',
+                    text: '<i class="fa fa-file"></i> Прикрепить документ',
+                    action: function (e, dt, node, config) {
+                        $("#orderIdInput").val(dt.rows( { selected: true } ).data()[0].id);
+                        $("#orderDocumentUploadModal").modal();
+                        console.log(dt.rows( { selected: true } ).data()[0].id);
+                    }
                 },
             ],
             "paging": 10,
@@ -550,7 +608,7 @@ $(document).ready(function () {
                     list+=`<li><a href="/info/offers/${offer.id}">${offer.company.name}</a></li>`
                 });
 
-                row.child(`<ul>${list}</ul>`).show();
+                row.child(`<h5>Предложения компаний:</h5><ul>${list}</ul>`).show();
                 tr.addClass('shown');
             });
 

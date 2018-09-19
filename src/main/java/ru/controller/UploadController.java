@@ -1,5 +1,7 @@
 package ru.controller;
 
+import eu.medsea.mimeutil.MimeType;
+import eu.medsea.mimeutil.MimeUtil;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import ru.dao.repository.FileRepository;
 import ru.dao.repository.OrderRepository;
 import ru.dao.repository.TransportRepository;
 import ru.service.StorageService;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/upload")
@@ -85,13 +89,20 @@ public class UploadController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/file/{filename:.+}")
+    @GetMapping("/getFile/{filename:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws IOException {
 
         Resource file = storageService.loadAsResource(filename);
+        String mimeType = "";
+        MimeType mimeType1 = (MimeType) MimeUtil.getMimeTypes(file.getFile()).stream().findFirst().orElse(null);
+        if(mimeType1!=null){
+            mimeType = mimeType1.toString();
+        }
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "inline; filename=\"" + file.getFilename() + "\"").body(file);
+                "attachment; filename=\"" + file.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_TYPE, mimeType)
+                .body(file);
     }
 
 

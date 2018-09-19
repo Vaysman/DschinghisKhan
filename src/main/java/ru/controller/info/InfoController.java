@@ -44,6 +44,16 @@ public class InfoController {
         Hibernate.initialize(order.getCompany());
         Hibernate.initialize(order.getOffers());
         Hibernate.initialize(order.getCompany());
+        Hibernate.initialize(order.getTransport());
+        Hibernate.initialize(order.getDriver());
+        Hibernate.initialize(order.getFiles());
+        if(order.getDriver()!=null){
+            Hibernate.initialize(order.getDriver().getFiles());
+        }
+        if(order.getTransport()!=null){
+            Hibernate.initialize(order.getTransport().getFiles());
+        }
+
 
 
 
