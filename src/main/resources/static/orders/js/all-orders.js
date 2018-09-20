@@ -408,7 +408,16 @@ $(document).ready(function () {
                         $("#orderDocumentUploadModal").modal();
                         console.log(dt.rows( { selected: true } ).data()[0].id);
                     }
-                },
+                },{
+                    extend: "excelHtml5",
+                    text: "Экспорт"
+                },{
+                    text: "fgsfds",
+                    extend: 'selectedSingle',
+                    action: function () {
+                        console.log("fgsfds");
+                    }
+                }
             ],
             "paging": 10,
             "columnDefs": [

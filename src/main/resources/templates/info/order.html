@@ -68,7 +68,7 @@
                         </th:block>
                     </ul>
                 </div>
-                <div th:if="order.driver" class="col-4">
+                <div th:if="${order.driver!=null}" class="col-4">
                     <h5>Водитель</h5>
                     <th:block th:each="file : ${order.getDriver().getFiles()}">
                         <li>
@@ -76,7 +76,7 @@
                         </li>
                     </th:block>
                 </div>
-                <div th:if="order.transport" class="col-4">
+                <div th:if="${order.transport!=null}" class="col-4">
                     <h5>Транспорт</h5>
                     <th:block th:each="file : ${order.getTransport().getFiles()}">
                         <li>

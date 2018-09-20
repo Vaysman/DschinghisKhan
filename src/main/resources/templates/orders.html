@@ -7,6 +7,8 @@
 
     <th:block th:include="fragments/header :: scripts"></th:block>
     <script src="/media/DataTables/numeric-plugin.js"></script>
+    <script src="/media/JsZip/jszip.min.js"></script>
+    <script src="/media/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
     <!--<script src="/media/vue.min.js"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/all-orders.js"></script>
