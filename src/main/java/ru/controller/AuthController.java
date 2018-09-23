@@ -63,6 +63,7 @@ public class AuthController {
     public void pdfInfo(HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline;filename=Kurulway.pdf");
+
         FileCopyUtils.copy(resourceLoader.getResource("classpath:Kurulway.pdf").getInputStream(),response.getOutputStream());
     }
 

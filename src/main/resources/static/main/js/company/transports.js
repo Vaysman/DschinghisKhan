@@ -200,6 +200,16 @@ $(document).ready(function () {
                 {
                     extend: "remove",
                     editor: transportEditor
+                },
+                {
+                    text: 'Показать все',
+                    action: function () {
+                        transportDataTable.page.len(-1).draw();
+                    }
+                },{
+                    extend: "excelHtml5",
+                    text: "<i class='fa fa-file-excel-o'></i> Экспорт",
+                    title: `Транспорт ${new Date().getDate()}.${(new Date().getMonth()+1)}.${new Date().getFullYear()}`
                 }
             ],
             "paging": 10,

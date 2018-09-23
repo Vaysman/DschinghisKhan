@@ -408,15 +408,16 @@ $(document).ready(function () {
                         $("#orderDocumentUploadModal").modal();
                         console.log(dt.rows( { selected: true } ).data()[0].id);
                     }
+                },
+                {
+                    text: 'Показать все',
+                    action: function () {
+                        orderDataTable.page.len(-1).draw();
+                    }
                 },{
                     extend: "excelHtml5",
-                    text: "Экспорт"
-                },{
-                    text: "fgsfds",
-                    extend: 'selectedSingle',
-                    action: function () {
-                        console.log("fgsfds");
-                    }
+                    text: "<i class='fa fa-file-excel-o'></i> Экспорт",
+                    title: `Заявки ${new Date().getDate()}.${(new Date().getMonth()+1)}.${new Date().getFullYear()}`
                 }
             ],
             "paging": 10,
