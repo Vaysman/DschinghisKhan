@@ -252,20 +252,21 @@ $(document).ready(function () {
                     }
                 ],
                 "paging": 10,
-                "columnDefs": [
-                    {"name": "id", "data": "id", "targets": 0},
-                    {"name": "name", "data": "name", "targets": 1},
+                "columns": [
+                    {"name": "id", "data": "id", title: "id", visible:false},
+                    {"name": "number", "data": "number", title: "Номер"},
+                    {"name": "name", "data": "name", title:"Название"},
                     {
                         "name": "company.name",
                         "data": "company.name",
                         orderable: false,
-                        "targets": 2,
+                        title: "Компания",
                         defaultContent: ""
                     },
                     {
                         "name": "totalCost",
                         "data": null,
-                        "targets": 3,
+                        title: "Ст. за маршрут",
                         searchable: false,
                         orderable: false,
                         render: function (data, type, full) {
@@ -275,7 +276,7 @@ $(document).ready(function () {
                     {
                         "name": "costPerKilometer",
                         "data": null,
-                        "targets": 4,
+                        title: "₽/Км",
                         searchable: false,
                         orderable: false,
                         render: function (data, type, full) {
@@ -285,7 +286,7 @@ $(document).ready(function () {
                     {
                         "name": "costPerBox",
                         "data": null,
-                        "targets": 5,
+                        title: "₽/Коробка",
                         searchable: false,
                         orderable: false,
                         render: function (data, type, full) {
@@ -297,7 +298,7 @@ $(document).ready(function () {
                         "data": null,
                         searchable: false,
                         orderable: false,
-                        "targets": 6,
+                        title: "₽/Пункт",
                         render: function (data, type, full) {
                             return (data.costPerPoint !== null && data.costPerPointNds !== null) ? `${data.costPerPoint}/${data.costPerPointNds}` : "";
                         }
@@ -307,7 +308,7 @@ $(document).ready(function () {
                         "data": null,
                         searchable: false,
                         orderable: false,
-                        "targets": 7,
+                        title: "₽/Час",
                         render: function (data, type, full) {
                             return (data.costPerHour !== null && data.costPerHourNds !== null) ? `${data.costPerHour}/${data.costPerHourNds}` : "";
                         }
@@ -317,7 +318,7 @@ $(document).ready(function () {
                         "data": null,
                         searchable: false,
                         orderable: false,
-                        "targets": 8,
+                        title: "₽/Паллета",
                         render: function (data, type, full) {
                             return (data.costPerPallet !== null && data.costPerPalletNds !== null) ? `${data.costPerPallet}/${data.costPerPalletNds}` : "";
                         }
@@ -327,7 +328,7 @@ $(document).ready(function () {
                         "data": null,
                         searchable: false,
                         orderable: false,
-                        "targets": 9,
+                        title: "Темп. режим",
                         render: function (data, type, full) {
                             return (data.tempTo !== null && data.tempFrom !== null) ? `${data.tempFrom}º-${data.tempTo}º` : "";
                         }
@@ -337,7 +338,7 @@ $(document).ready(function () {
                         "data": "vehicleType",
                         searchable: false,
                         orderable: false,
-                        "targets": 10,
+                        title: "Тип кузова",
                         defaultContent: ""
                     },
                     {
@@ -345,7 +346,7 @@ $(document).ready(function () {
                         "data": "volume",
                         searchable: false,
                         orderable: false,
-                        "targets": 11,
+                        title: "Объем",
                         defaultContent: "",
                         render: function (data, type, row, meta) {
                             return (data !== null) ? `${data}м<sup>3</sup>` : "";
@@ -356,7 +357,7 @@ $(document).ready(function () {
                         "data": "tonnage",
                         searchable: false,
                         orderable: false,
-                        "targets": 12,
+                        title: "Тоннаж",
                         defaultContent: "",
                         render: function (data, type, row, meta) {
                             return (data !== null) ? `${data}т` : "";
@@ -367,7 +368,7 @@ $(document).ready(function () {
                         "data": "loadingType",
                         searchable: false,
                         orderable: false,
-                        "targets": 13,
+                        title: "Погрузка",
                         defaultContent: ""
                     },
                     {
@@ -375,7 +376,7 @@ $(document).ready(function () {
                         "data": "afterLoad",
                         searchable: false,
                         orderable: false,
-                        "targets": 14,
+                        title: "Догруз",
                         render: function (data) {
                             return (data) ? "Возможен догруз" : "Отдельная машина"
                         },
@@ -386,7 +387,7 @@ $(document).ready(function () {
                         "data": "comment",
                         searchable: false,
                         orderable: false,
-                        "targets": 15,
+                        title: "Комментарий",
                         defaultContent: ""
                     },
                 ]

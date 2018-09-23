@@ -17,6 +17,16 @@ public class Orders {
         return (final Root<Order> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> criteriaBuilder.equal(root.get("originator"),originator);
     }
 
+    public static Specification<Order> ordersNotInStatus(OrderStatus[] orderStatuses){
+        return (final Root<Order> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> {
+            final List<Predicate> predicates = new ArrayList<>();
+            for (OrderStatus orderStatus : orderStatuses) {
+                predicates.add(criteriaBuilder.notEqual(root.<OrderStatus>get("status"), orderStatus));
+            }
+            return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
+        };
+    }
+
     public static Specification<Order> ordersInStatus(OrderStatus[] orderStatuses) {
         return (final Root<Order> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> {
             final List<Predicate> predicates = new ArrayList<>();

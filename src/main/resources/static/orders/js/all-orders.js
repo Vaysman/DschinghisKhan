@@ -210,11 +210,15 @@ $(document).ready(function () {
             }
             ,
             remove: {
-                type: 'DELETE',
+                type: 'PATCH',
                 contentType: 'application/json',
                 url: 'api/orders/_id_',
                 data: function (d) {
-                    return '';
+                    let newdata;
+                    $.each(d.data, function (key, value) {
+                        newdata = JSON.stringify({status: "Удалена"});
+                    });
+                    return newdata;
                 }
             }
         },

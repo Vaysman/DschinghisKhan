@@ -1,6 +1,7 @@
 package ru.dao.repository;
 
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.Param;
 import ru.dao.entity.Route;
 

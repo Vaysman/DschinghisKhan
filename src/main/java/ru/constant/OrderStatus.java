@@ -77,7 +77,10 @@ public enum  OrderStatus {
     PAYMENT_CONFD("Подтверждение оплаты"),
 
     @JsonProperty("Не оплачено")
-    NOT_PAYED("Не оплачено");
+    NOT_PAYED("Не оплачено"),
+
+    @JsonProperty("Удалена")
+    DELETED("Удалена");
 
 
     @Getter

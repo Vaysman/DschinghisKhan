@@ -148,7 +148,7 @@ public class DataTablesController {
     @RequestMapping(value = "/ordersForUser", method = RequestMethod.POST)
     public DataTablesOutput<Order> getOrdersForUser(@Valid @RequestBody DataTablesInput input) {
         try {
-            return orderRepository.findAll(input, Orders.ordersForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
+            return orderRepository.findAll(input, Orders.ordersForUser(AuthToken.getCurrentAuthToken().getCompanyId()), Orders.ordersNotInStatus(new OrderStatus[]{OrderStatus.DELETED}));
         } catch (Exception e){
             e.printStackTrace();
             return null;

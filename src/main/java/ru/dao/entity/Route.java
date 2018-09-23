@@ -36,6 +36,10 @@ public class Route {
 
     @Column
     @JsonView(DataTablesOutput.View.class)
+    private Long number;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
     private String name;
 
     @Column

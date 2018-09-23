@@ -5,8 +5,10 @@ import org.springframework.stereotype.Component;
 import ru.dao.entity.Company;
 import ru.dao.entity.Route;
 import ru.dao.entity.RoutePoint;
+import ru.dao.entity.specification.Routes;
 import ru.dao.repository.CompanyRepository;
 import ru.dao.repository.RoutePointRepository;
+import ru.dao.repository.RouteRepository;
 
 import javax.persistence.PrePersist;
 
@@ -14,15 +16,20 @@ import javax.persistence.PrePersist;
 public class RouteListener {
     private static RoutePointRepository routePointRepository;
     private static CompanyRepository companyRepository;
+    private static RouteRepository routeRepository;
 
     @Autowired
-    public void init(RoutePointRepository routePointRepository, CompanyRepository companyRepository){
+    public void init(RoutePointRepository routePointRepository, CompanyRepository companyRepository, RouteRepository routeRepository){
         RouteListener.routePointRepository=routePointRepository;
         RouteListener.companyRepository = companyRepository;
+        RouteListener.routeRepository = routeRepository;
     }
 
+
     @PrePersist
-    private void createFirstPoint(Route route){
+    private void prePersist(Route route){
+        route.setNumber(routeRepository.count(Routes.usersForUser(route.getOriginator()))+1);
+
         if(route.getOriginator()==null) return;
         Company company = companyRepository.findById(route.getOriginator()).orElse(null);
         if (company==null) return;
