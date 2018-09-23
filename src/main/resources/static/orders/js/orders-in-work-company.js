@@ -227,6 +227,16 @@ $(document).ready(function () {
                     className: 'dark-green',
                     enabled: false
                 },
+                {
+                    text: 'Показать все',
+                    action: function () {
+                        ordersInWorkDataTable.page.len(-1).draw();
+                    }
+                },{
+                    extend: "excelHtml5",
+                    text: "<i class='fa fa-file-excel-o'></i> Экспорт",
+                    title: `Заявки в работе ${new Date().getDate()}.${(new Date().getMonth()+1)}.${new Date().getFullYear()}`
+                }
             ],
             "paging": 10,
             "columnDefs": [ {"name": "id", "data": "id", "targets": 0, visible: false},

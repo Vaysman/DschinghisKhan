@@ -1,5 +1,6 @@
 package ru.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -85,5 +86,15 @@ public class Transport {
     @JsonView(DataTablesOutput.View.class)
     private String wialonId;
 
+    @JsonIgnore
+    @ManyToMany(cascade = { CascadeType.ALL})
+    @JoinTable(
+            name = "files_to_transport",
+            joinColumns = { @JoinColumn(name = "transport_id") },
+            inverseJoinColumns = { @JoinColumn(name = "file_id") },
+            indexes = {@Index(name = "files_to_transport_transport_id_index", columnList = "transport_id"),
+                    @Index(name = "files_to_transport_file_id_index", columnList = "file_id")}
+    )
+    Set<File> files;
 
 }

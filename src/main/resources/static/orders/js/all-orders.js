@@ -1,4 +1,57 @@
+
+
 $(document).ready(function () {
+
+    $("#uploadOrderDocument").click(function (event) {
+
+        //stop submit the form, we will post it manually.
+        event.preventDefault();
+
+
+        // Get form
+        var form = $('#orderDocumentUploadForm')[0];
+
+        // Create an FormData object
+        var data = new FormData(form);
+
+        // If you want to add an extra field for the FormData
+        // data.append("CustomField", "This is some extra data, testing");
+
+        let id = data.get("id");
+        console.log(id);
+        console.log(data);
+
+
+        // disabled the submit button
+        $("#uploadOrderDocument").prop("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: `/upload/order/${id}`,
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+
+                $("#uploadOrderDocument").prop("disabled", false);
+                $("#orderDocumentUploadModal").modal('hide');
+                document.getElementById("driverDocumentUploadForm").reset();
+
+            },
+            error: function (e) {
+                console.log("ERROR : ", e);
+                $("#uploadOrderDocument").prop("disabled", false);
+                $("#orderDocumentUploadModal").modal('hide');
+                document.getElementById("orderDocumentUploadForm").reset();
+
+            }
+        });
+
+    });
+
 
 
     let statusChangeEditorOnAllOrders = new $.fn.dataTable.Editor({
@@ -289,6 +342,8 @@ $(document).ready(function () {
     });
 
 
+
+
     var orderDataTable = $("table#orderTable").DataTable({
             processing: true,
             serverSide: true,
@@ -345,7 +400,25 @@ $(document).ready(function () {
                         });
                     },
                     enabled: false
+                },{
+                    extend: 'selectedSingle',
+                    text: '<i class="fa fa-file"></i> Прикрепить документ',
+                    action: function (e, dt, node, config) {
+                        $("#orderIdInput").val(dt.rows( { selected: true } ).data()[0].id);
+                        $("#orderDocumentUploadModal").modal();
+                        console.log(dt.rows( { selected: true } ).data()[0].id);
+                    }
                 },
+                {
+                    text: 'Показать все',
+                    action: function () {
+                        orderDataTable.page.len(-1).draw();
+                    }
+                },{
+                    extend: "excelHtml5",
+                    text: "<i class='fa fa-file-excel-o'></i> Экспорт",
+                    title: `Заявки ${new Date().getDate()}.${(new Date().getMonth()+1)}.${new Date().getFullYear()}`
+                }
             ],
             "paging": 10,
             "columnDefs": [
@@ -353,35 +426,50 @@ $(document).ready(function () {
                 {"name": "number", "data": "number", "targets": 1, render: function(data, type, full){
                         return `<a target="_blank" href='info/orders/${full.id}'>${data}</a>`;
                     }},
-                {"name": "status", "data": "status", searchable: false, orderable: false, "targets": 2},
+
+                {"name": "status", "data": "status", searchable: false, orderable: false, "targets": 2}, {
+                    name: "offers",
+                    data: null,
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    render: function (data, type, full) {
+                        if(full.status==="Принято"){
+                            return `<button class="btn display-offers"><i class="fa fa-plus"></i></button>`;
+                        } else {
+                            return "";
+                        }
+                    }
+
+                },
                 {
                     "name": "route.name",
                     "data": "route.name",
-                    "targets": 3,
+                    "targets": 4,
                     defaultContent: ""
                 },
                 {
                     "name": "company.name",
                     "data": "company.name",
-                    "targets": 4,
+                    "targets": 5,
                     defaultContent: ""
                 },
                 {
                     "name": "transport.number",
                     "data": "transport.number",
-                    "targets": 5,
+                    "targets": 6,
                     defaultContent: ""
                 },
                 {
                     "name": "driver.name",
                     "data": "driver.name",
-                    "targets": 6,
+                    "targets": 7,
                     defaultContent: ""
                 },
                 {
                     "name": "requirements",
                     "data": "requirements[, ]",
-                    "targets": 7,
+                    "targets": 8,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -389,7 +477,7 @@ $(document).ready(function () {
                 {
                     "name": "cargo",
                     "data": "cargo[, ]",
-                    "targets": 8,
+                    "targets": 9,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -397,7 +485,7 @@ $(document).ready(function () {
                 {
                     "name": "cargoDescription",
                     "data":"cargoDescription",
-                    "targets": 9,
+                    "targets": 10,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -405,7 +493,7 @@ $(document).ready(function () {
                 {
                     "name": "cargoWeight",
                     data: "cargoWeight",
-                    "targets": 10,
+                    "targets": 11,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -413,7 +501,7 @@ $(document).ready(function () {
                 {
                     "name": "cargoVolume",
                     data: "cargoVolume",
-                    "targets": 11,
+                    "targets": 12,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -421,7 +509,7 @@ $(document).ready(function () {
                 {
                     "name": "numberOfPallets",
                     data:"numberOfPallets",
-                    "targets": 12,
+                    "targets": 13,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -432,7 +520,7 @@ $(document).ready(function () {
                     render: function (data, type, full) {
                         return (data.cargoHeight !== null && data.cargoWidth !== null && data.cargoLength !== null) ? `${data.cargoHeight}x${data.cargoWidth}x${data.cargoLength}` : "";
                     },
-                    "targets": 13,
+                    "targets": 14,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -442,7 +530,7 @@ $(document).ready(function () {
                     "data": "afterLoad",
                     searchable: false,
                     orderable: false,
-                    "targets": 14,
+                    "targets": 15,
                     render: function (data) {
                         return (data) ? "Возможен догруз" : "Отдельная машина"
                     },
@@ -451,7 +539,7 @@ $(document).ready(function () {
                 {
                     "name": "paymentDate",
                     "data": "paymentDate",
-                    "targets": 15,
+                    "targets": 16,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -459,7 +547,7 @@ $(document).ready(function () {
                 {
                     "name": "documentReturnDate",
                     "data": "documentReturnDate",
-                    "targets": 16,
+                    "targets": 17,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -467,7 +555,7 @@ $(document).ready(function () {
                 {
                     "name": "rating",
                     "data": "rating",
-                    "targets": 17,
+                    "targets": 18,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -475,7 +563,7 @@ $(document).ready(function () {
                 {
                     "name": "orderObligation",
                     "data": "orderObligation",
-                    "targets": 18,
+                    "targets": 19,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -483,7 +571,7 @@ $(document).ready(function () {
                 {
                     "name": "paymentType",
                     "data": "paymentType",
-                    "targets": 19,
+                    "targets": 20,
                     searchable: false,
                     orderable: false,
                     defaultContent: ""
@@ -492,7 +580,7 @@ $(document).ready(function () {
                 {
                     "name": "dispatchDate",
                     "data": "dispatchDate",
-                    "targets": 20,
+                    "targets": 21,
                     searchable: false,
                     defaultContent: ""
                 }
@@ -508,6 +596,36 @@ $(document).ready(function () {
             ]
         }
     );
+
+
+    orderDataTable.on('click', 'td button.display-offers',function () {
+        console.log("fgsfds");
+        var tr = $(this).closest('tr');
+        var row = orderDataTable.row( tr );
+        console.log(row.data());
+
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            let orderId = row.data().id;
+            // Open this row
+            var list ="";
+            $.get(`data/offersForOrder/${orderId}`).success(function (data) {
+                data.forEach(function (offer) {
+                    list+=`<li><a href="/info/offers/${offer.id}">${offer.company.name}</a></li>`
+                });
+
+                row.child(`<h5>Предложения компаний:</h5><ul>${list}</ul>`).show();
+                tr.addClass('shown');
+            });
+
+        }
+    });
+
+
 
     orderDataTable.on('select', function (e, dt, type, indexes) {
             if (orderDataTable.row(indexes[0]).data().status == "Создано") {

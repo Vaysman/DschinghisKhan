@@ -11,6 +11,7 @@ import ru.dao.entity.*;
 import ru.dao.repository.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -46,6 +47,31 @@ public class DataController {
         return offer;
     }
 
+    @GetMapping(value = "/offersForOrder/{orderId}", produces = "application/json; charset=UTF-8")
+    private List<OrderOffer> getOffersForOrder(@PathVariable Integer orderId){
+        Order order= orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Данная заявка не существует"));
+        List<OrderOffer> offers= offerRepository.findAllByOrder(order);
+        for(OrderOffer offer: offers){
+            Hibernate.initialize(offer.getCompany());
+        }
+        return offers;
+    }
+
+
+    @GetMapping(value="/orders/forAccept/{orderId}",produces = "application/json; charset=UTF-8")
+    private Order getFullOrderForAccept(@PathVariable Integer orderId){
+        Order order = orderRepository.findById(orderId).orElse(null);
+        Hibernate.initialize(order.getRoute());
+        Hibernate.initialize(order.getRoute().getRoutePoints());
+        for(RoutePoint routePoint : order.getRoute().getRoutePoints()){
+            Hibernate.initialize(routePoint.getPoint());
+        }
+        Hibernate.initialize(order.getCompany());
+        Hibernate.initialize(order.getDriver());
+        Hibernate.initialize(order.getTransport());
+
+        return order;
+    }
     @GetMapping(value="/orders/{orderId}",produces = "application/json; charset=UTF-8")
     private Map<String, Object> getFullOrder(@PathVariable Integer orderId){
         Map<String, Object> map = new HashMap<>();

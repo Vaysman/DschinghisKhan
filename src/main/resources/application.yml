@@ -1,4 +1,7 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
   datasource:
     username: Khan
     url: jdbc:mysql://localhost:3306/dshinghis_khan?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
@@ -34,3 +37,4 @@ spring:
 logging:
   path: /Users/Roman 1/Desktop/exchange/logs
 google-maps-key: AIzaSyCbWvhz07RoOhD8qs9dFtIxf3W4d_qQjAk
+upload-directory: /Users/Roman 1/Desktop/uploads/

@@ -1,0 +1,70 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:include="fragments/header :: scripts-no-const"></th:block>
+<div th:if="${message}">
+    <h2 th:text="${message}"/>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#submit").click(function (event) {
+
+            //stop submit the form, we will post it manually.
+            event.preventDefault();
+
+            // Get form
+            var form = $('#fileUploadForm')[0];
+
+            // Create an FormData object
+            var data = new FormData(form);
+
+            // If you want to add an extra field for the FormData
+            // data.append("CustomField", "This is some extra data, testing");
+
+            // disabled the submit button
+            $("#submit").prop("disabled", true);
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "/upload/order/28",
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+
+                    alert(data);
+                    console.log("SUCCESS : ", data);
+                    $("#submit").prop("disabled", false);
+
+                },
+                error: function (e) {
+
+                    alert(e.responseText);
+                    console.log("ERROR : ", e);
+                    $("#submit").prop("disabled", false);
+
+                }
+            });
+
+        });
+
+    });
+
+</script>
+<div>
+    <form  id="fileUploadForm" method="POST" enctype="multipart/form-data" action="/upload/driver/1">
+        <table>
+            <tr><td>File name:</td><td><input type="text" name="fileName" /></td></tr>
+            <tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
+            <tr><td></td><td><button id="submit">Отправить</button></td></tr>
+        </table>
+    </form>
+</div>
+
+
+</body>
+</html>
