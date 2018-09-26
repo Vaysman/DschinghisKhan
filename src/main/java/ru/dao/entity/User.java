@@ -63,7 +63,7 @@ public class User {
 
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "COMPANY_ID", referencedColumnName = "ID")
     private Company company;
 
