@@ -512,6 +512,20 @@ $(document).ready(function () {
                             }
                         },
                         {
+                            label: 'Время в пути', name: 'timeEnRoute', type: 'mask', mask: "#",
+                            maskOptions: {
+                                reverse: true,
+                                placeholder: ""
+                            }
+                        },
+                        {
+                            label: 'Время прибытия', name: 'arrivalTime', type: 'mask', mask: "00:00",
+                            maskOptions: {
+                                reverse: true,
+                                placeholder: ""
+                            }
+                        },
+                        {
                             label: 'Порядковый номер (№)', name: 'queueNumber', type: 'mask', mask: "#",
                             maskOptions: {
                                 reverse: true,
@@ -627,9 +641,23 @@ $(document).ready(function () {
                             }
                         },
                         {
+                            "name": "timeEnRoute", "data": "timeEnRoute", "targets": 6, render: function (data) {
+                                if (data != null) {
+                                     return `${data}м`;
+                                } else return "";
+                            }
+                        },
+                        {
+                            "name": "arrivalTime", "data": "arrivalTime", "targets": 7, render: function (data) {
+                                if (data != null && data.length==4) {
+                                    return(data.slice(0,2)+":"+data.slice(2,4))
+                                } else return "";
+                            }
+                        },
+                        {
                             "name": "loadingTime",
                             data: "loadingTime",
-                            "targets": 6,
+                            "targets": 8,
                             searchable: false,
                             orderable: false,
                             render: function (data) {
@@ -637,7 +665,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            "name": "queueNumber", "data": "queueNumber", "targets": 7, render: function (data) {
+                            "name": "queueNumber", "data": "queueNumber", "targets": 9, render: function (data) {
                                 if (data != null) {
                                     return (data != "0") ? `№${data}` : "Склад отправки";
                                 } else return "";

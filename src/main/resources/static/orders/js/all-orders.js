@@ -53,7 +53,6 @@ $(document).ready(function () {
     });
 
 
-
     let statusChangeEditorOnAllOrders = new $.fn.dataTable.Editor({
         table: '#orderTable',
         idSrc: 'id',
@@ -207,8 +206,7 @@ $(document).ready(function () {
                 error: function (jqXHR, exception) {
                     alert(response.responseText);
                 }
-            }
-            ,
+            },
             remove: {
                 type: 'PATCH',
                 contentType: 'application/json',
