@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.configuration.authentication.AuthToken;
 import ru.constant.OrderStatus;
+import ru.dao.entity.Order;
 import ru.dao.entity.User;
 import ru.dto.json.order.OrderAcceptData;
 import ru.dto.json.order.OrderAssignData;
@@ -27,6 +28,13 @@ public class OrderLifecycleController {
     @Autowired
     public OrderLifecycleController(OrderLifecycleService orderLifecycleService) {
         this.orderLifecycleService = orderLifecycleService;
+    }
+
+
+    @PostMapping(value="/dupeOrder/{orderId}")
+    @PreAuthorize("hasAuthority('DISPATCHER')")
+    private Order dupeOrder(@PathVariable Integer orderId){
+          return orderLifecycleService.duplicateOrder(getCurrentUser(),orderId);
     }
 
     @PostMapping(value="/confirmPayment/{orderId}")
