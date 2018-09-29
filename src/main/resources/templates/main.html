@@ -130,6 +130,19 @@
                                            th:value="${company.atiCode}">
                                 </label>
                             </div>
+                            <div class="form-group">
+                                <label>ИНН
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" id="inn" maxlength="64"
+                                        th:value="${company.inn}">
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-outline-secondary field-inline-button"
+                                                    id="loadFromOgrn">Загрузить данные из ОГРН
+                                            </button>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                         <div class="col-4">
                             <div class="form-group">

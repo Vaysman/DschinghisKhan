@@ -163,4 +163,15 @@ $(document).ready(function () {
         }
     });
 
+    $("#loadFromOgrn").on("click", function(){
+        let inn = $("#inn").val();
+        $.ajax({
+                url:`https://creditnet.ru/nkbrelation/api/company?ogrn=${inn}`,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    console.log(response);
+                }})
+    })
 });
