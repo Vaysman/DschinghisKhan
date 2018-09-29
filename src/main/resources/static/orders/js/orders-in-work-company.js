@@ -97,7 +97,7 @@ $(document).ready(function () {
                 data: function (d) {
                     let newdata;
                     $.each(d.data, function (key, value) {
-                        newdata = JSON.stringify(value.status);
+                        newdata = JSON.stringify(value);
                     });
                     return newdata;
                 },
