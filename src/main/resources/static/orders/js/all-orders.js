@@ -430,7 +430,7 @@ $(document).ready(function () {
                             contentType: "application/json; charset=utf-8",
                             success: function (response) {
                                 orderDataTable.draw();
-                                alert(`Номер заявки: ${response.number}`);
+                                alert(`Номер новой заявки: ${response.number}`);
 
                             }
                         })
