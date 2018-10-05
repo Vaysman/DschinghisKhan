@@ -44,10 +44,12 @@ $(document).ready(function () {
 
         let companyId = $("#companyId").val();
         companyData.shortName = $("#shortName").val();
+        companyData.name = $("#companyName").val();
         companyData.atiCode = $("#atiCode").val();
         companyData.email = $("#companyEmail").val();
         companyData.ocved = $("#ocved").val();
         companyData.ocpo = $("#ocpo").val();
+        companyData.inn = $("#inn").val();
         companyData.ogrn = $("#ogrn").val();
         companyData.kpp = $("#kpp").val();
         companyData.bik = $("#bik").val();
@@ -163,15 +165,91 @@ $(document).ready(function () {
         }
     });
 
-    $("#loadFromOgrn").on("click", function(){
-        let inn = $("#inn").val();
-        $.ajax({
-                url:`https://creditnet.ru/nkbrelation/api/company?ogrn=${inn}`,
-                type: "GET",
+    // $("#loadFromOgrn").on("click", function(){
+    //     let inn = $("#inn").val();
+    //     $.ajax({
+    //             url:`https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party`,
+    //             type: "POST",
+    //             dataType: "json",
+    //             contentType: "application/json; charset=utf-8",
+    //             data: JSON.stringify({
+    //                 query: inn
+    //             }),
+    //             beforeSend: function(xhr){
+    //                 xhr.setRequestHeader("Authorization","Token 2aa6402023ed529e79ba4ddb92872b0709f9b859");
+    //                 xhr.setRequestHeader("Accept","application/json");
+    //             },
+    //             success: function (response) {
+    //                 console.log(response);
+    //             }})
+    // })
+
+    let suggestions = {};
+
+    let loadInnSelectize = $("#inn").selectize({
+        placeholder: "Введите ИНН",
+        labelField: "label",
+        valueField: "value",
+        searchField: "inn",
+        loadThrottle: 400,
+        preload: false,
+        maxItems: 1,
+        maxOptions: 20,
+        create: true,
+        load: function (query, callback) {
+            $.ajax({
+                url:`https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party`,
+                type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    query: query
+                }),
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader("Authorization","Token 2aa6402023ed529e79ba4ddb92872b0709f9b859");
+                    xhr.setRequestHeader("Accept","application/json");
+                },
                 success: function (response) {
+                    var companyOptions = [];
+                    // suggestions = response.suggestions;
+                    response.suggestions.forEach(function (entry) {
+                        companyOptions.push({"label": `${entry.data.inn}\n${entry.value}`, "inn":entry.data.inn, "value": entry.data.hid});
+                        suggestions[entry.data.hid] = entry;
+                    });
+                    callback(companyOptions);
                     console.log(response);
-                }})
-    })
+                    console.log(suggestions);
+                }});
+        },
+        onChange: (value) => {
+
+            if(suggestions.hasOwnProperty(value)){
+                $("#companyName").val(suggestions[value].unrestricted_value);
+                let fetchedData = suggestions[value].data;
+
+                if(fetchedData.inn!=null){
+                    $("#inn").val(fetchedData.inn);
+                }
+                if(fetchedData.okved!=null){
+                    $("#ocved").val(fetchedData.okved)
+                }
+                if(fetchedData.kpp!=null){
+                    $("#kpp").val(fetchedData.kpp)
+                }
+                if(fetchedData.ogrn!=null){
+                    $("#ogrn").val(fetchedData.ogrn);
+                }
+                if(fetchedData.okpo!=null){
+                    $("#ocpo").val(fetchedData.okpo)
+                }
+                if(fetchedData.management!=null && fetchedData.management.name!=null){
+                    $("#directorFullname").val(fetchedData.management.name);
+                }
+            } else {
+                $("#inn").val(value)
+            }
+
+            // this.driverId = value;
+        }
+    });
 });

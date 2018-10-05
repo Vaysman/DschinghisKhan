@@ -4925,10 +4925,12 @@ INSERT INTO points (id, name, address, originator) VALUES (1, 'point1', 'Тюм�
 INSERT INTO points (id, name, address, originator) VALUES (2, 'point2', 'Екатеринбург', 2);
 
 INSERT INTO transport_companies (id, name, short_name, point_id, inn, number_of_transports, ati_code, accountant_name, ocved, ocpo, ogrn, type, originator, email) VALUES (1, 'Umbrella', 'UMB', 1,  '634523534', 12, 'dfasdf', 'Anton', '123456', '1123456', '123567', 'TRANSPORT', 2, 'spiritblossom@icloud.com');
-INSERT INTO transport_companies (id, name, short_name, point_id, inn, number_of_transports, ati_code, accountant_name, ocved, ocpo, ogrn, type, originator, email) VALUES (2, 'Test', 'test', 1, '1234567', 0, null, 'Sir Psycho', '123456', '1123456', '123567', 'DISPATCHER', 2, 'spiritblossom@icloud.com');
+INSERT INTO transport_companies (id, name, short_name, point_id, inn, number_of_transports, ati_code, accountant_name, ocved, ocpo, ogrn, type, originator, email) VALUES (2, 'Test', 'test', 2, '1234567', 0, null, 'Sir Psycho', '123456', '1123456', '123567', 'DISPATCHER', 2, 'spiritblossom@icloud.com');
+INSERT INTO contacts (id, phone, name, originator, point_id, position, email, company_id, type, company_name) VALUES (1, '+7 (982) 934 02-94', 'Роман', 2, 1, 'Кодер', 'spiritblossom@icloud.com', 2, 'PRIMARY', null);
+INSERT INTO contacts (id, phone, name, originator, point_id, position, email, company_id, type, company_name) VALUES (2, '8 800 (555) 35-35', 'John Smith', 2, null, '', 'spiritblossom@icloud.com', 1, 'PRIMARY', null);
 
 INSERT INTO users (id, username, login, salt, pass_and_salt, user_role, originator, email, company_id) VALUES (1, 'Sir Psycho', 'test', 'nvuritneg4785231', '02ace43368e804b8b1fc624d01a050eb', 'ROLE_DISPATCHER', 2, 'spiritblossom@icloud.com', 2);
-INSERT INTO users (id, username, login, salt, pass_and_salt, user_role, originator, email, company_id) VALUES (5, 'Umbrella', 'UMB', 'SS7LUHU8PFDU1C8P', '82d7b29653fb39f7e77b305cbe869231', 'ROLE_TRANSPORT_COMPANY', 1, null, 1);
+INSERT INTO users (id, username, login, salt, pass_and_salt, user_role, originator, email, company_id) VALUES (2, 'Umbrella', 'UMB', 'SS7LUHU8PFDU1C8P', '82d7b29653fb39f7e77b305cbe869231', 'ROLE_TRANSPORT_COMPANY', 1, null, 1);
 
 INSERT INTO routes (id, name, transport_company_id, total_cost, cost_per_kilometer,  cost_per_box, cost_per_pallet, vehicle_type, temp_from, temp_to, volume, tonnage, comment, total_cost_nds, cost_per_kilometer_nds,  cost_per_box_nds, cost_per_pallet_nds, loading_type, originator) VALUES (1, 'Тюмень-ЕКБ', 1, 500.00, 500.00,  500.00, 500.00, 'TENT', 10, 15, 100.000, 100.000, 'dfasdf', 100.00, 100.00, 100.00,  100.00, 'BACK', 2);
 

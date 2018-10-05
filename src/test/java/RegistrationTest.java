@@ -17,7 +17,7 @@ import ru.dao.repository.CompanyRepository;
 import ru.dao.repository.PointRepository;
 import ru.dao.repository.UserRepository;
 import ru.dto.json.user.UserRegistrationData;
-import ru.service.UserManagementService;
+import ru.service.RegisterService;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class RegistrationTest {
 
 
     @Autowired
-    private UserManagementService userManagementService;
+    private RegisterService registerService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -51,7 +51,7 @@ public class RegistrationTest {
                 .pointAddress("Москва")
                 .build();
 
-        User registeredUser = userManagementService.register(registrationData);
+        User registeredUser = registerService.register(registrationData);
 
         List<Company> foundCompanies = companyRepository.findTop10ByNameContaining("tCompany");
         assertThat(foundCompanies.size()).isNotEqualTo(0);
@@ -77,7 +77,7 @@ public class RegistrationTest {
         Point point = points.get(0);
         assertThat(company.getPoint()).isEqualTo(point);
 
-        userManagementService.setAuthorized(registeredUser,"test");
+        registerService.setAuthorized(registeredUser,"test");
         assertThat(SecurityContextHolder.getContext().getAuthentication().isAuthenticated()).isTrue();
         //If you made it here - congrats
         } catch (Exception e){

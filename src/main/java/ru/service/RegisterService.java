@@ -31,7 +31,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Collections;
 
 @Service
-public class UserManagementService {
+public class RegisterService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final PointRepository pointRepository;
@@ -40,7 +40,7 @@ public class UserManagementService {
     private final ContactRepository contactRepository;
 
     @Autowired
-    public UserManagementService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, JavaMailSender sender, ResourceLoader resourceLoader, ContactRepository contactRepository) {
+    public RegisterService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, JavaMailSender sender, ResourceLoader resourceLoader, ContactRepository contactRepository) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.pointRepository = pointRepository;

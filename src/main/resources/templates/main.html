@@ -84,6 +84,12 @@
                     <div>
                         <input th:value="${user.id}" id="userId" hidden>
                         <div class="form-group">
+                            <label>Логин
+                                <input readonly class="form-control" th:value="${user.login}"
+                                       placeholder="E-mail">
+                            </label>
+                        </div>
+                        <div class="form-group">
                             <label>E-mail
                                 <input type="text" class="form-control" id="userEmail" th:value="${user.email}"
                                        placeholder="E-mail">
@@ -118,6 +124,12 @@
                                 </label>
                             </div>
                             <div class="form-group">
+                                <label>Полное название
+                                    <input type="text" class="form-control" maxlength="64" id="companyName"
+                                           th:value="${company.name}">
+                                </label>
+                            </div>
+                            <div class="form-group">
                                 <label>Краткое название
                                     <input type="text" class="form-control" maxlength="64" id="shortName"
                                            th:value="${company.shortName}">
@@ -131,17 +143,21 @@
                                 </label>
                             </div>
                             <div class="form-group">
-                                <label>ИНН
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" id="inn" maxlength="64"
-                                        th:value="${company.inn}">
-                                        <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary field-inline-button"
-                                                    id="loadFromOgrn">Загрузить данные из ОГРН
-                                            </button>
-                                        </div>
-                                    </div>
+                                <label style="width:100%">ИНН
+
+                                        <input type="text"  id="inn" maxlength="64" style="width:100%;" th:value="${company.inn}">
+                                        <!--<div class="input-group-append">-->
+                                            <!--<button type="button" class="btn btn-outline-secondary field-inline-button"-->
+                                                    <!--id="loadFromOgrn">Загрузить данные из ОГРН-->
+                                            <!--</button>-->
+                                        <!--</div>-->
+
                                 </label>
+                            </div>
+                            <div class="collapse" id="collapseExample">
+                                <div class="card card-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                                </div>
                             </div>
                         </div>
                         <div class="col-4">

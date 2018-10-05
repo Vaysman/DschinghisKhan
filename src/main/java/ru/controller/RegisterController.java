@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.dao.entity.User;
 import ru.dto.json.user.UserRegistrationData;
-import ru.service.UserManagementService;
+import ru.service.RegisterService;
 
 import java.util.Map;
 
@@ -16,13 +16,13 @@ import java.util.Map;
 //@RequestMapping("/register")
 public class RegisterController {
 
-    private final UserManagementService userManagementService;
+    private final RegisterService registerService;
 
     @Autowired
     public RegisterController(
-            UserManagementService userManagementService
+            RegisterService registerService
     ) {
-        this.userManagementService = userManagementService;
+        this.registerService = registerService;
     }
 
     @PostMapping("/register")
@@ -31,9 +31,9 @@ public class RegisterController {
 
         if (errors.size() == 0) {
             try {
-                User registeredUser =userManagementService.register(registrationData);
+                User registeredUser = registerService.register(registrationData);
                 if(registeredUser!=null) {
-                    userManagementService.setAuthorized(registeredUser, registrationData.getPassword());
+                    registerService.setAuthorized(registeredUser, registrationData.getPassword());
                     return "redirect:/main";
                 } else {
                     model.addAttribute("error","Непредвиденная ошибка. Запишите введенные данные и свяжитесь с поддержкой");
