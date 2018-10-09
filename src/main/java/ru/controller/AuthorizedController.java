@@ -1,5 +1,6 @@
 package ru.controller;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,17 +14,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.configuration.authentication.AuthToken;
 import ru.constant.*;
-import ru.dao.entity.Company;
-import ru.dao.entity.Contact;
-import ru.dao.entity.Point;
-import ru.dao.entity.User;
-import ru.dao.repository.CompanyRepository;
-import ru.dao.repository.ContactRepository;
-import ru.dao.repository.UserRepository;
+import ru.dao.entity.*;
+import ru.dao.repository.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -34,12 +28,16 @@ public class AuthorizedController {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final ContactRepository contactRepository;
+    private final RouteReviewOpinionRepository opinionRepository;
+    private final RouteReviewRepository reviewRepository;
 
     @Autowired
-    public AuthorizedController(CompanyRepository companyRepository, UserRepository userRepository, ContactRepository contactRepository) {
+    public AuthorizedController(CompanyRepository companyRepository, UserRepository userRepository, ContactRepository contactRepository, RouteReviewOpinionRepository opinionRepository, RouteReviewRepository reviewRepository) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.contactRepository = contactRepository;
+        this.opinionRepository = opinionRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @RequestMapping({"/main","/index","/"})
@@ -87,6 +85,18 @@ public class AuthorizedController {
                                 orderMap.put("isMandatory",String.valueOf(x.getOrderObligation().equals(OrderObligation.MANDATORY)));
                                 return orderMap;
                             }).collect(Collectors.toList())));
+
+            List<RouteReviewOpinion> opinionList = new ArrayList<>();
+            model.addAttribute("pendingOpinions",opinionRepository.findAllByCompanyId(authentication.getCompanyId())
+                    .stream()
+                    .peek(x->{
+                        Hibernate.initialize(x.getReview());
+                        Hibernate.initialize(x.getReview().getRoute());
+                        opinionList.add(x);
+                    })
+                    .filter(x->x.getPrice()==null)
+                    .count());
+            model.addAttribute("opinions", opinionList);
         } else if (authentication.getUser().getUserRole() == UserRole.ROLE_DISPATCHER) {
             companyRepository.findById(authentication.getCompanyId())
                     .ifPresent(company -> model.addAttribute("managedOffers", company
@@ -99,6 +109,11 @@ public class AuthorizedController {
                                 orderMap.put("isPriceChanged", String.valueOf((!Objects.equals(x.getProposedPrice(), x.getDispatcherPrice()))));
                                 return orderMap;
                             }).collect(Collectors.toList())));
+            model.addAttribute("reviews", reviewRepository.findAllByCompanyId(authentication.getCompanyId())
+            .stream()
+            .peek(x->{
+                Hibernate.initialize(x.getRoute());
+            }).collect(Collectors.toList()));
         }
         model.addAttribute("currentCompanyId", String.valueOf(authentication.getCompanyId()));
 

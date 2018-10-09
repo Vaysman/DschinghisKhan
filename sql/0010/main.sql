@@ -2,7 +2,8 @@ CREATE TABLE route_reviews
 (
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   route_id int,
-  company_id int
+  company_id int,
+  status varchar(20)
 );
 CREATE INDEX route_reviews_id_index ON route_reviews (id);
 CREATE INDEX route_reviews_route_id_index ON route_reviews (route_id);
@@ -10,7 +11,7 @@ CREATE INDEX route_reviews_company_id_index ON route_reviews (company_id);
 
 CREATE TABLE route_review_opinions
 (
-  id int,
+  id int PRIMARY KEY NOT NULL auto_increment,
   review_id int,
   company_id int,
   price DECIMAL(11,2),

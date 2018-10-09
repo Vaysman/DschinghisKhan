@@ -1,10 +1,16 @@
 package ru.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.configuration.authentication.AuthToken;
+import ru.constant.ReviewStatus;
 import ru.dao.entity.Company;
 import ru.dao.entity.Route;
 import ru.dao.entity.RouteReview;
@@ -14,11 +20,11 @@ import ru.dao.repository.RouteRepository;
 import ru.dao.repository.RouteReviewOpinionRepository;
 import ru.dao.repository.RouteReviewRepository;
 
-import java.util.HashSet;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-@RestController
+@Controller
 @RequestMapping("/reviews")
 public class ReviewController {
 
@@ -35,10 +41,26 @@ public class ReviewController {
     }
 
 
+    @PostMapping(value="/sendOpinion/{opinionId}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
+    public String sendOpinion(@PathVariable Integer opinionId, @RequestBody MultiValueMap<String, String> map, HttpServletRequest request){
+        RouteReviewOpinion opinion = opinionRepository.findById(opinionId).orElseThrow(()->new IllegalArgumentException("Мнения не существует, либо ревью было удалено"));
+        opinion.setPrice(Float.valueOf(map.get("price").get(0)));
+        opinion.setComment(map.get("comment").get(0));
+        if(opinion.getReview().getOpinions().stream().filter(x->x.getPrice()==null).count()==0){
+            opinion.getReview().setStatus(ReviewStatus.COMPLETE);
+        } else {
+            opinion.getReview().setStatus(ReviewStatus.RESPONDED);
+        }
+        reviewRepository.save(opinion.getReview());
+        opinionRepository.save(opinion);
+        String referer = request.getHeader("Referer");
+        return "redirect:"+ referer;
+    }
+
     @PostMapping(value = "/create/{routeId}")
     @PreAuthorize("hasAuthority('DISPATCHER')")
-    @Transactional
-    public String changeStatus(@PathVariable Integer routeId, @RequestBody List<Integer> companyIds) {
+    public String createReview(@PathVariable Integer routeId, @RequestBody List<Integer> companyIds) {
         try {
             AuthToken authentication = (AuthToken) SecurityContextHolder.getContext().getAuthentication();
             Company dispatcherCompany = companyRepository.findById(authentication.getCompanyId())
@@ -47,16 +69,18 @@ public class ReviewController {
             Route route = routeRepository.findById(routeId)
                     .orElseThrow(() -> new IllegalArgumentException("Маршрута не существует"));
 
-            Set<RouteReviewOpinion> opinions = new HashSet<>();
+            List<RouteReviewOpinion> opinions = new ArrayList<>();
             companyRepository.findAllById(companyIds).forEach(x -> opinions.add(RouteReviewOpinion.builder()
                     .company(x)
                     .review(review)
                     .build()));
             if (opinions.size() == 0) throw new IllegalArgumentException("Компании не указаны");
 
+            review.setStatus(ReviewStatus.CREATED);
             review.setRoute(route);
             review.setOpinions(opinions);
             review.setCompany(dispatcherCompany);
+            reviewRepository.save(review);
             return "Success";
         } catch (Exception e) {
             return e.getMessage();

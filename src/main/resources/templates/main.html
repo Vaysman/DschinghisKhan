@@ -35,7 +35,7 @@
             </li>
             <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-transports"><i
-                        class="fa fa-truck" aria-hidden="true"></i> Транспортные средства</a>
+                        class="fa fa-truck" aria-hidden="true"></i> Транспорт</a>
             </li>
             <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-drivers"><i class="fa fa-users"
@@ -47,6 +47,20 @@
                         class="fa fa-users"
                         aria-hidden="true"></i>
                     Пользователи</a>
+            </li>
+            <li class="nav-item" sec:authorize='hasAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-pending-opinions">
+                    <span class="badge badge-warning" th:if="${pendingOpinions!=null && pendingOpinions>0}"
+                          th:text="${pendingOpinions}"></span>
+                    <i class="fa fa-compass" aria-hidden="true"></i>
+                    Ревью маршрутов
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize='hasAuthority("ROLE_DISPATCHER")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-reviews">
+                    <i class="fa fa-compass" aria-hidden="true"></i>
+                    Ревью маршрутов
+                </a>
             </li>
         </ul>
     </div>
@@ -145,18 +159,21 @@
                             <div class="form-group">
                                 <label style="width:100%">ИНН
 
-                                        <input type="text"  id="inn" maxlength="64" style="width:100%;" th:value="${company.inn}">
-                                        <!--<div class="input-group-append">-->
-                                            <!--<button type="button" class="btn btn-outline-secondary field-inline-button"-->
-                                                    <!--id="loadFromOgrn">Загрузить данные из ОГРН-->
-                                            <!--</button>-->
-                                        <!--</div>-->
+                                    <input type="text" id="inn" maxlength="64" style="width:100%;"
+                                           th:value="${company.inn}">
+                                    <!--<div class="input-group-append">-->
+                                    <!--<button type="button" class="btn btn-outline-secondary field-inline-button"-->
+                                    <!--id="loadFromOgrn">Загрузить данные из ОГРН-->
+                                    <!--</button>-->
+                                    <!--</div>-->
 
                                 </label>
                             </div>
                             <div class="collapse" id="collapseExample">
                                 <div class="card card-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
+                                    richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson
+                                    cred nesciunt sapiente ea proident.
                                 </div>
                             </div>
                         </div>
@@ -427,6 +444,79 @@
                     </tr>
                     </thead>
                 </table>
+            </div>
+        </div>
+    </div>
+    <div id="tab-pending-opinions" class="tab-pane">
+        <div class="container-fluid spaced-container white">
+            <h4>Ревью маршрутов</h4>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-6">
+                    <h5>Ожидают ревью</h5>
+                    <div class="list-group">
+                        <th:block th:each="opinion : ${opinions}">
+                            <a th:if="${opinion.getPrice()==null}" class="list-group-item list-group-item-action list-group-item-warning"
+                               target="_blank"
+                               th:text="${opinion.getReview().getRoute().getName()}"
+                               th:href="${'/info/review/'+opinion.getReview().getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h5>Прошедшие ревью</h5>
+                    <div class="list-group">
+                        <th:block th:each="opinion : ${opinions}">
+                            <a th:if="${opinion.getPrice()!=null}" class="list-group-item list-group-item-action"
+                               target="_blank"
+                               th:text="${opinion.getReview().getRoute().getName()}"
+                               th:href="${'/info/review/'+opinion.getReview().getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tab-reviews" class="tab-pane">
+        <div class="container-fluid spaced-container white">
+            <h4>Ревью маршрутов</h4>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-4">
+                    <h5>Ожидают ответа</h5>
+                    <div class="list-group">
+                        <th:block th:each="review : ${reviews}">
+                            <a th:if="${review.getStatus().name()=='CREATED'}" class="list-group-item list-group-item-action"
+                               target="_blank"
+                               th:text="${review.getRoute().getName()}"
+                               th:href="${'/info/review/'+review.getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <h5>Есть ответ от перевозчика</h5>
+                    <div class="list-group">
+                        <th:block th:each="review : ${reviews}">
+                            <a th:if="${review.getStatus().name()=='RESPONDED'}" class="list-group-item list-group-item-action"
+                               target="_blank"
+                               th:text="${review.getRoute().getName()}"
+                               th:href="${'/info/review/'+review.getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <h5>Все перевозчики ответили</h5>
+                    <div class="list-group">
+                        <th:block th:each="review : ${reviews}">
+                            <a th:if="${review.getStatus().name()=='COMPLETE'}" class="list-group-item list-group-item-action list-group-item-success"
+                               target="_blank"
+                               th:text="${review.getRoute().getName()}"
+                               th:href="${'/info/review/'+review.getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

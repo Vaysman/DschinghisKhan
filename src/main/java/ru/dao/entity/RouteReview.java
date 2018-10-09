@@ -6,10 +6,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import ru.constant.ReviewStatus;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -38,7 +39,11 @@ public class RouteReview {
     @JoinColumn(name = "COMPANY_ID", referencedColumnName = "ID")
     private Company company;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private Set<RouteReviewOpinion> opinions = new HashSet<>();
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus status;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<RouteReviewOpinion> opinions = new ArrayList<>();
 
 }
