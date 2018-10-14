@@ -38,7 +38,7 @@ $(document).ready(function () {
 
                 $("#uploadOrderDocument").prop("disabled", false);
                 $("#orderDocumentUploadModal").modal('hide');
-                document.getElementById("driverDocumentUploadForm").reset();
+                document.getElementById("orderDocumentUploadForm").reset();
 
             },
             error: function (e) {

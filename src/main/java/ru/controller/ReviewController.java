@@ -5,10 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.configuration.authentication.AuthToken;
 import ru.constant.ReviewStatus;
 import ru.dao.entity.Company;
@@ -58,8 +55,9 @@ public class ReviewController {
         return "redirect:"+ referer;
     }
 
-    @PostMapping(value = "/create/{routeId}")
+    @PostMapping(value = "/create/{routeId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PreAuthorize("hasAuthority('DISPATCHER')")
+    @ResponseBody
     public String createReview(@PathVariable Integer routeId, @RequestBody List<Integer> companyIds) {
         try {
             AuthToken authentication = (AuthToken) SecurityContextHolder.getContext().getAuthentication();

@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/orders")
                 .successForwardUrl("/orders")
                 .and()
-//                .rememberMe().tokenRepository(persistentTokenRepository())
+//                .rememberMe().tokenRepository(persistentTokenRepository()).userDetailsService()
 //                .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

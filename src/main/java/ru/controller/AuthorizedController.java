@@ -92,6 +92,7 @@ public class AuthorizedController {
                     .peek(x->{
                         Hibernate.initialize(x.getReview());
                         Hibernate.initialize(x.getReview().getRoute());
+                        Hibernate.initialize(x.getReview().getCompany());
                         opinionList.add(x);
                     })
                     .filter(x->x.getPrice()==null)

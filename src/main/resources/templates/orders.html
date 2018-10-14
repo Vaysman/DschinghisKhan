@@ -119,6 +119,38 @@
         </div>
     </div>
 </div>
+<div class="modal" id="contractUploadModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Загрузить договор</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="contractUploadForm">
+
+                    <input id="companyIdInput" name="id" hidden>
+                    <div class="row">
+                        <div class="col-4">Название договора<sup class="red">*</sup></div>
+                        <div class="col-8"><input class="form-control" type="text" name="fileName"></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-4">Файл<sup class="red">*</sup></div>
+                        <div class="col-8"><input type="file" name="file"></div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="uploadContract" class="btn btn-primary">Загрузить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="tab-content" id="tabContent">
     <div id="tab-all-orders"
          th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? '' : 'in active' "

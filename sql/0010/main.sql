@@ -28,3 +28,24 @@ create table persistent_logins (
   token varchar(64) not null,
   last_used timestamp not null
 );
+
+CREATE TABLE files_to_company
+(
+  file_id int,
+  company_id int,
+  initiative_company_id int
+);
+CREATE INDEX files_to_company_file_id_index ON files_to_company (file_id);
+CREATE INDEX files_to_company_company_id_index ON files_to_company (company_id);
+CREATE INDEX files_to_company_initiative_company_id_index ON files_to_company (initiative_company_id);
+
+CREATE TABLE contracts
+(
+  id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  file_id int,
+  company_id int,
+  initiative_company_id int
+);
+CREATE INDEX contracts_file_id_index ON contracts (file_id);
+CREATE INDEX contracts_company_id_index ON contracts (company_id);
+CREATE INDEX contracts_initiative_company_id_index ON contracts (initiative_company_id);

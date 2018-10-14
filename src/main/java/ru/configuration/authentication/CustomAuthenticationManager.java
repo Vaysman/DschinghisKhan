@@ -18,14 +18,10 @@ import java.util.Collections;
 
 @Configuration
 public class CustomAuthenticationManager implements AuthenticationManager {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private CompanyRepository companyRepository;
-
-    @Autowired
-    public CustomAuthenticationManager(UserRepository userRepository) {
+    public CustomAuthenticationManager(UserRepository userRepository, CompanyRepository companyRepository) {
         this.userRepository = userRepository;
     }
 

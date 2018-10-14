@@ -95,6 +95,7 @@ public class Transport {
             indexes = {@Index(name = "files_to_transport_transport_id_index", columnList = "transport_id"),
                     @Index(name = "files_to_transport_file_id_index", columnList = "file_id")}
     )
-    Set<File> files;
+    Set<File> files = new HashSet<>();
+
 
 }

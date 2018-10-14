@@ -161,6 +161,13 @@ th{
     margin-left: 0;
 }
 
+.input-group-append .input-group-text{
+    border:none;
+    background-color: transparent;
+    border-radius: 0px;
+    border-bottom: 2px solid rgba(26, 43, 109, 1);
+}
+
 div.selectize-dropdown {
     z-index: 4;
 }

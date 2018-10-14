@@ -1,5 +1,56 @@
 $(document).ready(function () {
     $('#tab-companies-link a').one('shown.bs.tab', function () {
+
+        $("#uploadContract").click(function (event) {
+
+            //stop submit the form, we will post it manually.
+            event.preventDefault();
+
+
+            // Get form
+            var form = $('#contractUploadForm')[0];
+
+            // Create an FormData object
+            var data = new FormData(form);
+
+            // If you want to add an extra field for the FormData
+            // data.append("CustomField", "This is some extra data, testing");
+
+            let id = data.get("id");
+            console.log(id);
+            console.log(data);
+
+
+            // disabled the submit button
+            $("#uploadContract").prop("disabled", true);
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: `/upload/contract/${id}`,
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+
+                    $("#uploadContract").prop("disabled", false);
+                    $("#contractUploadModal").modal('hide');
+                    document.getElementById("contractUploadForm").reset();
+
+                },
+                error: function (e) {
+                    console.log("ERROR : ", e);
+                    $("#uploadContract").prop("disabled", false);
+                    $("#contractUploadModal").modal('hide');
+                    document.getElementById("contractUploadForm").reset();
+
+                }
+            });
+
+        })
+
         let companyInfoEditor = new $.fn.dataTable.Editor({
             ajax: {
                 edit: {
@@ -113,6 +164,14 @@ $(document).ready(function () {
                     {
                         extend: "create",
                         editor: companyEditor
+                    },{
+                        extend: 'selectedSingle',
+                        text: '<i class="fa fa-file"></i> Прикрепить договор',
+                        action: function (e, dt, node, config) {
+                            $("#companyIdInput").val(dt.rows( { selected: true } ).data()[0].id);
+                            $("#contractUploadModal").modal();
+                            console.log(dt.rows( { selected: true } ).data()[0].id);
+                        }
                     }
                 ],
                 "paging": 10,
@@ -168,6 +227,9 @@ $(document).ready(function () {
                     },
                 ],
                 createdRow: function (row, data, dataIndex) {
+                    if(data.receivedContracts.some(contract => contract.initiativeCompanyId==currentCompanyId)){
+                        $(row).addClass("table-warning");
+                    }
                     if (data.originator == currentCompanyId) {
                         $(row).addClass("table-success");
                     }

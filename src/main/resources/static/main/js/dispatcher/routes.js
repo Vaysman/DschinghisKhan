@@ -2,6 +2,8 @@ $(document).ready(function () {
 
     $('#tab-routes-link a').one('shown.bs.tab', function () {
 
+;
+
         let routeReviewEditor = new $.fn.dataTable.Editor({
             table: '#routesTable',
             idSrc: 'id',
@@ -18,8 +20,7 @@ $(document).ready(function () {
                         return newdata;
                     },
                     success: function (response) {
-                        routeDataTable.draw();
-                        routeEditor.close();
+                        routeReviewEditor.close();
                     },
                     error: function (jqXHR, exception) {
                         alert(response.responseText);
@@ -308,7 +309,7 @@ $(document).ready(function () {
                     },
                     {
                         extend: "edit",
-                        text: "Отправит на ревью",
+                        text: "Отправить на ревью",
                         editor: routeReviewEditor
                     },
                     {

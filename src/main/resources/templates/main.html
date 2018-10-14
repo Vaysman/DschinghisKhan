@@ -14,6 +14,7 @@
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/drivers.js"></script>
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/company-users.js"></script>
     <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <script src="/main/js/listSearch.js" type="text/javascript"></script>
     <script src="/profile/profile.js"></script>
 
 </head>
@@ -456,8 +457,14 @@
                 <div class="col-6">
                     <h5>Ожидают ревью</h5>
                     <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
                         <th:block th:each="opinion : ${opinions}">
-                            <a th:if="${opinion.getPrice()==null}" class="list-group-item list-group-item-action list-group-item-warning"
+                            <a th:if="${opinion.getReview().getCompany().getName()+' / '+opinion.getPrice()==null}" class="list-group-item list-group-item-action list-group-item-warning"
                                target="_blank"
                                th:text="${opinion.getReview().getRoute().getName()}"
                                th:href="${'/info/review/'+opinion.getReview().getId()}"></a>
@@ -466,11 +473,18 @@
                 </div>
                 <div class="col-6">
                     <h5>Прошедшие ревью</h5>
+
                     <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
                         <th:block th:each="opinion : ${opinions}">
                             <a th:if="${opinion.getPrice()!=null}" class="list-group-item list-group-item-action"
                                target="_blank"
-                               th:text="${opinion.getReview().getRoute().getName()}"
+                               th:text="${opinion.getReview().getCompany().getName()+' / '+opinion.getReview().getRoute().getName()}"
                                th:href="${'/info/review/'+opinion.getReview().getId()}"></a>
                         </th:block>
                     </div>
@@ -487,6 +501,12 @@
                 <div class="col-4">
                     <h5>Ожидают ответа</h5>
                     <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
                         <th:block th:each="review : ${reviews}">
                             <a th:if="${review.getStatus().name()=='CREATED'}" class="list-group-item list-group-item-action"
                                target="_blank"
@@ -497,7 +517,14 @@
                 </div>
                 <div class="col-4">
                     <h5>Есть ответ от перевозчика</h5>
+
                     <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
                         <th:block th:each="review : ${reviews}">
                             <a th:if="${review.getStatus().name()=='RESPONDED'}" class="list-group-item list-group-item-action"
                                target="_blank"
@@ -509,6 +536,12 @@
                 <div class="col-4">
                     <h5>Все перевозчики ответили</h5>
                     <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
                         <th:block th:each="review : ${reviews}">
                             <a th:if="${review.getStatus().name()=='COMPLETE'}" class="list-group-item list-group-item-action list-group-item-success"
                                target="_blank"

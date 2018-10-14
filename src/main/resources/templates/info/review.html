@@ -34,7 +34,9 @@
                                 <span th:utext="${routePoint.getPoint().getName()+
                                 (routePoint.getQueueNumber()==0?' (Склад погрузки)':'')+
                                 '<br>Адрес: '+routePoint.getPoint().getAddress()+
-                                '<br>Расстояние: '+routePoint.getDistance()+'<br>Время разгрузки: '+
+                                '<br>Расстояние: '+routePoint.getDistance()+
+                                '<br>Время прибытия: '+routePoint.getArrivalTime()+
+                                '<br>Время разгрузки: '+
                                 routePoint.getLoadingTime()}"></span>
                             </li>
                         </th:block>
