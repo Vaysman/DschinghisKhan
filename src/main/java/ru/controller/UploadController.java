@@ -82,7 +82,7 @@ public class UploadController {
         storedFile.setPath(storageService.store(file));
         storedFile.setFileName(fileName);
         contract.setCompany(transportCompany);
-        contract.setInitiativeCompanyId(dispatcherCompany.getId());
+        contract.setInitiativeCompany(dispatcherCompany);
         contract.setFile(storedFile);
         contractRepository.save(contract);
     }

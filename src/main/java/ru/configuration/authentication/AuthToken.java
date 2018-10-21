@@ -1,14 +1,22 @@
 package ru.configuration.authentication;
 
+import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import ru.constant.ReviewStatus;
+import ru.constant.UserRole;
 import ru.dao.entity.Company;
+import ru.dao.entity.RouteReview;
+import ru.dao.entity.RouteReviewOpinion;
 import ru.dao.entity.User;
+import ru.service.UserInfoService;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class AuthToken extends AbstractAuthenticationToken {
@@ -26,6 +34,34 @@ public class AuthToken extends AbstractAuthenticationToken {
     private User user;
     private Integer companyId;
 
+    private final UserInfoService userInfoService;
+
+
+    @Getter
+    private List<Map<String,String>> pendingOrders;
+
+    @Getter
+    private List<RouteReview> routeReviews;
+
+    @Getter
+    private List<RouteReviewOpinion> opinions;
+
+    @Getter
+    private Long pendingOpinions;
+
+    @Getter
+    private List<Map<String,String>> managedOffers;
+
+    @Getter
+    private List<Map<String,String>> receivedContracts;
+
+    @Getter
+    private List<Map<String,String>> sentContracts;
+
+
+
+
+
     // ~ Constructors
     // ===================================================================================================
 
@@ -35,12 +71,12 @@ public class AuthToken extends AbstractAuthenticationToken {
      * <code>AuthenticationProvider</code> implementations that are satisfied with
      * producing a trusted (i.e. {@link #isAuthenticated()} = <code>true</code>)
      * authentication token.
-     *
-     * @param user
+     *  @param user
      * @param credentials
      * @param authorities
+     * @param userInfoService
      */
-    public AuthToken(User user, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    public AuthToken(User user, Object credentials, Collection<? extends GrantedAuthority> authorities, UserInfoService userInfoService) {
         super(authorities);
         this.principal = user.getLogin();
         this.credentials = credentials;
@@ -52,6 +88,8 @@ public class AuthToken extends AbstractAuthenticationToken {
                 .ofNullable(user.getCompany())
                 .map(Company::getId)
                 .orElse(null);
+        this.userInfoService = userInfoService;
+        this.refreshAll();
         super.setAuthenticated(true); // must use super, as we override
     }
 
@@ -102,9 +140,47 @@ public class AuthToken extends AbstractAuthenticationToken {
         credentials = null;
     }
 
-
+    //TODO: get rid of this
     public static AuthToken getCurrentAuthToken(){
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return (AuthToken)securityContext.getAuthentication();
     }
+
+    public void refreshPendingOrders(){
+        this.pendingOrders = userInfoService.getPendingOrders(this.companyId);
+    }
+
+    public void refreshOpinions(){
+        this.opinions = userInfoService.getOpinions(this.companyId);
+        this.pendingOpinions = this.opinions.stream().filter(x->x.getReview().getStatus().equals(ReviewStatus.CREATED)).count();
+    }
+
+    public void refreshReceivedContracts(){
+        this.receivedContracts = userInfoService.getReceivedContracts(this.companyId);
+    }
+
+    public void refreshManagedOffers(){
+        this.managedOffers = userInfoService.getManagedOffers(this.companyId);
+    }
+
+    public void refreshSentContracts(){
+        this.sentContracts = userInfoService.getSentContracts(this.companyId);
+    }
+
+    public void refreshReviews(){
+        this.routeReviews = userInfoService.getReviews(this.companyId);
+    }
+
+    public void refreshAll(){
+        if(this.getUser().getUserRole().equals(UserRole.ROLE_TRANSPORT_COMPANY)){
+            this.refreshPendingOrders();
+            this.refreshOpinions();
+            this.refreshReceivedContracts();
+        } else if (this.getUser().getUserRole().equals(UserRole.ROLE_DISPATCHER)){
+            this.refreshManagedOffers();
+            this.refreshReviews();
+            this.refreshSentContracts();
+        }
+    }
+
 }

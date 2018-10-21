@@ -34,9 +34,8 @@ public class Contract {
     private Company company;
 
     @JsonView(DataTablesOutput.View.class)
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "INITIATIVE_COMPANY_ID", referencedColumnName = "ID")
-    @Column
-    private Integer initiativeCompanyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "INITIATIVE_COMPANY_ID", referencedColumnName = "ID")
+    private Company initiativeCompany;
 
 }

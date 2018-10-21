@@ -28,14 +28,14 @@
             src="/orders/js/orders-in-work-company.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'
             src="/main/js/company/dispatched-offers.js"></script>
-
-
+    <script src="/main/js/listSearch.js" type="text/javascript"></script>
+    <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
 </head>
 <body class="grey">
 <div th:insert="fragments/header :: header('orders')"></div>
 <nav class="logist-tabs">
     <div>
-        <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
+        <ul class="ml-md-auto flex-row nav container nav-fill" role="tablist">
             <li id="tab-all-orders-link" class="nav-item"
                 sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-all-orders"><i
@@ -65,6 +65,11 @@
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders-in-work">
                     <i class="fa fa-truck" aria-hidden="true"></i>
                     Заявки в работе
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_DISPATCHER')">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders-map">
+                    <i class="fa fa-map" aria-hidden="true"></i>На карте
                 </a>
             </li>
             <li id="tab-routes-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
@@ -189,6 +194,65 @@
             </div>
         </div>
     </div>
+    <div id="tab-orders-map"
+         class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Заявки на карте</h4>
+            <div class="row" id="ordersInWorkMap">
+                <div class="col-3">
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <a href="#" v-for="order in orders" @click="loadOrderInfo(order.id)"
+                           class="list-group-item list-group-item-action">
+                            {{ order.number }}
+                            <small>
+                                <div class="row">
+                                    <div class="col-6">
+                                        {{order.status}}
+                                    </div>
+                                    <div class="col-6">
+                                        Дата отправки: {{order.dispatchDate}}
+                                    </div>
+                                </div>
+                            </small>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-5" style="min-height: 500px"><div style="width: 100%; height:100%; max-height: 600px;" id="orderMap"></div></div>
+                <div class="col-4">
+                    <small class="text-muted">Здесь будет инфо о заявке</small>
+                    <!--<div class="list-group">-->
+                        <!--<div class="input-group">-->
+                            <!--<input class="form-control">-->
+                            <!--<div class="input-group-append">-->
+                                <!--<span class="input-group-text"><i class="fa fa-search"></i></span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<a href="#" v-for="order in orders" @click="loadOrderInfo(order.id)"-->
+                           <!--class="list-group-item list-group-item-action">-->
+                            <!--{{ order.number }}-->
+                            <!--<small>-->
+                                <!--<div class="row">-->
+                                    <!--<div class="col-6">-->
+                                        <!--Статус: {{order.status}}-->
+                                    <!--</div>-->
+                                    <!--<div class="col-6">-->
+                                        <!--Дата отправки: {{order.dispatchDate}}-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</small>-->
+                        <!--</a>-->
+                    <!--</div>-->
+                </div>
+
+            </div>
+        </div>
+    </div>
     <div id="tab-pending-orders"
          th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? 'in active' : '' "
          class="tab-pane">
@@ -200,6 +264,12 @@
                         <small class="text-muted">Предложенные заявки появятся здесь.</small>
                     </h5>
                     <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
                         <a href="#" v-for="pendingOrder in pendingOrders" @click="loadOrderInfo(pendingOrder.id)"
                            v-bind:class="getOrderColor(pendingOrder.isMandatory)"
                            class="list-group-item list-group-item-action">
@@ -313,10 +383,122 @@
                         <small class="text-muted">Предложения от компаний появятся здесь</small>
                     </h5>
                     <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
                         <a href="#" v-bind:class="getOfferColor(managedOffer.isPriceChanged)"
                            v-for="managedOffer in managedOffers" @click="loadOfferInfo(managedOffer.id)"
                            class="list-group-item list-group-item-action grey">
-                            {{ managedOffer.orderNumber }}
+                            {{ managedOffer.orderNumber}}<br>
+                            <small class="text-muted">{{managedOffer.companyName }}</small>
+                        </a>
+                    </div>
+                </div>
+                <div v-if="offer" class="col-10" id="managedOfferInfo">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Заявка: {{offer.orderNumber}}</h5>
+                            <h5>Компания: {{offer.company.name}}</h5>
+                            <br>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-4">
+
+                                    Оплата:<br>{{offer.order.paymentType}}<br>
+                                    Обязательность:<br>{{offer.order.orderObligation}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    Дней для возврата документов:<br>
+                                    {{offer.order.documentReturnDate}} <br>
+                                    Дней для оплаты:<br>
+                                    {{offer.order.paymentDate}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    Водитель:<br>
+                                    <span v-if="offer.driver">{{offer.driver.name}} </span>
+                                    <span v-else>Не указан</span><br>
+                                    Транспорт:<br><span v-if="offer.transport">{{offer.transport.number}}/{{offer.transport.type}}</span>
+                                    <span v-else>Не указан</span><br><br>
+                                </div>
+                                <div class="col-4">
+                                    Требования:
+                                    <ul>
+                                        <li v-for="requirement in offer.order.requirements">{{requirement}}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-4">
+                                    Груз:
+                                    <ul>
+                                        <li v-for="cargoUnit in offer.order.cargo">{{cargoUnit}}</li>
+                                    </ul>
+                                </div>
+
+                                <div class="col-4">
+                                    Маршрут: {{offer.order.route.name}}<br>
+                                    Пункты маршрута:
+                                    <ol>
+                                        <li v-for="routePoint in offer.order.route.routePoints">
+                                            {{routePoint.point.name}}<br>
+                                            {{routePoint.point.address}}
+                                        </li>
+                                    </ol>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div v-if="offer.dispatcherPrice!=offer.proposedPrice" class="col-12">
+                                    Комментарий перевозчика:<br>
+                                    {{offer.proposedPriceComment}}<br><br>
+                                </div>
+                                <div class="col-6">
+                                    Назначенная диспетчером цена:<br>
+                                    {{offer.dispatcherPrice}}<br><br>
+                                </div>
+                                <div class="col-6">
+                                    Назначенная компанией цена:<br>
+                                    {{offer.proposedPrice}}<br><br>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-block btn-primary" @click="acceptOffer()"
+                                            :disabled="(offer==null)">Утвердить
+                                    </button>
+                                    <button class="btn btn-block btn-default" @click="rejectOffer()"
+                                            :disabled="(offer==null)">Отклонить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tab-sent-contracts" class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Контракты с перевозчиками</h4>
+            <div class="row" id="sentContracts">
+                <div class="col-2">
+                    <h5 th:if="${contracts==null || #lists.size(contracts) == 0}">
+
+                        <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
+                    </h5>
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <a href="#" v-bind:class="getOfferColor(managedOffer.isPriceChanged)"
+                           v-for="managedOffer in managedOffers" @click="loadOfferInfo(managedOffer.id)"
+                           class="list-group-item list-group-item-action grey">
+                            {{ managedOffer.orderNumber}}<br>{{managedOffer.companyName }}
                         </a>
                     </div>
                 </div>
@@ -656,4 +838,5 @@
 </body>
 <script sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")' src="/orders/js/managed-offers.js"></script>
 <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")' src="/orders/js/pending-orders.js"></script>
+<script sec:authorize="hasAnyAuthority('ROLE_DISPATCHER')" src="/orders/js/orders-in-work-map.js"></script>
 </html>

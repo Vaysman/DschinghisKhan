@@ -227,7 +227,7 @@ $(document).ready(function () {
                     },
                 ],
                 createdRow: function (row, data, dataIndex) {
-                    if(data.receivedContracts.some(contract => contract.initiativeCompanyId==currentCompanyId)){
+                    if(sentContracts.some(contract => contract.companyId==data.id)){
                         $(row).addClass("table-warning");
                     }
                     if (data.originator == currentCompanyId) {
