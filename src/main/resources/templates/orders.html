@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
-      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Заявки</title>
@@ -30,9 +30,11 @@
             src="/main/js/company/dispatched-offers.js"></script>
     <script src="/main/js/listSearch.js" type="text/javascript"></script>
     <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <script src="/media/jquery.ba-throttle-debounce.min.js"></script>
 </head>
 <body class="grey">
 <div th:insert="fragments/header :: header('orders')"></div>
+
 <nav class="logist-tabs">
     <div>
         <ul class="ml-md-auto flex-row nav container nav-fill" role="tablist">
@@ -200,13 +202,14 @@
             <h4>Заявки на карте</h4>
             <div class="row" id="ordersInWorkMap">
                 <div class="col-3">
+                    <!--<div class="input-group">-->
+                        <!--<input  class="form-control">-->
+                        <!--<div class="input-group-append">-->
+                            <!--<span class="input-group-text"><i class="fa fa-search"></i></span>-->
+                        <!--</div>-->
+                    <!--</div>-->
                     <div class="list-group">
-                        <div class="input-group">
-                            <input class="form-control">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-search"></i></span>
-                            </div>
-                        </div>
+
                         <a href="#" v-for="order in orders" @click="loadOrderInfo(order.id)"
                            class="list-group-item list-group-item-action">
                             {{ order.number }}
@@ -221,32 +224,84 @@
                                 </div>
                             </small>
                         </a>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination" v-if="pageRange">
+                                <li class="page-item" v-if="previous"><a class="page-link"  @click="previousPage()" href="#"><i class="fa fa-arrow-left"></i></a></li>
+                                <li class="page-item" v-for="page in pageRange" :key="page" v-bind:class="{active : (page==pageNumber)}">
+                                    <span class="page-link" @click="loadPage(page)" href="#">{{page+1}}</span>
+                                </li>
+                                <li class="page-item" v-if="next"><a class="page-link" @click="nextPage()" href="#"><i class="fa fa-arrow-right"></i></a></li>
+                            </ul>
+                        </nav>
                     </div>
+
                 </div>
-                <div class="col-5" style="min-height: 500px"><div style="width: 100%; height:100%; max-height: 600px;" id="orderMap"></div></div>
+                <div class="col-5" style="min-height: 500px">
+                    <div style="width: 100%; height:100%; max-height: 600px;" id="orderMap"></div>
+                </div>
                 <div class="col-4">
-                    <small class="text-muted">Здесь будет инфо о заявке</small>
+                    <!--<small class="text-muted">Здесь будет инфо о заявке</small>-->
+                    <div class="row" v-if="orderInfo">
+                        <div class="col-12">
+                            <h5>{{orderInfo.order.number}}<br>
+                                <small class="text-muted">{{orderInfo.order.status}}</small>
+                            </h5>
+                        </div>
+                        <div class="col-6">
+                            <div>
+                                Маршрут: {{orderInfo.order.route.name}}
+                                Пункты маршрута:
+                                <ol>
+                                    <li v-for="routePoint in orderInfo.order.route.routePoints">
+                                        {{routePoint.point.name}}<br>
+                                        <small class="text-muted">{{routePoint.point.address}}</small>
+                                    </li>
+                                </ol>
+                            </div>
+                            <div v-if="orderInfo.order.company">
+                                Перевозчик: {{orderInfo.order.company.name}}<br>
+                                <span v-if="orderInfo.order.driver">Водитель: {{orderInfo.order.driver.name}}<br></span>
+                                <span v-if="orderInfo.order.transport">Транспорт: {{orderInfo.order.transport.number}}<br></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div>
+                                Груз:
+                                <ul>
+                                    <li v-for="cargoUnit in orderInfo.order.cargo">
+                                        {{cargoUnit}}
+                                    </li>
+                                </ul>
+                                Требования:
+                                <ul>
+                                    <li v-for="requirement in orderInfo.order.requirements">
+                                        {{requirement}}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                     <!--<div class="list-group">-->
-                        <!--<div class="input-group">-->
-                            <!--<input class="form-control">-->
-                            <!--<div class="input-group-append">-->
-                                <!--<span class="input-group-text"><i class="fa fa-search"></i></span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<a href="#" v-for="order in orders" @click="loadOrderInfo(order.id)"-->
-                           <!--class="list-group-item list-group-item-action">-->
-                            <!--{{ order.number }}-->
-                            <!--<small>-->
-                                <!--<div class="row">-->
-                                    <!--<div class="col-6">-->
-                                        <!--Статус: {{order.status}}-->
-                                    <!--</div>-->
-                                    <!--<div class="col-6">-->
-                                        <!--Дата отправки: {{order.dispatchDate}}-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</small>-->
-                        <!--</a>-->
+                    <!--<div class="input-group">-->
+                    <!--<input class="form-control">-->
+                    <!--<div class="input-group-append">-->
+                    <!--<span class="input-group-text"><i class="fa fa-search"></i></span>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<a href="#" v-for="order in orders" @click="loadOrderInfo(order.id)"-->
+                    <!--class="list-group-item list-group-item-action">-->
+                    <!--{{ order.number }}-->
+                    <!--<small>-->
+                    <!--<div class="row">-->
+                    <!--<div class="col-6">-->
+                    <!--Статус: {{order.status}}-->
+                    <!--</div>-->
+                    <!--<div class="col-6">-->
+                    <!--Дата отправки: {{order.dispatchDate}}-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</small>-->
+                    <!--</a>-->
                     <!--</div>-->
                 </div>
 
@@ -325,7 +380,8 @@
                             Пункты:
                             <div class="row" v-for="routePoint in order.route.routePoints">
                                 <div class="col-4">
-                                    {{routePoint.queueNumber==0 ? 'Склад отправки' : 'Разгрузка '+routePoint.queueNumber}}
+                                    {{routePoint.queueNumber==0 ? 'Склад отправки' : 'Разгрузка
+                                    '+routePoint.queueNumber}}
 
                                 </div>
                                 <div class="col-6">
@@ -683,22 +739,22 @@
                 <table class="table table-hover table-striped " id="routesTable">
                     <!--<thead>-->
                     <!--<tr>-->
-                        <!--<th>#</th>-->
-                        <!--<th>Название</th>-->
-                        <!--<th>ТК</th>-->
-                        <!--<th>Ст. за маршрут</th>-->
-                        <!--<th>₽/км</th>-->
-                        <!--<th>₽/коробка</th>-->
-                        <!--<th>₽/пункт</th>-->
-                        <!--<th>₽/час</th>-->
-                        <!--<th>₽/паллета</th>-->
-                        <!--<th>Темп. режим</th>-->
-                        <!--<th>Тип кузова</th>-->
-                        <!--<th>Объем</th>-->
-                        <!--<th>Тоннаж</th>-->
-                        <!--<th>Погрузка</th>-->
-                        <!--<th>Догруз</th>-->
-                        <!--<th>Комментарий</th>-->
+                    <!--<th>#</th>-->
+                    <!--<th>Название</th>-->
+                    <!--<th>ТК</th>-->
+                    <!--<th>Ст. за маршрут</th>-->
+                    <!--<th>₽/км</th>-->
+                    <!--<th>₽/коробка</th>-->
+                    <!--<th>₽/пункт</th>-->
+                    <!--<th>₽/час</th>-->
+                    <!--<th>₽/паллета</th>-->
+                    <!--<th>Темп. режим</th>-->
+                    <!--<th>Тип кузова</th>-->
+                    <!--<th>Объем</th>-->
+                    <!--<th>Тоннаж</th>-->
+                    <!--<th>Погрузка</th>-->
+                    <!--<th>Догруз</th>-->
+                    <!--<th>Комментарий</th>-->
                     <!--</tr>-->
                     <!--</thead>-->
                 </table>

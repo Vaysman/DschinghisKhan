@@ -21,5 +21,7 @@ public interface OrderRepository extends DataTablesRepository<Order, Integer> {
     List<Order> getOrdersForPaymentReception();
 
     Page<Order> findOrdersByOriginatorAndRouteNotNullAndStatusNot(@Param("originator") Integer originator, @Param("status") OrderStatus status,Pageable pageable);
+    Page<Order> findOrdersByOriginatorAndRouteNotNullAndStatusNotAndNumberContaining(@Param("originator") Integer originator, @Param("status") OrderStatus status, @Param("number") String number,Pageable pageable);
+
 
 }
