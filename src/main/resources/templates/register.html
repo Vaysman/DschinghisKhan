@@ -5,8 +5,10 @@
     <title>Регистрация</title>
 
     <th:block th:include="fragments/header :: styling"></th:block>
+    <link rel="stylesheet" type="text/css" href="/media/Selectize/css/selectize.min.css"/>
 
     <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <script src="/media/Selectize/js/standalone/selectize.min.js"></script>
     <script th:inline="javascript">
         let checkMap;
 
@@ -24,6 +26,72 @@
                     console.log("ymaps is undefined (????)");
                 }
             })
+
+            let suggestions = {};
+            let loadInnSelectize = $("#inn").selectize({
+                placeholder: "Введите ИНН",
+                labelField: "label",
+                valueField: "value",
+                searchField: "inn",
+                loadThrottle: 400,
+                preload: false,
+                maxItems: 1,
+                maxOptions: 20,
+                create: true,
+                load: function (query, callback) {
+                    $.ajax({
+                        url:`https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party`,
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({
+                            query: query
+                        }),
+                        beforeSend: function(xhr){
+                            xhr.setRequestHeader("Authorization","Token 2aa6402023ed529e79ba4ddb92872b0709f9b859");
+                            xhr.setRequestHeader("Accept","application/json");
+                        },
+                        success: function (response) {
+                            var companyOptions = [];
+                            // suggestions = response.suggestions;
+                            response.suggestions.forEach(function (entry) {
+                                companyOptions.push({"label": `${entry.data.inn}\n${entry.value}`, "inn":entry.data.inn, "value": entry.data.hid});
+                                suggestions[entry.data.hid] = entry;
+                            });
+                            callback(companyOptions);
+                            console.log(response);
+                            console.log(suggestions);
+                        }});
+                },
+                onChange: (value) => {
+
+                    if(suggestions.hasOwnProperty(value)){
+                        $("#companyName").val(suggestions[value].unrestricted_value);
+                        let fetchedData = suggestions[value].data;
+
+                        if(fetchedData.inn!=null){
+                            $("#inn").val(fetchedData.inn);
+                        }
+                        if(fetchedData.okved!=null){
+                            $("#ocved").val(fetchedData.okved)
+                        }
+                        if(fetchedData.kpp!=null){
+                            $("#kpp").val(fetchedData.kpp)
+                        }
+                        if(fetchedData.ogrn!=null){
+                            $("#ogrn").val(fetchedData.ogrn);
+                        }
+                        if(fetchedData.okpo!=null){
+                            $("#ocpo").val(fetchedData.okpo)
+                        }
+                        if(fetchedData.management!=null && fetchedData.management.name!=null){
+                            $("#directorFullname").val(fetchedData.management.name);
+                        }
+                    } else {
+                        $("#inn").val(value)
+                    }
+                }
+            });
         });
 
         function checkAddress() {
@@ -42,6 +110,10 @@
 
             }
         }
+
+
+
+
 
 
     </script>
@@ -73,18 +145,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inn" class="cols-sm-2 control-label">
                             ИНН<sup class="red">*</sup>
-                        </label>
-                        <div class="cols-sm-10">
-                            <div class="input-group mb-3">
+
                                 <input type="text" th:classappend="${innError!=null} ? 'error-red' : ''"
                                        th:field="*{inn}" class="form-control" id="inn"
-                                       placeholder="ИНН"/>
-                            </div>
-                            <small th:if="${innError!=null}" th:text="${innError}"
-                                   class="text-sm form-text red"></small>
-                        </div>
+                                       placeholder="ИНН">
+                        <small th:if="${innError!=null}" th:text="${innError}"
+                               class="text-sm form-text red"></small>
                     </div>
                     <div class="form-group">
                         <label for="email" class="cols-sm-2 control-label">E-mail</label>
@@ -95,8 +162,50 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-
+                    <div class="form-group" hidden>
+                        <label for="ocved" class="cols-sm-2 control-label">ОКВЕД</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:field="*{ocved}" class="form-control" id="ocved"
+                                       placeholder="ОКВЕД"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" hidden>
+                        <label for="directorFullname" class="cols-sm-2 control-label">ФИО директора</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:field="*{directorFullname}" class="form-control" id="directorFullname"
+                                       placeholder="ФИО Директора"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" hidden>
+                        <label for="ocpo" class="cols-sm-2 control-label">ОКПО</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:field="*{ocpo}" class="form-control" id="ocpo"
+                                       placeholder="ОКПО"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" hidden>
+                        <label for="ogrn" class="cols-sm-2 control-label">ОГРН</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:field="*{ogrn}" class="form-control" id="ogrn"
+                                       placeholder="ОГРН"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" hidden>
+                        <label for="kpp" class="cols-sm-2 control-label">КПП</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:field="*{kpp}" class="form-control" id="kpp"
+                                       placeholder="КПП"/>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="login" class="cols-sm-2 control-label">Логин<sup class="red">*</sup></label>
@@ -107,9 +216,6 @@
                             </div>
                             <small th:if="${loginError!=null}" th:text="${loginError}"
                                    class="text-sm form-text red"></small>
-                            <small class="text-sm text-muted">
-                                После регистрации можно будет создать нескольких пользователей
-                            </small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -137,7 +243,7 @@
                                    class="text-sm form-text red"></small>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" hidden>
                         <label for="pointAddress" class="cols-sm-2 control-label">Адрес склада отправки</label>
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">

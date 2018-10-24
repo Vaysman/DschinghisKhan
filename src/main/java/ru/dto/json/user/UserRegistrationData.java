@@ -20,6 +20,11 @@ public class UserRegistrationData {
     private String password;
     private String pointName;
     private String pointAddress;
+    private String ocved;
+    private String kpp;
+    private String ogrn;
+    private String ocpo;
+    private String directorFullname;
 
     public Map<String,String> check(){
         Map<String, String> errors = new HashMap<>();

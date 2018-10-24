@@ -36,6 +36,11 @@ input.form-control.error-red{
     border-bottom: 1px solid #D41317;
 }
 
+.selectize-control.form-control.single{
+    border: none;
+    padding: 0;
+}
+
 
 div.selectize-input{
     border: none;

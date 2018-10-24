@@ -63,10 +63,6 @@ public class RoutePoint implements Comparable<RoutePoint>{
     @JsonView(DataTablesOutput.View.class)
     private Integer timeEnRoute;
 
-    @Column
-    @JsonView(DataTablesOutput.View.class)
-    private String arrivalTime;
-
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)

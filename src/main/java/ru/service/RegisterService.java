@@ -29,6 +29,7 @@ import ru.dto.json.user.UserRegistrationData;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Collections;
+import java.util.HashSet;
 
 @Service
 public class RegisterService {
@@ -75,7 +76,7 @@ public class RegisterService {
                     .build();
         pointRepository.save(point);
 
-        String[] abbreviations = {"ОАО","ЗАО","ООО","ИП","\"","'","!","{","}","(",")","<",">"};
+        String[] abbreviations = {"ОАО","ЗАО","ООО","ИП","ПАО","\"","'","!","{","}","(",")","<",">"};
         String shortName = registrationData.getCompanyName();
 
         for(String abbreviation : abbreviations){
@@ -87,8 +88,27 @@ public class RegisterService {
                 .type(CompanyType.DISPATCHER)
                 .shortName(shortName.trim())
                 .name(registrationData.getCompanyName())
+                .inn(registrationData.getInn())
                 .email(registrationData.getEmail())
+                .kpp(registrationData.getKpp())
+                .ocpo(registrationData.getOcpo())
+                .ocved(registrationData.getOcved())
+                .ogrn(registrationData.getOgrn())
+                .directorFullname(registrationData.getDirectorFullname())
                 .point(point)
+
+                //i feel like i should explain this bit with putting an empty hashSet into managedOffers;
+                //See, right after register() is used, the brand new user is redirected to the mainPage,
+                //where AuthorizedController requires managedOffers to be loaded.
+                //But since register() of this service and of RegisterController are transactional,
+                //the new user never leaves persistence context and managed offer stays as null
+                //instead of being an empty HashSet if we don't specify it in the builder.
+                //If we build an object using Lombok's builder - it doesn't account for default field values,
+                //as it would with it's generated all/no parameters constructor.
+                //For example, if we specify default value as private String userName = "" in User,
+                //and then build a new user using User.Builder(),
+                //then newUser.getUserName() will be equal to null. Kinda like that.
+                .managedOffers(new HashSet<>())
                 .build();
         companyRepository.save(company);
 

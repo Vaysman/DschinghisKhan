@@ -765,7 +765,7 @@
                     return '<div class="item">' + escape(data[field_label]) + '</div>';
                 },
                 'option_create': function (data, escape) {
-                    return '<div class="create">Add <strong>' + escape(data.input) + '</strong>&hellip;</div>';
+                    return '<div class="create">Использовать <strong>' + escape(data.input) + '</strong>&hellip;</div>';
                 }
             };
 

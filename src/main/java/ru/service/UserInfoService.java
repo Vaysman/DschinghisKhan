@@ -8,10 +8,7 @@ import ru.dao.entity.RouteReview;
 import ru.dao.entity.RouteReviewOpinion;
 import ru.dao.repository.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,19 +45,19 @@ public class UserInfoService {
     }
 
     public List<Map<String,String>> getManagedOffers(Integer companyId){
-        return companyRepository.findById(companyId).get()
-                        .getManagedOffers()
-                        .stream()
-                        .map(x -> {
-                            Map<String, String> orderMap = new HashMap<>();
-                            orderMap.put("id", x.getId().toString());
-                            orderMap.put("orderNumber", x.getOrderNumber());
-                            orderMap.put("isPriceChanged", String.valueOf((!Objects.equals(x.getProposedPrice(), x.getDispatcherPrice()))));
-                            orderMap.put("companyName", x.getCompany().getName());
-                            orderMap.put("companyId", x.getCompany().getId().toString());
-                            return orderMap;
-                        }).collect(Collectors.toList());
-
+        return companyRepository.findById(companyId).map(company-> company.getManagedOffers()
+                .stream()
+                .map(x -> {
+                    Map<String, String> orderMap = new HashMap<>();
+                    orderMap.put("id", x.getId().toString());
+                    orderMap.put("orderNumber", x.getOrderNumber());
+                    orderMap.put("isPriceChanged", String.valueOf((!Objects.equals(x.getProposedPrice(), x.getDispatcherPrice()))));
+                    orderMap.put("companyName", x.getCompany().getName());
+                    orderMap.put("companyId", x.getCompany().getId().toString());
+                    return orderMap;
+                })
+                .collect(Collectors.toList()))
+                .orElse(new ArrayList<>());
     }
 
 
