@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <title th:text="${'Ревью '+review.getId()}"></title>
     <th:block th:include="fragments/header :: scripts-no-const"></th:block>
+    <script>
+        $(document).ready(function () {
+            $('#price').mask('########');
+        })
+    </script>
 </head>
 <body class="grey">
 <div class="container-fluid">
@@ -68,7 +73,7 @@
                                 <h4>Ваше ревью</h4>
                                 <div class="form-group">
                                     <label>Ваша цена<sup class="red">*</sup>
-                                        <input name="price" class="form-control">
+                                        <input id="price" name="price" class="form-control">
                                     </label>
                                 </div>
                                 <div class="form-group">
