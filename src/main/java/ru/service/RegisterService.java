@@ -31,28 +31,30 @@ import javax.mail.internet.MimeMessage;
 import java.util.Collections;
 
 @Service
-public class UserManagementService {
+public class RegisterService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final PointRepository pointRepository;
     private final JavaMailSender sender;
     private final ResourceLoader resourceLoader;
     private final ContactRepository contactRepository;
+    private final UserInfoService userInfoService;
 
     @Autowired
-    public UserManagementService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, JavaMailSender sender, ResourceLoader resourceLoader, ContactRepository contactRepository) {
+    public RegisterService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, JavaMailSender sender, ResourceLoader resourceLoader, ContactRepository contactRepository, UserInfoService userInfoService) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.pointRepository = pointRepository;
         this.sender = sender;
         this.resourceLoader = resourceLoader;
         this.contactRepository = contactRepository;
+        this.userInfoService = userInfoService;
     }
 
 
     public void setAuthorized(User user, String password){
         UserCredentials forgedCredentials = new UserCredentials(user.getUsername(),password);
-        Authentication auth = new AuthToken(user, forgedCredentials, Collections.singletonList(new SimpleGrantedAuthority(user.getUserRole().name())));
+        Authentication auth = new AuthToken(user, forgedCredentials, Collections.singletonList(new SimpleGrantedAuthority(user.getUserRole().name())), userInfoService);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 

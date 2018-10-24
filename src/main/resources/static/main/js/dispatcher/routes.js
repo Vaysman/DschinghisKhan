@@ -1,6 +1,67 @@
 $(document).ready(function () {
 
     $('#tab-routes-link a').one('shown.bs.tab', function () {
+
+;
+
+        let routeReviewEditor = new $.fn.dataTable.Editor({
+            table: '#routesTable',
+            idSrc: 'id',
+            ajax: {
+                edit:{
+                    contentType: 'application/json',
+                    type: 'POST',
+                    url: 'reviews/create/_id_',
+                    data: function (d) {
+                        let newdata;
+                        $.each(d.data, function (key, value) {
+                            newdata = JSON.stringify(value.companies);
+                        });
+                        return newdata;
+                    },
+                    success: function (response) {
+                        routeReviewEditor.close();
+                    },
+                    error: function (jqXHR, exception) {
+                        alert(response.responseText);
+                    }
+                }
+            },
+            fields: [
+                {
+                    label: 'ТК<sup class="red">*</sup>',
+                    name: 'companies',
+                    type: 'selectize',
+                    options: [],
+                    opts: {
+                        maxItems: 10,
+                        searchField: "label", create: false, placeholder: "Нажмите, чтобы выбрать",
+                        load: function (query, callback) {
+                            $.get(`api/companies/search/findTop10ByNameContainingAndType/?name=${query}&type=TRANSPORT`,
+                                function (data) {
+                                    var companyOptions = [];
+                                    data._embedded.companies.forEach(function (entry) {
+                                        companyOptions.push({"label": entry.name, "value": entry.id});
+                                    });
+                                    callback(companyOptions);
+                                }
+                            );
+                        },
+                        loadThrottle: 400,
+                        preload: true,
+                    }
+                }
+            ]
+        });
+
+        routeReviewEditor.on('preSubmit', function (e, o, action) {
+            let companyField = this.field('companies');
+            if (companyField.val().length==0) {
+                    companyField.error("Компании должны быть указаны");
+                }
+        });
+
+        //if it ain't broke - don't fix it
         let routeEditor = null;
         routeEditor = new $.fn.dataTable.Editor({
             ajax: {
@@ -241,6 +302,11 @@ $(document).ready(function () {
                     {
                         extend: "edit",
                         editor: routeEditor
+                    },
+                    {
+                        extend: "edit",
+                        text: "Отправить на ревью",
+                        editor: routeReviewEditor
                     },
                     {
                         extend: "remove",

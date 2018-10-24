@@ -9,11 +9,13 @@
     <script src="/localization/localizeEditor.js"></script>
     <script src="/main/js/dispatcher/users.js" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'></script>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="/media/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/transports.js"></script>
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/drivers.js"></script>
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/company-users.js"></script>
     <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <script src="/main/js/listSearch.js" type="text/javascript"></script>
     <script src="/profile/profile.js"></script>
 
 </head>
@@ -21,7 +23,7 @@
 <div th:insert="fragments/header :: header('admin')"></div>
 <nav class="logist-tabs">
     <div>
-        <ul class="ml-md-auto flex-row nav container nav-justified" role="tablist">
+        <ul class="ml-md-auto flex-row nav container nav-fill" role="tablist">
 
 
             <li class="nav-item">
@@ -35,7 +37,7 @@
             </li>
             <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-transports"><i
-                        class="fa fa-truck" aria-hidden="true"></i> Транспортные средства</a>
+                        class="fa fa-truck" aria-hidden="true"></i> Транспорт</a>
             </li>
             <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-drivers"><i class="fa fa-users"
@@ -47,6 +49,34 @@
                         class="fa fa-users"
                         aria-hidden="true"></i>
                     Пользователи</a>
+            </li>
+            <li class="nav-item" sec:authorize='hasAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-pending-opinions">
+                    <span class="badge badge-warning" th:if="${pendingOpinions!=null && pendingOpinions>0}"
+                          th:text="${pendingOpinions}"></span>
+                    <i class="fa fa-compass" aria-hidden="true"></i>
+                    Ревью маршрутов
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize='hasAuthority("ROLE_DISPATCHER")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-reviews">
+                    <i class="fa fa-compass" aria-hidden="true"></i>
+                    Ревью маршрутов
+                </a>
+            </li>
+            <li id="tab-sent-contracts-link" class="nav-item"
+                sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-sent-contracts">
+                    <i class="fa fa-file-text" aria-hidden="true"></i>
+                    Контракты
+                </a>
+            </li>
+            <li id="tab-received-contracts-link" class="nav-item"
+                sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-received-contracts">
+                    <i class="fa fa-file-text" aria-hidden="true"></i>
+                    Контракты
+                </a>
             </li>
         </ul>
     </div>
@@ -84,6 +114,12 @@
                     <div>
                         <input th:value="${user.id}" id="userId" hidden>
                         <div class="form-group">
+                            <label>Логин
+                                <input readonly class="form-control" th:value="${user.login}"
+                                       placeholder="E-mail">
+                            </label>
+                        </div>
+                        <div class="form-group">
                             <label>E-mail
                                 <input type="text" class="form-control" id="userEmail" th:value="${user.email}"
                                        placeholder="E-mail">
@@ -118,6 +154,12 @@
                                 </label>
                             </div>
                             <div class="form-group">
+                                <label>Полное название
+                                    <input type="text" class="form-control" maxlength="64" id="companyName"
+                                           th:value="${company.name}">
+                                </label>
+                            </div>
+                            <div class="form-group">
                                 <label>Краткое название
                                     <input type="text" class="form-control" maxlength="64" id="shortName"
                                            th:value="${company.shortName}">
@@ -129,6 +171,26 @@
                                     <input type="text" class="form-control" id="atiCode" maxlength="64"
                                            th:value="${company.atiCode}">
                                 </label>
+                            </div>
+                            <div class="form-group">
+                                <label style="width:100%">ИНН
+
+                                    <input type="text" id="inn" maxlength="64" style="width:100%;"
+                                           th:value="${company.inn}">
+                                    <!--<div class="input-group-append">-->
+                                    <!--<button type="button" class="btn btn-outline-secondary field-inline-button"-->
+                                    <!--id="loadFromOgrn">Загрузить данные из ОГРН-->
+                                    <!--</button>-->
+                                    <!--</div>-->
+
+                                </label>
+                            </div>
+                            <div class="collapse" id="collapseExample">
+                                <div class="card card-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
+                                    richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson
+                                    cred nesciunt sapiente ea proident.
+                                </div>
                             </div>
                         </div>
                         <div class="col-4">
@@ -401,7 +463,293 @@
             </div>
         </div>
     </div>
+    <div id="tab-pending-opinions" class="tab-pane">
+        <div class="container-fluid spaced-container white">
+            <h4>Ревью маршрутов</h4>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-6">
+                    <h5>Ожидают ревью</h5>
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <th:block th:each="opinion : ${opinions}">
+                            <a th:if="${opinion.getPrice()==null}" class="list-group-item list-group-item-action list-group-item-warning"
+                               target="_blank"
+                               th:text="${opinion.getReview().getCompany().getName()+' / '+opinion.getReview().getRoute().getName()}"
+                               th:href="${'/info/review/'+opinion.getReview().getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h5>Прошедшие ревью</h5>
+
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <th:block th:each="opinion : ${opinions}">
+                            <a th:if="${opinion.getPrice()!=null}" class="list-group-item list-group-item-action"
+                               target="_blank"
+                               th:text="${opinion.getReview().getCompany().getName()+' / '+opinion.getReview().getRoute().getName()}"
+                               th:href="${'/info/review/'+opinion.getReview().getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tab-reviews" class="tab-pane">
+        <div class="container-fluid spaced-container white">
+            <h4>Ревью маршрутов</h4>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-4">
+                    <h5>Ожидают ответа</h5>
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <th:block th:each="review : ${reviews}">
+                            <a th:if="${review.getStatus().name()=='CREATED'}" class="list-group-item list-group-item-action"
+                               target="_blank"
+                               th:text="${review.getRoute().getName()}"
+                               th:href="${'/info/review/'+review.getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <h5>Есть ответ от перевозчика</h5>
+
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <th:block th:each="review : ${reviews}">
+                            <a th:if="${review.getStatus().name()=='RESPONDED'}" class="list-group-item list-group-item-action"
+                               target="_blank"
+                               th:text="${review.getRoute().getName()}"
+                               th:href="${'/info/review/'+review.getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <h5>Все перевозчики ответили</h5>
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <th:block th:each="review : ${reviews}">
+                            <a th:if="${review.getStatus().name()=='COMPLETE'}" class="list-group-item list-group-item-action list-group-item-success"
+                               target="_blank"
+                               th:text="${review.getRoute().getName()}"
+                               th:href="${'/info/review/'+review.getId()}"></a>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tab-received-contracts" class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Контракты с диспетчерами</h4>
+            <div class="row" id="receivedContracts">
+                <div class="col-2">
+                    <h5 th:if="${receivedContracts==null || #lists.size(receivedContracts) == 0}">
+
+                        <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
+                    </h5>
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <a href="#" v-for="contract in receivedContracts"
+                           @click="loadContractInfo(contract.id)"
+                           class="list-group-item list-group-item-action grey">
+                            {{contract.contractName}}<br>
+                            <small class="text-muted">{{contract.companyName}}</small>
+                        </a>
+                    </div>
+                </div>
+                <div v-if="contract" class="col-10">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Контракт: {{contract.file.fileName}}</h5>
+                            <h5>Компания: {{contract.initiativeCompany.name}}</h5>
+                            <br>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-4">
+
+                                    Полное название:<br>{{contract.initiativeCompany.name}}<br>
+                                    Краткое наззвание:<br>{{contract.initiativeCompany.shortName}}<br>
+                                    E-mail:<br>
+                                    {{contract.initiativeCompany.email}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    ИНН:<br>
+                                    {{contract.initiativeCompany.inn}} <br>
+                                    ФИО директора:<br>
+                                    {{contract.initiativeCompany.directorFullname}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    Налогообложение:<br>
+                                    {{contract.initiativeCompany.taxationType}}<br>
+                                    ФИО глав. бухгалтера:<br>
+                                    {{contract.initiativeCompany.chiefAccFullname}}<br>
+                                    Наименование банка:<br>
+                                    {{contract.initiativeCompany.bankName}}<br>
+                                    Корреспондентский счет:<br>
+                                    {{contract.initiativeCompany.corresAccount}}<br>
+                                    Рассчетный счет:<br>
+                                    {{contract.initiativeCompany.curAccount}}<br>
+                                </div>
+                                <div class="col-4">
+                                    <a class="btn btn-block btn-secondary" :href="'/upload/getFile/'+contract.file.path">
+                                        Скачать контракт
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    БИК:<br>
+                                    {{contract.initiativeCompany.bik}}<br>
+                                    КПП:<br>
+                                    {{contract.initiativeCompany.kpp}}<br>
+                                    ОКПО:<br>
+                                    {{contract.initiativeCompany.okpo}}<br>
+                                </div>
+                                <div class="col-6">
+                                    ОГРН:<br>
+                                    {{contract.initiativeCompany.bik}}<br>
+                                    ОГРН:<br>
+                                    {{contract.initiativeCompany.bik}}<br>
+                                    ОКВЕД:<br>
+                                    {{contract.initiativeCompany.ocved}}<br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tab-sent-contracts" class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Контракты с перевозчиками</h4>
+            <div class="row" id="sentContracts">
+                <div class="col-2">
+                    <h5 th:if="${sentContracts==null || #lists.size(sentContracts) == 0}">
+
+                        <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
+                    </h5>
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <a href="#" v-for="contract in sentContracts"
+                           @click="loadContractInfo(contract.id)"
+                           class="list-group-item list-group-item-action grey">
+                            {{contract.contractName}}<br>{{contract.companyName}}
+                        </a>
+                    </div>
+                </div>
+                <div v-if="contract" class="col-10" id="contractInfo">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Контракт: {{contract.file.fileName}}</h5>
+                            <h5>Компания: {{contract.company.name}}</h5>
+                            <br>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-4">
+
+                                    Полное название:<br>{{contract.company.name}}<br>
+                                    Краткое наззвание:<br>{{contract.company.shortName}}<br>
+                                    E-mail:<br>
+                                    {{contract.company.email}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    ИНН:<br>
+                                    {{contract.company.inn}} <br>
+                                    ФИО директора:<br>
+                                    {{contract.company.directorFullname}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    Налогообложение:<br>
+                                    {{contract.company.taxationType}}<br>
+                                    ФИО глав. бухгалтера:<br>
+                                    {{contract.company.chiefAccFullname}}<br>
+                                    Наименование банка:<br>
+                                    {{contract.company.bankName}}<br>
+                                    Корреспондентский счет:<br>
+                                    {{contract.company.corresAccount}}<br>
+                                    Рассчетный счет:<br>
+                                    {{contract.company.curAccount}}<br>
+                                </div>
+                                <div class="col-4">
+                                    <a class="btn btn-block btn-secondary" :href="'/upload/getFile/'+contract.file.path">
+                                        Скачать контракт
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    БИК:<br>
+                                    {{contract.company.bik}}<br>
+                                    КПП:<br>
+                                    {{contract.company.kpp}}<br>
+                                    ОКПО:<br>
+                                    {{contract.company.okpo}}<br>
+                                </div>
+                                <div class="col-6">
+                                    ОГРН:<br>
+                                    {{contract.company.bik}}<br>
+                                    ОГРН:<br>
+                                    {{contract.company.bik}}<br>
+                                    ОКВЕД:<br>
+                                    {{contract.company.ocved}}<br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div th:insert="fragments/header :: footer"></div>
+<script sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")' src="/main/js/dispatcher/contracts.js"></script>
+<script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")' src="/main/js/company/contracts.js"></script>
 </body>
 </html>

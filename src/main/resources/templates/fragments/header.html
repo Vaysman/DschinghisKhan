@@ -57,7 +57,7 @@
         <link rel="stylesheet" type="text/css" href="/media/font-awesome/css/font-awesome.min.css"/>
         <link rel="stylesheet" type="text/css" href="/main/css/main.css" th:href="@{/main/css/main.css}">
         <link rel="stylesheet" type="text/css" th:href="@{/common/css/logist-styling.css}">
-        <!--<link rel="stylesheet" type="text/css" th:href="@{/common/css/dropdown.css}">-->
+
 
         <script src="/media/jQuery-2.1.4/jquery-2.1.4.js"></script>
         <script src="/media/DataTables/Bootstrap-4-4.0.0/js/bootstrap.js"></script>
@@ -82,6 +82,8 @@
             let currentUser = /*[[${currentUser}]]*/;
             let pendingOrders = /*[[${pendingOrders}]]*/;
             let managedOffers = /*[[${managedOffers}]]*/;
+            let sentContracts = /*[[${sentContracts}]]*/;
+            let receivedContracts = /*[[${receivedContracts}]]*/;
             let currentCompanyId = /*[[${currentCompanyId}]]*/;
             let loadingTypes = /*[[${loadingTypes}]]*/;
             var loadingTypeOptions = [];
@@ -144,7 +146,6 @@
                 statusesForCompanyOptions.push({value: x, label: x});
             });
 
-
             /*]]>*/
         </script>
     </th:block>
@@ -162,12 +163,15 @@
             Заявки
             <span class="badge badge-primary" th:if="${managedOffers!=null && #lists.size(managedOffers) > 0}" th:text="${#lists.size(managedOffers)}"></span>
             <span class="badge badge-success" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}" th:text="${#lists.size(pendingOrders)}"></span>
+
         </a>
         </li>
         <!--<li class="nav-item" th:classappend="${#strings.equals(pageName,'routes')} ? 'active' : ''" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_DISPATCHER')"><a class="nav-link" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск-->
             <!--маршрутов</a></li>-->
         <li class="nav-item" th:classappend="${#strings.equals(pageName,'admin')} ? 'active' : ''" ><a class="nav-link" href="/main" target="_self">
-            Настройки</a></li>
+            Настройки
+            <span class="badge badge-warning" th:if="${pendingOpinions!=null && pendingOpinions>0}" th:text="${pendingOpinions}"></span>
+        </a></li>
         <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link"
                                                                                                 href="/swagger-ui.html"
                                                                                                 target="_blank">

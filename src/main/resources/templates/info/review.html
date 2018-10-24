@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${'Ревью '+review.getId()}"></title>
+    <th:block th:include="fragments/header :: scripts-no-const"></th:block>
+</head>
+<body class="grey">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8 container white spaced-container">
+            <h4 th:text="'Ревью №'+${review.getId()}"></h4>
+            <h5 th:text="'Маршрут: '+${review.getRoute().getName()}"></h5>
+            <div class="container row">
+                <div class="col-6">
+                    Требования маршрута:<br>
+                    <ul>
+                        <li>Тип кузова: <span th:text="${review.getRoute().getVehicleType().getTypeName()}"></span></li>
+                        <li>Погрузка: <span th:text="${review.getRoute().getLoadingType().getTypeName()}"></span></li>
+                        <li th:if="${review.getRoute().getTempFrom()!=null&&review.getRoute().getTempTo()!=null}">
+                            Поддерживаемая температура: <span
+                                th:text="${review.getRoute().getTempTo()+'º – '+review.getRoute().getTempFrom()+'º'}"></span>
+                        </li>
+                        <li>Тоннаж ТС: <span th:text="${review.getRoute().getTonnage()}+'т.'"></span></li>
+                        <li>Объем: <span th:utext="${review.getRoute().getVolume()+'м<sup>2</sup>'}"></span></li>
+                    </ul>
+                    <div th:utext="${'Комментарий:<br>'+review.getRoute().getComment()}"></div>
+                </div>
+                <div class="col-6">
+                    Пункты маршрута:
+                    <ol>
+                        <th:block th:each="routePoint : ${review.getRoute().getRoutePoints()}">
+                            <li>
+                                <span th:utext="${routePoint.getPoint().getName()+
+                                (routePoint.getQueueNumber()==0?' (Склад погрузки)':'')+
+                                '<br>Адрес: '+routePoint.getPoint().getAddress()+
+                                '<br>Расстояние: '+routePoint.getDistance()+
+                                '<br>Время прибытия: '+routePoint.getArrivalTime()+
+                                '<br>Время разгрузки: '+
+                                routePoint.getLoadingTime()}"></span>
+                            </li>
+                        </th:block>
+                    </ol>
+                </div>
+
+            </div>
+            <br><br>
+            <div class="container row" th:if="${review.getCompany().getId()==companyId}">
+
+                <th:block th:each="opinion : ${review.getOpinions()}">
+                    <div class="col-4">
+                        <div class="card">
+                            <div class='card-header' th:text="${opinion.getCompany().getName()}"></div>
+                            <div class="card-body">
+                                <div class="card-title"
+                                     th:text="${opinion.getPrice()==null?'Ожидается ответ':('Оцененная стоимость: '+opinion.getPrice()+'₽')}"></div>
+                                <div class="small"
+                                     th:text="${opinion.getComment()==null?'':('Комментарий: '+opinion.getComment())}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+            <th:block th:each="opinion : ${review.getOpinions()}">
+                <div class="container row" th:if="${opinion.getCompany().getId()==companyId&&(opinion.price==null)}">
+                        <div class="col-6">
+                            <form th:action="@{/../../reviews/sendOpinion/}+${opinion.getId()}" method="POST">
+                                <h4>Ваше ревью</h4>
+                                <div class="form-group">
+                                    <label>Ваша цена<sup class="red">*</sup>
+                                        <input name="price" class="form-control">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Комментарий
+                                        <textarea name="comment" class="form-control"></textarea>
+                                    </label>
+                                </div>
+                                <input type="submit" class="btn btn-primary" value="Отправить">
+                            </form>
+                        </div>
+                    </div>
+                <div class="container" th:unless="${opinion.getCompany().getId()!=companyId||(opinion.price==null)}">
+                    <div class="card">
+                        <div class='card-header' th:text="${opinion.getCompany().getName()}"></div>
+                        <div class="card-body">
+                            <div class="card-title"
+                                 th:text="${opinion.getPrice()==null?'Ожидается ответ':('Ваша цена: '+opinion.getPrice()+'₽')}"></div>
+                            <div class="small"
+                                 th:text="${opinion.getComment()==null?'':('Комментарий: '+opinion.getComment())}"></div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+
+    </div>
+</div>
+</div>
+</body>
+</html>

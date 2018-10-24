@@ -11,12 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.configuration.authentication.AuthToken;
-import ru.dao.entity.Order;
-import ru.dao.entity.OrderOffer;
-import ru.dao.repository.CompanyRepository;
-import ru.dao.repository.ContactRepository;
-import ru.dao.repository.OrderOfferRepository;
-import ru.dao.repository.OrderRepository;
+import ru.dao.entity.*;
+import ru.dao.repository.*;
 
 @Controller
 @RequestMapping("/info")
@@ -24,15 +20,38 @@ public class InfoController {
 
     private final OrderRepository orderRepository;
     private final OrderOfferRepository orderOfferRepository;
-    private final ContactRepository contactRepository;
+    private final RouteReviewRepository reviewRepository;
     private final CompanyRepository companyRepository;
 
     @Autowired
-    public InfoController(OrderRepository orderRepository, OrderOfferRepository orderOfferRepository, ContactRepository contactRepository, CompanyRepository companyRepository) {
+    public InfoController(OrderRepository orderRepository, OrderOfferRepository orderOfferRepository,  RouteReviewRepository routeReviewRepository, CompanyRepository companyRepository) {
         this.orderRepository = orderRepository;
         this.orderOfferRepository = orderOfferRepository;
-        this.contactRepository = contactRepository;
+        this.reviewRepository = routeReviewRepository;
         this.companyRepository = companyRepository;
+    }
+
+    @GetMapping(value = "/review/{reviewId}")
+    public String showReview(@PathVariable Integer reviewId, ModelMap modelMap){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication instanceof AuthToken){
+            modelMap.addAttribute("companyId",((AuthToken) authentication).getCompanyId());
+        } else {
+            modelMap.addAttribute("companyId", null);
+        }
+
+        RouteReview routeReview = reviewRepository.findById(reviewId).orElseThrow(()->new IllegalArgumentException("Ревью не существует"));
+        Hibernate.initialize(routeReview.getOpinions());
+        Hibernate.initialize(routeReview.getRoute());
+        Hibernate.initialize(routeReview.getCompany());
+        for(RouteReviewOpinion reviewOpinion : routeReview.getOpinions()){
+            Hibernate.initialize(reviewOpinion.getCompany());
+        }
+        for(RoutePoint routePoint : routeReview.getRoute().getRoutePoints()){
+            Hibernate.initialize(routePoint.getPoint());
+        }
+        modelMap.addAttribute("review", routeReview);
+        return "info/review";
     }
 
     @RequestMapping(value="/orders/{orderId}")

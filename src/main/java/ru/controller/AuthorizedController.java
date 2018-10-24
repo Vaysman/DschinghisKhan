@@ -17,14 +17,7 @@ import ru.dao.entity.Company;
 import ru.dao.entity.Contact;
 import ru.dao.entity.Point;
 import ru.dao.entity.User;
-import ru.dao.repository.CompanyRepository;
-import ru.dao.repository.ContactRepository;
-import ru.dao.repository.UserRepository;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import ru.dao.repository.*;
 
 
 @Controller
@@ -34,27 +27,32 @@ public class AuthorizedController {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final ContactRepository contactRepository;
+    private final RouteReviewOpinionRepository opinionRepository;
+    private final RouteReviewRepository reviewRepository;
+    private final ContractRepository contractRepository;
 
     @Autowired
-    public AuthorizedController(CompanyRepository companyRepository, UserRepository userRepository, ContactRepository contactRepository) {
+    public AuthorizedController(CompanyRepository companyRepository, UserRepository userRepository, ContactRepository contactRepository, RouteReviewOpinionRepository opinionRepository, RouteReviewRepository reviewRepository, ContractRepository contractRepository) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.contactRepository = contactRepository;
+        this.opinionRepository = opinionRepository;
+        this.reviewRepository = reviewRepository;
+        this.contractRepository = contractRepository;
     }
 
-    @RequestMapping({"/main","/index","/"})
-    public String main(Model modelAndView)
-    {
+    @RequestMapping({"/main", "/index", "/"})
+    public String main(Model modelAndView) {
         AuthToken authentication = (AuthToken) SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findById(authentication.getUser().getId()).orElse(null);
         assert user != null;
         Company company = user.getCompany();
-        Contact contact = contactRepository.findFirstByCompanyAndType(company,ContactType.PRIMARY).orElse(null);
+        Contact contact = contactRepository.findFirstByCompanyAndType(company, ContactType.PRIMARY).orElse(null);
         Point point = company.getPoint();
-        modelAndView.addAttribute("company",company);
-        modelAndView.addAttribute("contact",contact);
-        modelAndView.addAttribute("user",user);
-        modelAndView.addAttribute("point",point);
+        modelAndView.addAttribute("company", company);
+        modelAndView.addAttribute("contact", contact);
+        modelAndView.addAttribute("user", user);
+        modelAndView.addAttribute("point", point);
         return "main";
     }
 
@@ -75,30 +73,16 @@ public class AuthorizedController {
     public ModelMap setConstants(ModelMap model) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         AuthToken authentication = (AuthToken) securityContext.getAuthentication();
+        authentication.refreshAll();
         if (authentication.getUser().getUserRole() == UserRole.ROLE_TRANSPORT_COMPANY) {
-            companyRepository.findById(authentication.getCompanyId())
-                    .ifPresent(company -> model.addAttribute("pendingOrders", company
-                            .getPendingOrders()
-                            .stream()
-                            .map(x -> {
-                                Map<String, String> orderMap = new HashMap<>();
-                                orderMap.put("id", x.getId().toString());
-                                orderMap.put("number", x.getNumber());
-                                orderMap.put("isMandatory",String.valueOf(x.getOrderObligation().equals(OrderObligation.MANDATORY)));
-                                return orderMap;
-                            }).collect(Collectors.toList())));
+            model.addAttribute("pendingOrders", authentication.getPendingOrders());
+            model.addAttribute("pendingOpinions",authentication.getPendingOpinions());
+            model.addAttribute("opinions", authentication.getOpinions());;
+            model.addAttribute("receivedContracts",authentication.getReceivedContracts());
         } else if (authentication.getUser().getUserRole() == UserRole.ROLE_DISPATCHER) {
-            companyRepository.findById(authentication.getCompanyId())
-                    .ifPresent(company -> model.addAttribute("managedOffers", company
-                            .getManagedOffers()
-                            .stream()
-                            .map(x -> {
-                                Map<String, String> orderMap = new HashMap<>();
-                                orderMap.put("id", x.getId().toString());
-                                orderMap.put("orderNumber", x.getOrderNumber());
-                                orderMap.put("isPriceChanged", String.valueOf((!Objects.equals(x.getProposedPrice(), x.getDispatcherPrice()))));
-                                return orderMap;
-                            }).collect(Collectors.toList())));
+            model.addAttribute("managedOffers", authentication.getManagedOffers());
+            model.addAttribute("sentContracts", authentication.getSentContracts());
+            model.addAttribute("reviews", authentication.getRouteReviews());
         }
         model.addAttribute("currentCompanyId", String.valueOf(authentication.getCompanyId()));
 
@@ -113,9 +97,9 @@ public class AuthorizedController {
         model.addAttribute("userRoles", UserRole.values());
         model.addAttribute("companyTypes", CompanyType.values());
         model.addAttribute("orderPaymentTypes", OrderPaymentType.values());
-        model.addAttribute("changeableStatuses",OrderStatus.getChangeableStatuses());
-        model.addAttribute("statusesForDispatcher",UserRole.ROLE_DISPATCHER.getOrderStatuses());
-        model.addAttribute("statusesForCompany",UserRole.ROLE_TRANSPORT_COMPANY.getOrderStatuses());
+        model.addAttribute("changeableStatuses", OrderStatus.getChangeableStatuses());
+        model.addAttribute("statusesForDispatcher", UserRole.ROLE_DISPATCHER.getOrderStatuses());
+        model.addAttribute("statusesForCompany", UserRole.ROLE_TRANSPORT_COMPANY.getOrderStatuses());
         model.addAttribute("deliveredStatuses", OrderStatus.getDeliveredStatuses());
         return model;
     }

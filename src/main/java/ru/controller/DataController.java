@@ -23,14 +23,25 @@ public class DataController {
     private final OrderRepository orderRepository;
     private final OrderOfferRepository offerRepository;
     private final ContactRepository contactRepository;
+    private final ContractRepository contractRepository;
 
     @Autowired
-    public DataController(OrderRepository orderRepository, RouteRepository routeRepository, CompanyRepository companyRepository, OrderOfferRepository offerRepository, ContactRepository contactRepository) {
+    public DataController(OrderRepository orderRepository, RouteRepository routeRepository, CompanyRepository companyRepository, OrderOfferRepository offerRepository, ContactRepository contactRepository, ContractRepository contractRepository) {
         this.orderRepository = orderRepository;
         this.routeRepository = routeRepository;
         this.companyRepository = companyRepository;
         this.offerRepository = offerRepository;
         this.contactRepository = contactRepository;
+        this.contractRepository = contractRepository;
+    }
+
+    @GetMapping(value = "/contracts/{contractId}", produces = "application/json; charset=UTF-8")
+    private Contract getContractInfo(@PathVariable Integer contractId){
+        Contract contract = contractRepository.findById(contractId).orElseThrow(()->new IllegalArgumentException("Данный контракт не найден"));
+        Hibernate.initialize(contract.getCompany());
+        Hibernate.initialize(contract.getFile());
+        Hibernate.initialize(contract.getInitiativeCompany());
+        return contract;
     }
 
     @GetMapping(value = "/offers/{offerId}", produces = "application/json; charset=UTF-8")
@@ -87,7 +98,9 @@ public class DataController {
         Contact companyContact = contactRepository.findFirstByCompanyAndType(order.getCompany(), ContactType.PRIMARY).orElse(null);
         Company dispatcherCompany = companyRepository.findById(order.getOriginator()).orElseThrow(()->new IllegalStateException("Order does not have a dispatcher company"));
         Contact dispatcherContact = contactRepository.findFirstByCompanyAndType(dispatcherCompany, ContactType.PRIMARY).orElse(null);
-        Hibernate.initialize(order.getCompany().getPoint());
+        if(order.getCompany()!=null){
+            Hibernate.initialize(order.getCompany().getPoint());
+        }
         Hibernate.initialize(dispatcherCompany.getPoint());
 
         map.put("order", order);

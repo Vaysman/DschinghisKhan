@@ -1,7 +1,10 @@
 package ru.dao.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.constant.OrderStatus;
 import ru.dao.entity.Order;
 
@@ -16,4 +19,9 @@ public interface OrderRepository extends DataTablesRepository<Order, Integer> {
 
     @Query(value = "SELECT * FROM orders WHERE (status='DOCS_RECEIVED') AND (NOW() >= TIMESTAMPADD(DAY, payment_date,status_change_date))", nativeQuery = true)
     List<Order> getOrdersForPaymentReception();
+
+    Page<Order> findOrdersByOriginatorAndRouteNotNullAndStatusNot(@Param("originator") Integer originator, @Param("status") OrderStatus status,Pageable pageable);
+    Page<Order> findOrdersByOriginatorAndRouteNotNullAndStatusNotAndNumberContaining(@Param("originator") Integer originator, @Param("status") OrderStatus status, @Param("number") String number,Pageable pageable);
+
+
 }

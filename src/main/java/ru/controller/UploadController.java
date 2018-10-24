@@ -6,17 +6,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.dao.entity.Driver;
-import ru.dao.entity.File;
-import ru.dao.entity.Order;
-import ru.dao.entity.Transport;
-import ru.dao.repository.DriverRepository;
-import ru.dao.repository.FileRepository;
-import ru.dao.repository.OrderRepository;
-import ru.dao.repository.TransportRepository;
+import ru.configuration.authentication.AuthToken;
+import ru.dao.entity.*;
+import ru.dao.repository.*;
 import ru.service.StorageService;
 
 import java.io.IOException;
@@ -29,15 +25,19 @@ public class UploadController {
     private final FileRepository fileRepository;
     private final OrderRepository orderRepository;
     private final StorageService storageService;
+    private final CompanyRepository companyRepository;
+    private final ContractRepository contractRepository;
 
 
 
-    public UploadController(DriverRepository driverRepository, TransportRepository transportRepository, FileRepository fileRepository, OrderRepository orderRepository, StorageService storageService) {
+    public UploadController(DriverRepository driverRepository, TransportRepository transportRepository, FileRepository fileRepository, OrderRepository orderRepository, StorageService storageService, CompanyRepository companyRepository, ContractRepository contractRepository) {
         this.driverRepository = driverRepository;
         this.transportRepository = transportRepository;
         this.fileRepository = fileRepository;
         this.orderRepository = orderRepository;
         this.storageService = storageService;
+        this.companyRepository = companyRepository;
+        this.contractRepository = contractRepository;
     }
 
     @PostMapping("/test")
@@ -69,6 +69,22 @@ public class UploadController {
         fileRepository.save(storedFile);
         transport.getFiles().add(storedFile);
         transportRepository.save(transport);
+    }
+
+    @PreAuthorize("hasAuthority('DISPATCHER')")
+    @PostMapping(value= "/contract/{companyId}", produces = "application/json; charset=UTF-8")
+    public void uploadContract(@RequestParam("file") MultipartFile file, @RequestParam String fileName, @PathVariable Integer companyId) throws Exception {
+        Contract contract = new Contract();
+        AuthToken authentication = (AuthToken) SecurityContextHolder.getContext().getAuthentication();
+        Company dispatcherCompany = companyRepository.findById(authentication.getCompanyId()).orElseThrow(()->new IllegalArgumentException("Данной компании не существует"));
+        Company transportCompany = companyRepository.findById(companyId).orElseThrow(()->new IllegalArgumentException("Данной компании не существует"));
+        File storedFile = new File();
+        storedFile.setPath(storageService.store(file));
+        storedFile.setFileName(fileName);
+        contract.setCompany(transportCompany);
+        contract.setInitiativeCompany(dispatcherCompany);
+        contract.setFile(storedFile);
+        contractRepository.save(contract);
     }
 
     @PreAuthorize("isAuthenticated()")
