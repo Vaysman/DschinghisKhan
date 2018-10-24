@@ -22,6 +22,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
+import java.util.HashSet;
+import java.util.Set;
 
 import static ru.util.Translit.cyr2lat;
 import static ru.util.Translit.removeAbbreviations;
@@ -66,13 +68,14 @@ public class CompanyListener {
                     .login(companyUserLogin)
                     .userRole(UserRole.ROLE_TRANSPORT_COMPANY)
                     .username(company.getShortName())
-                    .company(company)
+//                    .company(company)
                     .email(company.getEmail())
                     .passAndSalt(userPassword)
                     .build();
-//        Set<User> userList = new HashSet<>();
-//        userList.add(user);
-//        company.setUsers(userList);
+            userRepository.save(user);
+        Set<User> userList = new HashSet<>();
+        userList.add(user);
+        company.setUsers(userList);
 
             Point point = new Point();
             pointRepository.save(point);
@@ -103,5 +106,10 @@ public class CompanyListener {
 
     @PostPersist
     public void postPersist(Company company) throws MessagingException {
+        if (!company.getType().equals(CompanyType.TRANSPORT)) {
+            return;
+        }
+        company.getUsers().stream().findFirst().get().setCompany(company);
+        userRepository.saveAll(company.getUsers());
     }
 }

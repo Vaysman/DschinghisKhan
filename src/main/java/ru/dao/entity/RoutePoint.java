@@ -55,6 +55,13 @@ public class RoutePoint implements Comparable<RoutePoint>{
     @JsonView(DataTablesOutput.View.class)
     private Integer loadingTime;
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String arrivalTime;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private Integer timeEnRoute;
 
     @Column
     @JsonView(DataTablesOutput.View.class)

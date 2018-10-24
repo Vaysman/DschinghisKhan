@@ -13,6 +13,7 @@ import ru.dao.entity.*;
 import ru.dao.repository.*;
 import ru.dto.json.order.OrderAcceptData;
 import ru.dto.json.order.OrderAssignData;
+import ru.util.generator.RandomIntGenerator;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -46,6 +47,30 @@ public class OrderLifecycleService {
         this.orderHistoryRepository = orderHistoryRepository;
         this.orderOfferRepository = orderOfferRepository;
         this.sender = sender;
+    }
+
+
+    public Order duplicateOrder(User currentUser, Integer orderId){
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Заявки не существует"));
+        Order newOrder = Order.builder()
+                .number("LSS-"+RandomIntGenerator.randomAlphaNumeric(8).toString())
+                .route(order.getRoute())
+                .orderObligation(order.getOrderObligation())
+                .documentReturnDate(order.getDocumentReturnDate())
+                .paymentDate(order.getPaymentDate())
+                .paymentType(order.getPaymentType())
+                .routePrice(order.getRoutePrice())
+                .originator(order.getOriginator())
+                .afterLoad(order.getAfterLoad())
+                .status(OrderStatus.CREATED)
+                .requirements(order.getRequirements())
+                .rating(order.getRating())
+                .build();
+        orderRepository.save(newOrder);
+
+        return newOrder;
+
     }
 
     public void confirmPayment(User currentUser, Integer orderId) {

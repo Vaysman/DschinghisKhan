@@ -53,7 +53,6 @@ $(document).ready(function () {
     });
 
 
-
     let statusChangeEditorOnAllOrders = new $.fn.dataTable.Editor({
         table: '#orderTable',
         idSrc: 'id',
@@ -148,8 +147,7 @@ $(document).ready(function () {
                 fieldInfo: "Можно указать до 10 компаний. Если заявка обязательная - то только 1."
             },
             {
-                label: 'Стоимость', name: 'dispatcherPrice', data: "route.totalCost", type: 'mask',
-                mask: "#",
+                label: 'Стоимость', name: 'dispatcherPrice', data: "route.totalCost", type: 'numeric',
                 fieldInfo: "Стоимость без НДС<br>"
             }
         ]
@@ -207,8 +205,7 @@ $(document).ready(function () {
                 error: function (jqXHR, exception) {
                     alert(response.responseText);
                 }
-            }
-            ,
+            },
             remove: {
                 type: 'PATCH',
                 contentType: 'application/json',
@@ -324,19 +321,19 @@ $(document).ready(function () {
                 }
             },
             {
-                label: 'Дней для оплаты', name: 'paymentDate', type: "mask", mask: "#",
+                label: 'Дней для оплаты', name: 'paymentDate', type: "mask", mask: "00",
                 fieldInfo:"Через сколько дней статус заявки сменится с 'Документы получены' на 'Ожидает оплаты'"
             },
             {
-                label: 'Дней для возврата документов', name: 'documentReturnDate', type: "mask", mask: "#",
+                label: 'Дней для возврата документов', name: 'documentReturnDate', type: "mask", mask: "00",
                 fieldInfo:"Через сколько дней статус заявки сменится с 'Доставлено'/'Подтверждение доставки' на 'Ожидает возврата документов'"
             },
 
             {
-                label: 'Коэф. изменения рейтинга', name: 'rating', type: "mask", mask: "###",
+                label: 'Коэф. изменения рейтинга', name: 'rating', type: "mask", mask: "000",
                 maskOptions: {
                     reverse: true,
-                    placeholder: "1000"
+                    placeholder: "100"
                 }
             },
             {label: 'Обязательность заявки', name: 'orderObligation', type: "selectize", options: obligationOptions},
@@ -422,6 +419,22 @@ $(document).ready(function () {
                     extend: "excelHtml5",
                     text: "<i class='fa fa-file-excel-o'></i> Экспорт",
                     title: `Заявки ${new Date().getDate()}.${(new Date().getMonth()+1)}.${new Date().getFullYear()}`
+                },{
+                    text: "Дублировать",
+                    extend: "selectedSingle",
+                    action: function(e,dt,node,config){
+                        $.ajax({
+                            url: `/orderLifecycle/dupeOrder/${dt.rows({selected: true}).data()[0].id}`,
+                            type: "POST",
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            success: function (response) {
+                                orderDataTable.draw();
+                                alert(`Номер новой заявки: ${response.number}`);
+
+                            }
+                        })
+                    }
                 }
             ],
             "paging": 10,

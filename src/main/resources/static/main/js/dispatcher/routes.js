@@ -152,84 +152,80 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    label: 'Стоимость за маршрут<span class="clipped"><sup class="red l-half">*</sup></span>', name: 'totalCost', type: "mask", mask: "#",
+                    label: 'Стоимость за маршрут<span class="clipped"><sup class="red l-half">*</sup></span>', name: 'totalCost', type: 'numeric',
+                },
+                {
+                    label: 'Стоимость за маршрут + НДС<span class="clipped"><sup class="red r-half">*</sup></span>', name: 'totalCostNds', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за маршрут + НДС<span class="clipped"><sup class="red r-half">*</sup></span>', name: 'totalCostNds', type: "mask", mask: "#",
+                    label: 'Стоимость за километр', name: 'costPerKilometer', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за километр', name: 'costPerKilometer', type: "mask", mask: "#",
+                    label: 'Стоимость за километр + НДС', name: 'costPerKilometerNds', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за километр + НДС', name: 'costPerKilometerNds', type: "mask", mask: "#",
+                    label: 'Стоимость за пункт', name: 'costPerPoint', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за пункт', name: 'costPerPoint', type: "mask", mask: "#",
+                    label: 'Стоимость за пункт + НДС', name: 'costPerPointNds', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за пункт + НДС', name: 'costPerPointNds', type: "mask", mask: "#",
+                    label: 'Стоимость за час', name: 'costPerHour', type: "mask", mask: "#####",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за час', name: 'costPerHour', type: "mask", mask: "#",
+                    label: 'Стоимость за час + НДС', name: 'costPerHourNds', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за час + НДС', name: 'costPerHourNds', type: "mask", mask: "#",
+                    label: 'Стоимость за паллету', name: 'costPerPallet', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за паллету', name: 'costPerPallet', type: "mask", mask: "#",
+                    label: 'Стоимость за паллету + НДС', name: 'costPerPalletNds', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за паллету + НДС', name: 'costPerPalletNds', type: "mask", mask: "#",
+                    label: 'Стоимость за коробку', name: 'costPerBox', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
                     }
                 },
                 {
-                    label: 'Стоимость за коробку', name: 'costPerBox', type: "mask", mask: "#",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
-                },
-                {
-                    label: 'Стоимость за коробку + НДС', name: 'costPerBoxNds', type: "mask", mask: "#",
+                    label: 'Стоимость за коробку + НДС', name: 'costPerBoxNds', type: "mask", mask: "000000",
                     maskOptions: {
                         reverse: true,
                         placeholder: ""
@@ -536,7 +532,7 @@ $(document).ready(function () {
 
                     fields: [
                         {
-                            label: 'Расстояние (км)', name: 'distance', type: 'mask', mask: "#",
+                            label: 'Расстояние (км)', name: 'distance', type: 'mask', mask: "0000",
                             maskOptions: {
                                 reverse: true,
                                 placeholder: ""
@@ -564,21 +560,35 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            label: 'Стоимость ПРР (₽)', name: 'prrCost', type: 'mask', mask: "#",
+                            label: 'Стоимость ПРР (₽)', name: 'prrCost', type: 'mask', mask: "000000",
                             maskOptions: {
                                 reverse: true,
                                 placeholder: ""
                             }
                         },
                         {
-                            label: 'Время ПРР (м)', name: 'loadingTime', type: 'mask', mask: "#",
+                            label: 'Время ПРР (м)', name: 'loadingTime', type: 'mask', mask: "000",
                             maskOptions: {
                                 reverse: true,
                                 placeholder: ""
                             }
                         },
                         {
-                            label: 'Порядковый номер (№)', name: 'queueNumber', type: 'mask', mask: "#",
+                            label: 'Время в пути', name: 'timeEnRoute', type: 'mask', mask: "000",
+                            maskOptions: {
+                                reverse: true,
+                                placeholder: ""
+                            }
+                        },
+                        {
+                            label: 'Время прибытия', name: 'arrivalTime', type: 'mask', mask: "00:00",
+                            maskOptions: {
+                                reverse: true,
+                                placeholder: ""
+                            }
+                        },
+                        {
+                            label: 'Порядковый номер (№)', name: 'queueNumber', type: 'mask', mask: "000",
                             maskOptions: {
                                 reverse: true,
                                 placeholder: ""
@@ -693,9 +703,23 @@ $(document).ready(function () {
                             }
                         },
                         {
+                            "name": "timeEnRoute", "data": "timeEnRoute", "targets": 6, render: function (data) {
+                                if (data != null) {
+                                     return `${data}м`;
+                                } else return "";
+                            }
+                        },
+                        {
+                            "name": "arrivalTime", "data": "arrivalTime", "targets": 7, render: function (data) {
+                                if (data != null && data.length==4) {
+                                    return(data.slice(0,2)+":"+data.slice(2,4))
+                                } else return "";
+                            }
+                        },
+                        {
                             "name": "loadingTime",
                             data: "loadingTime",
-                            "targets": 6,
+                            "targets": 8,
                             searchable: false,
                             orderable: false,
                             render: function (data) {
@@ -703,7 +727,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            "name": "queueNumber", "data": "queueNumber", "targets": 7, render: function (data) {
+                            "name": "queueNumber", "data": "queueNumber", "targets": 9, render: function (data) {
                                 if (data != null) {
                                     return (data != "0") ? `№${data}` : "Склад отправки";
                                 } else return "";
