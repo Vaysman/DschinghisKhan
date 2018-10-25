@@ -179,7 +179,10 @@ $(document).ready(function () {
 
                     {"name": "id", "data": "id", "targets": 0, visible: false},
                     {
-                        "name": "name", "data": "name", "targets": 1
+                        "name": "name", "data": "name", "targets": 1,
+                        render: function(data, type, full){
+                            return `<a target="_blank" href='info/company/${full.id}'>${data}</a>`;
+                        }
                     },
                     {"name": "shortName", "data": "shortName", "targets": 2},
                     {"name": "inn", "data": "inn", "targets": 3, defaultContent: ""},

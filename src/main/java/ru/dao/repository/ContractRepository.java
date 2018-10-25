@@ -8,4 +8,5 @@ import java.util.List;
 public interface ContractRepository extends PagingAndSortingRepository<Contract, Integer> {
     List<Contract> findAllByInitiativeCompanyId(Integer companyId);
     List<Contract> findAllByCompanyId(Integer companyId);
+    List<Contract> findAllByCompanyIdAndInitiativeCompanyId(Integer companyId, Integer initiativeCompanyId);
 }

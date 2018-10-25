@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${company.shortName}"></title>
+    <th:block th:include="fragments/header :: scripts-no-const"></th:block>
+</head>
+<body class="grey">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6 white container spaced-container">
+                <div class="row">
+                    <div class="col-12">
+                        <h4 th:text="'Компания: '+${company.name}"></h4>
+
+                    </div>
+                    <br><br>
+                    <div class="col-6">
+                        <div>Краткое название: <span th:text="${company.shortName}"></span></div>
+                        <div>ФИО директора: <span th:text="${company.directorFullname}"></span></div>
+                        <div>ИНН: <span th:text="${company.inn}"></span></div>
+                        <div>КПП: <span th:text="${company.kpp}"></span></div>
+                        <div>ОКВЕД: <span th:text="${company.ocved}"></span></div>
+                        <br>
+                        <div>
+                            <h4>Адрес</h4>
+                            <div>Название пункта: <span th:text="${company.point.name}"></span></div>
+                            <div>Адрес: <span th:text="${company.point.address}"></span></div>
+                        </div>
+                        <br>
+                        <div th:if="${contracts!=null && #lists.size(contracts) > 0}">
+                            <h4>Контракты</h4>
+                            <ul>
+                                <th:block th:each="contract : ${contracts}">
+                                    <li>
+                                        <a th:href="@{../../upload/getFile/}+${contract.file.path}" th:text="${contract.file.fileName}"></a>
+                                    </li>
+                                </th:block>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div>E-mail: <span th:text="${company.email}"></span></div>
+                        <div>ФИО глав. бухгалтера: <span th:text="${company.chiefAccFullname}"></span></div>
+                        <div>БИК: <span th:text="${company.bik}"></span></div>
+                        <div>ОКПО: <span th:text="${company.ocpo}"></span></div>
+                        <div>ОГРН: <span th:text="${company.ogrn}"></span></div>
+                        <br>
+                        <div>
+                            <h4>Контакт</h4>
+                            <div>ФИО: <span th:text="${contact.name}"></span></div>
+                            <div>Должность: <span th:text="${contact.position}"></span></div>
+                            <div>Телефон: <span th:text="${contact.phone}"></span></div>
+                            <div>E-mail: <span th:text="${contact.email}"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
