@@ -155,81 +155,37 @@ $(document).ready(function () {
                     label: 'Стоимость за маршрут<span class="clipped"><sup class="red l-half">*</sup></span>', name: 'totalCost', type: 'numeric',
                 },
                 {
-                    label: 'Стоимость за маршрут + НДС<span class="clipped"><sup class="red r-half">*</sup></span>', name: 'totalCostNds', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за маршрут + НДС<span class="clipped"><sup class="red r-half">*</sup></span>', name: 'totalCostNds', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за километр', name: 'costPerKilometer', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за километр', name: 'costPerKilometer', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за километр + НДС', name: 'costPerKilometerNds', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за километр + НДС', name: 'costPerKilometerNds', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за пункт', name: 'costPerPoint', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за пункт', name: 'costPerPoint', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за пункт + НДС', name: 'costPerPointNds', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за пункт + НДС', name: 'costPerPointNds', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за час', name: 'costPerHour', type: "mask", mask: "#####",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за час', name: 'costPerHour', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за час + НДС', name: 'costPerHourNds', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за час + НДС', name: 'costPerHourNds', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за паллету', name: 'costPerPallet', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за паллету', name: 'costPerPallet', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за паллету + НДС', name: 'costPerPalletNds', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за паллету + НДС', name: 'costPerPalletNds', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за коробку', name: 'costPerBox', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за коробку', name: 'costPerBox', type: "numeric"
                 },
                 {
-                    label: 'Стоимость за коробку + НДС', name: 'costPerBoxNds', type: "mask", mask: "000000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Стоимость за коробку + НДС', name: 'costPerBoxNds', type: "numeric"
                 },
                 {
                     label: 'Температура (От)<sup class="red">*</sup>', name: 'tempFrom', type: "text",
@@ -238,18 +194,10 @@ $(document).ready(function () {
                     label: 'Темература (До)<sup class="red">*</sup>', name: 'tempTo', type: "text",
                 },
                 {
-                    label: 'Объем м<sup>3</sup><sup class="red">*</sup>', name: 'volume', type: "mask", mask: "000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Объем м<sup>3</sup><sup class="red">*</sup>', name: 'volume', type: "numeric"
                 },
                 {
-                    label: 'Тоннаж<sup>Т.</sup><sup class="red">*</sup>', name: 'tonnage', type: "mask", mask: "000",
-                    maskOptions: {
-                        reverse: true,
-                        placeholder: ""
-                    }
+                    label: 'Тоннаж<sup>Т.</sup><sup class="red">*</sup>', name: 'tonnage', type: "numeric"
                 },
                 {label: 'Тип погрузки<sup class="red">*</sup>', name: 'loadingType', type: "selectize", options: loadingTypeOptions,
                 },
