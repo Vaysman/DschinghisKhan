@@ -38,14 +38,17 @@ $(document).ready(function () {
                     $("#uploadContract").prop("disabled", false);
                     $("#contractUploadModal").modal('hide');
                     document.getElementById("contractUploadForm").reset();
+                    $("#contractUploadError").text("")
 
                 },
                 error: function (e) {
                     console.log("ERROR : ", e);
                     $("#uploadContract").prop("disabled", false);
-                    $("#contractUploadModal").modal('hide');
-                    document.getElementById("contractUploadForm").reset();
-
+                    if(e.responseJSON.message.includes("Maximum upload size exceeded")){
+                        $("#contractUploadError").text("Ошибка: файл слишком большой")
+                    } else{
+                        $("#contractUploadError").text(e.responseJSON.message);
+                    }
                 }
             });
 
@@ -168,6 +171,8 @@ $(document).ready(function () {
                         extend: 'selectedSingle',
                         text: '<i class="fa fa-file"></i> Прикрепить договор',
                         action: function (e, dt, node, config) {
+                            $("#contractUploadError").text("");
+                            document.getElementById("contractUploadForm").reset();
                             $("#companyIdInput").val(dt.rows( { selected: true } ).data()[0].id);
                             $("#contractUploadModal").modal();
                             console.log(dt.rows( { selected: true } ).data()[0].id);

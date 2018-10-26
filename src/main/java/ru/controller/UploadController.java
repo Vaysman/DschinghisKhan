@@ -108,17 +108,16 @@ public class UploadController {
     @GetMapping("/getFile/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws IOException {
-
-        Resource file = storageService.loadAsResource(filename);
-        String mimeType = "";
-        MimeType mimeType1 = (MimeType) MimeUtil.getMimeTypes(file.getFile()).stream().findFirst().orElse(null);
-        if(mimeType1!=null){
-            mimeType = mimeType1.toString();
-        }
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"")
-                .header(HttpHeaders.CONTENT_TYPE, mimeType)
-                .body(file);
+            Resource file = storageService.loadAsResource(filename);
+            String mimeType = "";
+            MimeType mimeType1 = (MimeType) MimeUtil.getMimeTypes(file.getFile()).stream().findFirst().orElse(null);
+            if (mimeType1 != null) {
+                mimeType = mimeType1.toString();
+            }
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + file.getFilename() + "\"")
+                    .header(HttpHeaders.CONTENT_TYPE, mimeType)
+                    .body(file);
     }
 
 

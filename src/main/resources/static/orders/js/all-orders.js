@@ -39,13 +39,16 @@ $(document).ready(function () {
                 $("#uploadOrderDocument").prop("disabled", false);
                 $("#orderDocumentUploadModal").modal('hide');
                 document.getElementById("orderDocumentUploadForm").reset();
-
+                $("#orderDocumentUploadError").text("");
             },
             error: function (e) {
                 console.log("ERROR : ", e);
                 $("#uploadOrderDocument").prop("disabled", false);
-                $("#orderDocumentUploadModal").modal('hide');
-                document.getElementById("orderDocumentUploadForm").reset();
+                if(e.responseJSON.message.includes("Maximum upload size exceeded")){
+                    $("#orderDocumentUploadError").text("Ошибка: файл слишком большой")
+                } else{
+                    $("#orderDocumentUploadError").text(e.responseJSON.message);
+                }
 
             }
         });
@@ -405,6 +408,8 @@ $(document).ready(function () {
                     extend: 'selectedSingle',
                     text: '<i class="fa fa-file"></i> Прикрепить документ',
                     action: function (e, dt, node, config) {
+                        $("#orderDocumentUploadError").text("");
+                        document.getElementById("orderDocumentUploadForm").reset();
                         $("#orderIdInput").val(dt.rows( { selected: true } ).data()[0].id);
                         $("#orderDocumentUploadModal").modal();
                         console.log(dt.rows( { selected: true } ).data()[0].id);
