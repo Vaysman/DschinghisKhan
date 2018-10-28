@@ -383,8 +383,7 @@
                             Пункты:
                             <div class="row" v-for="routePoint in order.route.routePoints">
                                 <div class="col-4">
-                                    {{routePoint.queueNumber==0 ? 'Склад отправки' : 'Разгрузка
-                                    '+routePoint.queueNumber}}
+                                    {{routePoint.queueNumber==0 ? 'Склад отправки' : ('Разгрузка '+routePoint.queueNumber)}}
 
                                 </div>
                                 <div class="col-6">

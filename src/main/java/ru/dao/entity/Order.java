@@ -78,15 +78,15 @@ public class Order {
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Integer paymentDate;
+    private Integer paymentDate = 0;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Integer documentReturnDate;
+    private Integer documentReturnDate = 0;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Integer rating;
+    private Integer rating = 0;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -103,7 +103,7 @@ public class Order {
     @Column
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)
-    private OrderObligation orderObligation;
+    private OrderObligation orderObligation = OrderObligation.NON_MANDATORY;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -112,12 +112,12 @@ public class Order {
     @Column
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)
-    private OrderPaymentType paymentType;
+    private OrderPaymentType paymentType = OrderPaymentType.ORIGINAL;
 
     @Column
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     @JsonView(DataTablesOutput.View.class)
-    private Date statusChangeDate;
+    private Date statusChangeDate = new Date();
 
     @Column
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
@@ -127,7 +127,7 @@ public class Order {
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private String cargoDescription;
+    private String cargoDescription ="";
 
     @Column
     @JsonView(DataTablesOutput.View.class)
@@ -139,7 +139,7 @@ public class Order {
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private Integer numberOfPallets;
+    private Integer numberOfPallets = 0;
 
     @Column
     @JsonView(DataTablesOutput.View.class)

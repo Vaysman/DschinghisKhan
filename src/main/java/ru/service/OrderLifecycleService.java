@@ -99,7 +99,7 @@ public class OrderLifecycleService {
     }
 
     public void confirmDocumentDelivery(User currentUser, Integer orderId){
-        Order order = orderRepository.findFirstByIdAndStatusIn(orderId, new OrderStatus[]{OrderStatus.DOCUMENT_RETURN})
+        Order order = orderRepository.findFirstByIdAndStatusIn(orderId, new OrderStatus[]{OrderStatus.DOCUMENT_RETURN, OrderStatus.DELIVERY_CONFD})
                 .orElseThrow(() -> new IllegalArgumentException("Невозможно подтвердить получение документов:\n- Получение документов подтвердил другой диспетчер\n- Пользователь ТК заявил о получении оплаты\n- Заявки не существует"));
         order.setStatus(OrderStatus.DOCS_RECEIVED);
         saveOrder(order);

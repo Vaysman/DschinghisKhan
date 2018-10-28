@@ -227,7 +227,7 @@ $(document).ready(function () {
 
         fields: [
             {
-                label: 'Маршрут', name: 'route', type: 'selectize',
+                label: 'Маршрут<sup class="red">*</sup>', name: 'route', type: 'selectize',
                 options: [],
                 opts: {
                     searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
@@ -339,8 +339,8 @@ $(document).ready(function () {
                     placeholder: "100"
                 }
             },
-            {label: 'Обязательность заявки', name: 'orderObligation', type: "selectize", options: obligationOptions},
-            {label: "Оплата", name: "paymentType", type: "selectize", options: orderPaymentOptions},
+            {label: 'Обязательность заявки<sup class="red">*</sup>', name: 'orderObligation', type: "selectize", options: obligationOptions},
+            {label: "Оплата<sup class=\"red\">*</sup>", name: "paymentType", type: "selectize", options: orderPaymentOptions},
             {label: "Дата исполнения", name: "dispatchDate", type: "datetime", format: "DD/MM/YYYY HH:mm", keyInput: false}
         ]
     });
@@ -668,5 +668,34 @@ $(document).ready(function () {
 
     orderDataTable.on('deselect', function () {
         orderDataTable.button(3).disable();
+    });
+
+    orderEditor.on('preSubmit', function (e, o, action) {
+        if (action !== 'remove') {
+            let checkedFields = [
+                this.field('orderObligation'),
+                this.field('paymentType'),
+            ];
+
+
+            if (action == 'create') {
+                let routeField = this.field('route');
+                if (routeField.val() == '') {
+                    routeField.error("Маршрут должнен быть указан при создании");
+                    console.log("error in: " + "route")
+                }
+            }
+
+            for (let field of checkedFields) {
+                if (field.val() == '') {
+                    field.error('Поле должно быть указано');
+                    console.log("error in: " + "checkedField")
+                }
+            }
+            if (this.inError()) {
+                console.log("inError");
+                return false;
+            }
+        }
     })
 });
