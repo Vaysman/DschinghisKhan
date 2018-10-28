@@ -108,6 +108,11 @@ public class DataTablesController {
     public DataTablesOutput<Company> getCompaniesForUser(@Valid @RequestBody DataTablesInput input) {
         return companyRepository.findAll(input,Companies.companiesForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/transportCompaniesForUser", method = RequestMethod.POST)
+    public DataTablesOutput<Company> getTransportCompaniesForUser(@Valid @RequestBody DataTablesInput input) {
+        return companyRepository.findAll(input,Companies.companiesForUser(AuthToken.getCurrentAuthToken().getCompanyId()),Companies.companiesByType(CompanyType.TRANSPORT));
+    }
 
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/transportCompanies", method = RequestMethod.GET)

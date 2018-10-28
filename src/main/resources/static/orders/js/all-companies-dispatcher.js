@@ -177,6 +177,24 @@ $(document).ready(function () {
                             $("#contractUploadModal").modal();
                             console.log(dt.rows( { selected: true } ).data()[0].id);
                         }
+                    },
+                    {
+                        text: "Только мои перевозчики",
+                        action: function () {
+                            if(companiesTable.ajax.url()==="dataTables/transportCompanies"){
+                                companiesTable.ajax.url("dataTables/transportCompaniesForUser");
+                                companiesTable.ajax.reload();
+                                this.text('Все перевозчики');
+                            } else {
+                                companiesTable.ajax.url("dataTables/transportCompanies");
+                                companiesTable.ajax.reload();
+                                this.text('Только мои перевозчики');
+                            }
+
+                        },
+                        attr:{
+                            'data-toggle': 'button'
+                        }
                     }
                 ],
                 "paging": 10,
