@@ -412,6 +412,10 @@ $(document).ready(function () {
             }
         });
 
+        //I didn't have time to figure out how to change selectize's ajax url on the fly;
+        //If you do know how - please do so
+        let currentlySelectedClient = "";
+
 
         function reInitRoutePointTable(routeId) {
             $.get(`api/routes/${routeId}`).success(function (routeData) {
@@ -487,10 +491,42 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            label: 'Контакт', name: 'contact', type: 'selectize', options: [], opts: {
+                            label: 'Клиент', name: 'client', type: 'selectize', options: [], opts: {
                                 searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
                                 load: function (query, callback) {
-                                    $.get(`api/contacts/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
+                                    $.get(`api/clients/search/findTop10ByOriginatorAndNameContaining/?name=${query}&originator=${currentCompanyId}`,
+                                        function (data) {
+                                            let clientOptions = [];
+                                            data._embedded.clients.forEach(function (entry) {
+                                                clientOptions.push({
+                                                    "label": entry.name,
+                                                    "value": entry._links.self.href
+                                                });
+                                            });
+                                            callback(clientOptions);
+                                        }
+                                    )
+                                },
+                                onChange: function(value) {
+                                    currentlySelectedClient = value;
+                                    if (value!=""){
+                                        routePointEditor.field("contact").enable();
+                                        routePointEditor.field("contact").inst().onSearchChange("");
+                                    } else {
+                                        routePointEditor.field("contact").disable();
+                                        routePointEditor.field("contact").inst().clear();
+                                    }
+
+                                },
+                                preload: true,
+                                loadThrottle: 500
+                            }
+                        },
+                        {
+                            label: 'Контакт', name: 'contact', type: 'selectize', options: [],  opts: {
+                                searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                                load: function (query, callback) {
+                                    $.get(`api/contacts/search/findTop10ByClientAndNameContaining/?name=${query}&client=${currentlySelectedClient}`,
                                         function (data) {
                                             let pointOptions = [];
                                             data._embedded.contacts.forEach(function (entry) {
@@ -503,7 +539,7 @@ $(document).ready(function () {
                                         }
                                     )
                                 },
-                                preload: true,
+                                // preload: true,
                                 loadThrottle: 500
                             }
                         },
@@ -567,6 +603,8 @@ $(document).ready(function () {
                     ]
                 });
 
+                routePointEditor.field("contact").disable();
+
 
                 // routePointEditor.field('point').input().on('keyup', function (e, d) {
                 //     var namePart = $(this).val();
@@ -618,11 +656,12 @@ $(document).ready(function () {
                         {"name": "id", "data": "id", searchable: false, orderable: false, "targets": 0, visible: false},
                         {"name": "point.name", "data": "point.name", "targets": 1, defaultContent: ""},
                         {"name": "point.address", "data": "point.address", "targets": 2, defaultContent: ""},
-                        {"name": "contact.name", "data": "contact.name", targets: 3, defaultContent: ""},
+                        {"name": "client.name", "data": "client.name", targets: 3, defaultContent: ""},
+                        {"name": "contact.name", "data": "contact.name", targets: 4, defaultContent: ""},
                         {
                             "name": "distance",
                             "data": "distance",
-                            "targets": 4,
+                            "targets": 5,
                             searchable: false,
                             orderable: false,
                             render: function (data) {
@@ -643,7 +682,7 @@ $(document).ready(function () {
                         {
                             "name": "prrCost",
                             "data": "prrCost",
-                            "targets": 5,
+                            "targets": 6,
                             searchable: false,
                             orderable: false,
                             render: function (data) {
@@ -651,14 +690,14 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            "name": "timeEnRoute", "data": "timeEnRoute", "targets": 6, render: function (data) {
+                            "name": "timeEnRoute", "data": "timeEnRoute", "targets": 7, render: function (data) {
                                 if (data != null) {
                                      return `${data}м`;
                                 } else return "";
                             }
                         },
                         {
-                            "name": "arrivalTime", "data": "arrivalTime", "targets": 7, render: function (data) {
+                            "name": "arrivalTime", "data": "arrivalTime", "targets": 8, render: function (data) {
                                 if (data != null && data.length==4) {
                                     return(data.slice(0,2)+":"+data.slice(2,4))
                                 } else return "";
@@ -667,7 +706,7 @@ $(document).ready(function () {
                         {
                             "name": "loadingTime",
                             data: "loadingTime",
-                            "targets": 8,
+                            "targets": 9,
                             searchable: false,
                             orderable: false,
                             render: function (data) {
@@ -675,7 +714,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            "name": "queueNumber", "data": "queueNumber", "targets": 9, render: function (data) {
+                            "name": "queueNumber", "data": "queueNumber", "targets": 10, render: function (data) {
                                 if (data != null) {
                                     return (data != "0") ? `№${data}` : "Склад отправки";
                                 } else return "";

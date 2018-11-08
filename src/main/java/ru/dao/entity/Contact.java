@@ -16,7 +16,7 @@ import javax.persistence.*;
         @Index(name = "contacts_originator_index", columnList = "originator"),
         @Index(name = "contacts_name_index", columnList = "name")
 })
-@EqualsAndHashCode(exclude = {"point"})
+@EqualsAndHashCode(exclude = {"point", "client"})
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,4 +63,8 @@ public class Contact {
     private ContactType type = ContactType.SECONDARY;
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonView(DataTablesOutput.View.class)
+    @JoinColumn(name="CLIENT_ID")
+    private Client client;
 }

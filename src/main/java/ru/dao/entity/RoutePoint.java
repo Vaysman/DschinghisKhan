@@ -17,7 +17,7 @@ import javax.persistence.*;
         @Index(name = "route_points_id_index", columnList = "id", unique = false),
         @Index(name = "route_points_point_id_index", columnList = "point_id", unique = false)
 })
-@EqualsAndHashCode(exclude = {"point","route","contact"})
+@EqualsAndHashCode(exclude = {"point","route","contact","client"})
 public class RoutePoint implements Comparable<RoutePoint>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,6 +68,11 @@ public class RoutePoint implements Comparable<RoutePoint>{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ROUTE_ID", referencedColumnName = "ID")
     private Route route;
+
+    @JsonView(DataTablesOutput.View.class)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="CLIENT_ID", referencedColumnName = "ID")
+    private Client client;
 
     @Override
     public int compareTo(RoutePoint o) {

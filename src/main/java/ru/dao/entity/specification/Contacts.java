@@ -12,6 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Contacts {
+    public static Specification<Contact> contactsForClient(final Integer clientId){
+        return (final Root<Contact> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> {
+            final List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.equal(root.get("client"), clientId));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
+    }
+
     public static Specification<Contact> contactsForUser(final Integer originator) {
         return (final Root<Contact> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> {
             final List<Predicate> predicates = new ArrayList<>();
