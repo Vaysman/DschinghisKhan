@@ -1,26 +1,23 @@
 package ru.dao.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import ru.dao.entity.listener.PointListener;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-@Builder
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor(suppressConstructorProperties = true)
-@Table(name = "points",indexes = {
-        @Index(name = "point_id_index", columnList = "id"),
-        @Index(name = "point_name_index", columnList = "name")
+@Table(name = "clients", indexes = {
+        @Index(name = "clients_id_index", columnList = "id"),
+        @Index(name = "clients_name_index", columnList = "name"),
+        @Index(name = "clients_originator_index", columnList = "originator")
 })
-@EqualsAndHashCode(exclude = {"client"})
-@ToString
-@EntityListeners(PointListener.class)
-public class Point {
+@EqualsAndHashCode(exclude = {"company"})
+public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView(DataTablesOutput.View.class)
@@ -33,30 +30,17 @@ public class Point {
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private String address;
+    private String phone;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private String fullAddress;
+    private String contact;
 
     @Column
     @JsonView(DataTablesOutput.View.class)
-    private String comment;
-
-    @Column
     private Integer originator;
 
-    @Column
-    private Double x;
-
-    @Column
-    private Double y;
-
-    @Column
-    @JsonView(DataTablesOutput.View.class)
-    private String workTime;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CLIENT_ID")
-    private Client client;
+    @JoinColumn(name = "COMPANY_ID")
+    private Company company;
 }

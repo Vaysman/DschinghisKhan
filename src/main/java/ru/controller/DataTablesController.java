@@ -42,6 +42,8 @@ public class DataTablesController {
 
     private final OrderOfferRepository orderOfferRepository;
 
+    private final ClientRepository clientRepository;
+
     @Autowired
     public DataTablesController(OrderHistoryRepository orderHistoryRepository,
                                 OrderRepository orderRepository,
@@ -53,7 +55,7 @@ public class DataTablesController {
                                 ContactRepository contactRepository,
                                 TransportRepository transportRepository,
                                 DriverRepository driverRepository,
-                                OrderOfferRepository orderOfferRepository) {
+                                OrderOfferRepository orderOfferRepository, ClientRepository clientRepository) {
         this.orderHistoryRepository = orderHistoryRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
@@ -65,6 +67,13 @@ public class DataTablesController {
         this.transportRepository = transportRepository;
         this.driverRepository = driverRepository;
         this.orderOfferRepository = orderOfferRepository;
+        this.clientRepository = clientRepository;
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/clientsForUser", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
+    public DataTablesOutput<Client> getClientsForUser(@Valid @RequestBody DataTablesInput input){
+        return clientRepository.findAll(input, Clients.clientsForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
 
     @JsonView(DataTablesOutput.View.class)
@@ -83,6 +92,18 @@ public class DataTablesController {
     @RequestMapping(value = "/points", method = RequestMethod.POST)
     public DataTablesOutput<Point> getPoints(@Valid @RequestBody DataTablesInput input) {
         return pointRepository.findAll(input);
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/pointsForClient/{clientId}")
+    public DataTablesOutput<Point> getPointsForClient(@Valid @RequestBody DataTablesInput input, @PathVariable Integer clientId){
+        return pointRepository.findAll(input, Points.pointsForClient(clientId));
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/contactsForClient/{clientId}")
+    public DataTablesOutput<Contact> getContactsForClient(@Valid @RequestBody DataTablesInput input, @PathVariable Integer clientId){
+        return contactRepository.findAll(input, Contacts.contactsForClient(clientId));
     }
 
     @JsonView(DataTablesOutput.View.class)
