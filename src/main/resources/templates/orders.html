@@ -22,6 +22,8 @@
             src="/main/js/dispatcher/routes.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
             src="/main/js/dispatcher/contacts.js"></script>
+    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
+            src="/main/js/dispatcher/clients.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'
             src="/orders/js/orders-in-work-company.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'
@@ -78,7 +80,7 @@
             <li id="tab-contacts-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-contacts">
                     <i class="fa fa-address-book" aria-hidden="true"></i>
-                    Грузополучатели
+                    Клиенты
                 </a>
             </li>
             <li id="tab-companies-link" class="nav-item"
@@ -843,6 +845,7 @@
                         <th>id</th>
                         <th>Пункт</th>
                         <th>Адрес</th>
+                        <th>Клиент</th>
                         <th>Контакт</th>
                         <th>Расстояние</th>
                         <th>Стоимость ПРР</th>
@@ -858,21 +861,41 @@
     </div>
     <div id="tab-contacts" class="tab-pane">
         <div class=" container-fluid spaced-container white">
-            <h4>Грузополучатели</h4>
-            <div>
-                <table class="table table-hover table-striped " id="pointsTable">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Грузополучатель</th>
-                        <th>Адрес</th>
-                        <th>Полный адрес</th>
-                        <th>Комментарий</th>
-                        <th>Рабочее время</th>
-                    </tr>
-                    </thead>
-                </table>
+            <div class="row">
+                <div class="col-4">
+                    <h4>Клиенты</h4>
+                    <div>
+                        <table class="table table-hover table-striped " id="clientsTable">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Наименование</th>
+                                <th>Телефон</th>
+                                <th>Контактное лицо</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <h4>Пункты доставки</h4>
+                    <div>
+                        <table class="table table-hover table-striped " id="pointsTable">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Название</th>
+                                <th>Адрес</th>
+                                <th>Полный адрес</th>
+                                <th>Комментарий</th>
+                                <th>Рабочее время</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
             </div>
+
         </div>
         <div class="spaced-container white container-fluid">
             <h4>Контакты</h4>
