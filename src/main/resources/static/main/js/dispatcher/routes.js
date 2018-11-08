@@ -511,10 +511,10 @@ $(document).ready(function () {
                                     currentlySelectedClient = value;
                                     if (value!=""){
                                         routePointEditor.field("contact").enable();
+                                        routePointEditor.field("contact").inst().onSearchChange("");
                                     } else {
                                         routePointEditor.field("contact").disable();
                                         routePointEditor.field("contact").inst().clear();
-                                        routePointEditor.field("contact").inst().onSearchChange("");
                                     }
 
                                 },
