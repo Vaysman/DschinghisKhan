@@ -336,6 +336,7 @@ $(document).ready(function () {
                         {
                             label: 'Пункт', name: 'point', type: 'selectize', options: [], opts: {
                                 searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                                delimiter: null,
                                 load: function (query, callback) {
                                     $.get(`api/points/search/findTop10ByClientIdAndNameContaining/?name=${query}&clientId=${clientId}`,
                                         function (data) {

@@ -45,6 +45,7 @@ $(document).ready(function () {
                         maxItems: 1,
                         loadThrottle: 400,
                         preload: true,
+                        delimiter: null,
                         load: function (query, callback) {
                             $.get(`api/drivers/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
                                 function (data) {

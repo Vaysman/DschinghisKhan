@@ -193,6 +193,7 @@ $(document).ready(function () {
         searchField: "inn",
         loadThrottle: 400,
         preload: false,
+        delimiter: null,
         maxItems: 1,
         maxOptions: 20,
         create: true,

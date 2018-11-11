@@ -106,6 +106,7 @@ var orderList = new Vue({
             valueField: "value",
             loadThrottle: 400,
             preload: true,
+            delimiter: null,
             maxItems: 1,
             create: false,
             load: function (query, callback) {

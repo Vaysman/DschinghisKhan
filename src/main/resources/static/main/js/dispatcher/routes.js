@@ -493,6 +493,7 @@ $(document).ready(function () {
                         {
                             label: 'Клиент', name: 'client', type: 'selectize', options: [], opts: {
                                 searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                                delimiter: null,
                                 load: function (query, callback) {
                                     $.get(`api/clients/search/findTop10ByOriginatorAndNameContaining/?name=${query}&originator=${currentCompanyId}`,
                                         function (data) {
@@ -540,6 +541,7 @@ $(document).ready(function () {
                                     )
                                 },
                                 // preload: true,
+                                delimiter: null,
                                 loadThrottle: 500
                             }
                         },

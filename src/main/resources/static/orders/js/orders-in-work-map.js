@@ -127,8 +127,8 @@ var ordersInWorkOnMap = new Vue({
         ymaps.ready(function () {
             if (typeof ymaps !== 'undefined') {
                 that.orderMap = new ymaps.Map('orderMap', {
-                    center: [40, 50],
-                    zoom: 15
+                    center: [55.7558, 37.6173],
+                    zoom: 6
                 }, {
                     searchControlProvider: 'yandex#search'
                 });

@@ -84,6 +84,7 @@ public class AuthorizedController {
             model.addAttribute("sentContracts", authentication.getSentContracts());
             model.addAttribute("reviews", authentication.getRouteReviews());
         }
+        model.addAttribute("companyAddress", authentication.getCompanyPoint().getAddress());
         model.addAttribute("currentCompanyId", String.valueOf(authentication.getCompanyId()));
 
         model.addAttribute("currentUser", authentication.getUser());
