@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ConfigurationProperties(prefix = "spring.main-datasource")
 @EnableSwagger2
 public class MainConnectionConfiguration {
-//    private String url;
+//    private String remoteUrl;
 //    private String username;
 //    private String password;
 //    private String driverClassName;
@@ -22,7 +22,7 @@ public class MainConnectionConfiguration {
 //    public DataSource dataSource() {
 //        return DataSourceBuilder
 //                .create()
-//                .url(url)
+//                .remoteUrl(remoteUrl)
 //                .username(username)
 //                .password(password)
 //                .driverClassName(driverClassName)

@@ -86,7 +86,7 @@ $(document).ready(function () {
                     url: "dataTables/clientsForUser", // json datasource
                     type: "post"  // method  , by default get
                 },
-                dom: 'Bfrtip',
+                dom: 'Bfrtp',
                 language: {
                     url: '/localization/dataTablesRus.json'
                 },
@@ -221,7 +221,7 @@ $(document).ready(function () {
                             url: `dataTables/pointsForClient/${clientId}`, // json datasource
                             type: "post"  // method  , by default get
                         },
-                        dom: 'Bfrtip',
+                        dom: 'Bfrtp',
                         language: {
                             url: '/localization/dataTablesRus.json'
                         },
@@ -372,7 +372,7 @@ $(document).ready(function () {
                             url: `dataTables/contactsForClient/${clientId}`, // json datasource
                             type: "post"  // method  , by default get
                         },
-                        dom: 'Bfrtip',
+                        dom: 'Bfrtp',
                         language: {
                             url: '/localization/dataTablesRus.json'
                         },

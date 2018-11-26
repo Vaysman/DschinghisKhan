@@ -51,7 +51,7 @@ public class RegistrationTest {
                 .pointAddress("Москва")
                 .build();
 
-        User registeredUser = registerService.register(registrationData);
+        User registeredUser = registerService.registerDispatcher(registrationData);
 
         List<Company> foundCompanies = companyRepository.findTop10ByNameContaining("tCompany");
         assertThat(foundCompanies.size()).isNotEqualTo(0);

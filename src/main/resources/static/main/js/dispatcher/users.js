@@ -132,7 +132,7 @@ $(document).ready(function () {
                     url: "dataTables/usersForUser", // json datasource
                     type: "post"  // method  , by default get
                 },
-                dom: 'Bfrtip',
+                dom: 'Bfrtp',
                 language: {
                     url: '/localization/dataTablesRus.json'
                 },

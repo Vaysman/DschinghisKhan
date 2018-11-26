@@ -139,6 +139,10 @@ public class Company {
     @Column
     private String chiefAccFullname = "";
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String city = "";
+
 //    @JsonView(DataTablesOutput.View.class)
 //    @OneToMany(cascade = { CascadeType.ALL}, mappedBy = "company", fetch = FetchType.LAZY)
 //    Set<Contract> receivedContracts = new HashSet<>();

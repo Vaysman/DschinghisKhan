@@ -87,7 +87,8 @@ $(document).ready(function () {
                     name: 'taxationType',
                     type: 'selectize',
                     options: [{label: "С НДС", value: "С НДС"}, {label: "Без НДС", value: "Без НДС"}]
-                }
+                },
+                {label: 'Город', name: 'city', type: 'text'},
             ],
             table: '#transportCompaniesTable',
             idSrc: 'id',
@@ -254,7 +255,7 @@ $(document).ready(function () {
                     url: "dataTables/transportCompanies", // json datasource
                     type: "post"  // method  , by default get
                 },
-                dom: 'Bfrtip',
+                dom: 'Bfrtp',
                 language: {
                     url: '/localization/dataTablesRus.json'
                 },
@@ -348,6 +349,14 @@ $(document).ready(function () {
                         defaultContent: "",
                         orderable: false,
                         searchable: false
+                    },
+                    {
+                        "name": "city",
+                        "data": "city",
+                        "targets": 11,
+                        defaultContent: "",
+                        orderable: false,
+                        searchable: true
                     },
                 ],
                 createdRow: function (row, data, dataIndex) {
@@ -464,7 +473,7 @@ $(document).ready(function () {
                             url: `dataTables/contactsForCompany/${id}`, // json datasource
                             type: "post"  // method  , by default get
                         },
-                        dom: 'Bfrtip',
+                        dom: 'Bfrtp',
                         language: {
                             url: '/localization/dataTablesRus.json'
                         },

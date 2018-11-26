@@ -91,7 +91,21 @@ public class Driver {
             indexes = {@Index(name = "files_to_drivers_driver_id_index", columnList = "driver_id"),
                     @Index(name = "files_to_drivers_file_id_index", columnList = "file_id")}
     )
-    private Set<File> files = new HashSet<>();
+    private Set<StoredFile> files = new HashSet<>();
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "photo_id")
+    @JsonIgnore
+    private StoredFile photo;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "passport_id")
+    @JsonIgnore
+    private StoredFile passport;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "license_id")
+    @JsonIgnore
+    private StoredFile license;
 
 }

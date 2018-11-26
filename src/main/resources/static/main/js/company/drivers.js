@@ -1,15 +1,15 @@
-// <th>id</th>
-// <th>ФИО</th>
-// <th>Телефон</th>
-// <th>Паспорт</th>
-// <th>Водительское удостверение</th>
-// <th>Рейтинг</th>
-// <th>Мобильное приложение</th>
-// <th>Отслеживание по телефону</th>
-// <th>В штате</th>
-// <th>Оплата</th>
+
 
 $(document).ready(function () {
+
+    let uploadModes = {
+        file: "driver",
+        license: "driverLicense",
+        passport: "driverPassport"
+    };
+    let uploadMode = uploadModes.file;
+
+    let selectedDriverId = 0;
 
     $("#uploadDriverDocument").click(function (event) {
 
@@ -26,9 +26,6 @@ $(document).ready(function () {
         // If you want to add an extra field for the FormData
         // data.append("CustomField", "This is some extra data, testing");
 
-        let id = data.get("id");
-        console.log(id);
-        console.log(data);
 
 
         // disabled the submit button
@@ -37,7 +34,7 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',
-            url: `/upload/driver/${id}`,
+            url: `/upload/${uploadMode}/${selectedDriverId}`,
             data: data,
             processData: false,
             contentType: false,
@@ -212,19 +209,53 @@ $(document).ready(function () {
                     editor: driverEditor
                 },
                 {
+                    extend: "remove",
+                    editor: driverEditor
+                },
+                {
                     extend: 'selectedSingle',
                     text: '<i class="fa fa-file"></i> Прикрепить документ',
                     action: function (e, dt, node, config) {
-                        $("#driverDocumentUploadError").text("")
+                        $("#driverDocumentUploadError").text("");
+                        $("#driverDocumentUploadForm input[name='fileName']").first().closest(".row").show();
+                        uploadMode = uploadModes.file;
                         document.getElementById("driverDocumentUploadForm").reset();
-                        $("#driverIdInput").val(dt.rows( { selected: true } ).data()[0].id);
+                        selectedDriverId = dt.rows( { selected: true } ).data()[0].id;
                         $("#driverDocumentUploadModal").modal();
-                        console.log(dt.rows( { selected: true } ).data()[0].id);
                     }
                 },
                 {
-                    extend: "remove",
-                    editor: driverEditor
+                    extend: 'selectedSingle',
+                    text: '<i class="fa fa-id-card"></i> Прикрепить паспорт',
+                    action: function (e, dt, node, config) {
+                        uploadMode = uploadModes.passport;
+                        $("#driverDocumentUploadError").text("");
+                        $("#driverDocumentUploadForm input[name='fileName']").first().closest(".row").hide();
+                        document.getElementById("driverDocumentUploadForm").reset();
+                        selectedDriverId = dt.rows( { selected: true } ).data()[0].id;
+                        $("#driverDocumentUploadModal").modal();
+                    }
+                },
+                {
+                    extend: 'selectedSingle',
+                    text: '<i class="fa fa-id-card-o"></i> Прикрепить удостверение',
+                    action: function (e, dt, node, config) {
+                        uploadMode = uploadModes.license;
+                        $("#driverDocumentUploadError").text("");
+                        $("#driverDocumentUploadForm input[name='fileName']").first().closest(".row").hide();
+                        document.getElementById("driverDocumentUploadForm").reset();
+                        selectedDriverId = dt.rows( { selected: true } ).data()[0].id;
+                        $("#driverDocumentUploadModal").modal();
+                    }
+                },
+                {
+                    extend: 'selectedSingle',
+                    text: '<i class="fa fa-file-photo-o"></i> Прикрепить фотографию',
+                    action: function (e, dt, node, config) {
+                        $modal.modal('show');
+                        selectedDriverId = dt.rows( { selected: true } ).data()[0].id;
+                        console.log(dt.rows( { selected: true } ).data()[0].id);
+                    }
                 },
                 {
                     text: 'Показать все',
@@ -240,7 +271,10 @@ $(document).ready(function () {
             "paging": 10,
             "columnDefs": [
                 {"name": "id", "data": "id", "targets": 0, visible: false},
-                {"name": "name", "data": "name", "targets": 1},
+                {"name": "name", "data": "name", "targets": 1,
+                    render: function (data, type, full) {
+                        return `<a target="_blank" href='info/drivers/${full.id}'>${data}</a>`;
+                    }},
                 {"name": "phone", "data": "phone", searchable: false, orderable: false, "targets": 2},
                 {"name": "passportNumber", "data": "passportNumber", searchable: false, orderable: false, "targets": 3},
                 {"name": "licenseNumber", "data": "licenseNumber", searchable: false, orderable: false, "targets": 4},
@@ -287,4 +321,78 @@ $(document).ready(function () {
             ]
         }
     );
+
+
+
+    var input = document.getElementById('driverPhotoInput');
+    var $modal = $('#driverPhotoUpload');
+    var image = document.getElementById('driverPhoto');
+    var cropper;
+    $('[data-toggle="tooltip"]').tooltip();
+    input.addEventListener('change', function (e) {
+        if (cropper!=null) destroyCropper();
+        var files = e.target.files;
+        var done = function (url) {
+            input.value = '';
+            image.src = url;
+            createCropper();
+        };
+        var reader;
+        var file;
+        if (files && files.length > 0) {
+            file = files[0];
+            if (URL) {
+                done(URL.createObjectURL(file));
+            } else if (FileReader) {
+                reader = new FileReader();
+                reader.onload = function (e) {
+                    done(reader.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+    function createCropper(){
+        cropper = new Cropper(image, {
+            aspectRatio: 1,
+            viewMode: 3,
+        });
+    };
+
+    function destroyCropper(){
+        cropper.destroy();
+        cropper = null;
+    }
+    document.getElementById('cropDriverPhoto').addEventListener('click', function () {
+        var canvas;
+        if (cropper) {
+            canvas = cropper.getCroppedCanvas({
+                width: 320,
+                height: 320,
+            });
+            canvas.toBlob(function (blob) {
+                var formData = new FormData();
+                formData.append('file', blob, 'avatar.jpg');
+                $.ajax(`/upload/driverPhoto/${selectedDriverId}`, {
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function () {
+                        var xhr = new XMLHttpRequest();
+                        return xhr;
+                    },
+                    success: function () {
+                        $modal.modal('hide');
+                        destroyCropper();
+                        image.src = '';
+                    },
+                    error: function () {
+                    },
+                    complete: function () {
+                    },
+                });
+            });
+        }
+    });
 });

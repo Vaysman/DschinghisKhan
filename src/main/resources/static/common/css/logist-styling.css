@@ -28,6 +28,10 @@ input.form-control{
     border-bottom: 2px solid rgba(26, 43, 109, 1);
 }
 
+.img-container img {
+    max-width: 100%;
+}
+
 /*input.form-control:matches([type=text], [type=password]).error-red{*/
     /*border-bottom: 1px solid #D41317;*/
 /*}*/

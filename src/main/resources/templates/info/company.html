@@ -33,7 +33,7 @@
                             <ul>
                                 <th:block th:each="contract : ${contracts}">
                                     <li>
-                                        <a th:href="@{../../upload/getFile/}+${contract.file.path}" th:text="${contract.file.fileName}"></a>
+                                        <a th:href="@{../../upload/getFile/}+${contract.file.path}" th:utext="${'<i class=''fa fa-file''></i> '+contract.file.fileName}"></a>
                                     </li>
                                 </th:block>
                             </ul>

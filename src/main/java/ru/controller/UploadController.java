@@ -2,6 +2,7 @@ package ru.controller;
 
 import eu.medsea.mimeutil.MimeType;
 import eu.medsea.mimeutil.MimeUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class UploadController {
 
 
 
+    @Autowired
     public UploadController(DriverRepository driverRepository, TransportRepository transportRepository, FileRepository fileRepository, OrderRepository orderRepository, StorageService storageService, CompanyRepository companyRepository, ContractRepository contractRepository) {
         this.driverRepository = driverRepository;
         this.transportRepository = transportRepository;
@@ -41,8 +43,8 @@ public class UploadController {
     }
 
     @PostMapping("/test")
-    public String upload(@RequestParam("file") MultipartFile file, ModelMap map) throws Exception{
-        storageService.store(file);
+    public String upload(@RequestParam("file") MultipartFile file, @RequestParam String fileName, ModelMap map) throws Exception{
+        StoredFile newfile = storageService.store(file, fileName);
         map.addAttribute("message","You successfully uploaded " + file.getOriginalFilename() + "!");
         return "upload";
     }
@@ -51,11 +53,7 @@ public class UploadController {
     @PostMapping(value ="/driver/{driverId}",produces = "application/json; charset=UTF-8")
     public void uploadDriverDocument(@RequestParam("file") MultipartFile file, @RequestParam String fileName, @PathVariable Integer driverId) throws Exception {
         Driver driver = driverRepository.findById(driverId).orElseThrow(()->new IllegalArgumentException("Данный водитель не существует"));
-        File storedFile = new File();
-        storedFile.setPath(storageService.store(file));
-        storedFile.setFileName(fileName);
-        fileRepository.save(storedFile);
-        driver.getFiles().add(storedFile);
+        driver.getFiles().add(storageService.store(file,fileName));
         driverRepository.save(driver);
     }
 
@@ -63,12 +61,50 @@ public class UploadController {
     @PostMapping(value= "/transport/{transportId}", produces = "application/json; charset=UTF-8")
     public void uploadTransportDocument(@RequestParam("file") MultipartFile file, @RequestParam String fileName, @PathVariable Integer transportId) throws Exception {
         Transport transport = transportRepository.findById(transportId).orElseThrow(()->new IllegalArgumentException("Данный транспорт не существует"));
-        File storedFile = new File();
-        storedFile.setPath(storageService.store(file));
-        storedFile.setFileName(fileName);
-        fileRepository.save(storedFile);
-        transport.getFiles().add(storedFile);
+        transport.getFiles().add(storageService.store(file,fileName));
         transportRepository.save(transport);
+    }
+
+    @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
+    @PostMapping(value = "/driverPhoto/{driverId}", produces = "application/json; charset=UTF-8")
+    public void uploadDriverPhoto(@RequestParam("file") MultipartFile file, @PathVariable Integer driverId) throws Exception{
+        Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new IllegalArgumentException("Данный водитель не существует"));
+        if (driver.getPhoto()!=null){
+            StoredFile previousFile = driver.getPhoto();
+            driver.setPhoto(null);
+            driverRepository.save(driver);
+            storageService.delete(previousFile);
+        }
+        driver.setPhoto(storageService.store(file,driver.getId().toString()+"-photo"));
+        driverRepository.save(driver);
+    }
+
+    @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
+    @PostMapping(value = "/driverLicense/{driverId}", produces = "application/json; charset=UTF-8")
+    public void uploadDriverLicense(@RequestParam("file") MultipartFile file, @PathVariable Integer driverId) throws Exception{
+        Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new IllegalArgumentException("Данный водитель не существует"));
+        if (driver.getLicense()!=null){
+            StoredFile previousFile = driver.getLicense();
+            driver.setLicense(null);
+            driverRepository.save(driver);
+            storageService.delete(previousFile);
+        }
+        driver.setLicense(storageService.store(file,driver.getId().toString()+"-license"));
+        driverRepository.save(driver);
+    }
+
+    @PreAuthorize("hasAuthority('TRANSPORT_COMPANY')")
+    @PostMapping(value = "/driverPassport/{driverId}", produces = "application/json; charset=UTF-8")
+    public void uploadDriverPassport(@RequestParam("file") MultipartFile file, @PathVariable Integer driverId) throws Exception{
+        Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new IllegalArgumentException("Данный водитель не существует"));
+        if (driver.getPassport()!=null){
+            StoredFile previousFile = driver.getPassport();
+            driver.setPassport(null);
+            driverRepository.save(driver);
+            storageService.delete(previousFile);
+        }
+        driver.setPassport(storageService.store(file,driver.getId().toString()+"photo"));
+        driverRepository.save(driver);
     }
 
     @PreAuthorize("hasAuthority('DISPATCHER')")
@@ -78,12 +114,9 @@ public class UploadController {
         AuthToken authentication = (AuthToken) SecurityContextHolder.getContext().getAuthentication();
         Company dispatcherCompany = companyRepository.findById(authentication.getCompanyId()).orElseThrow(()->new IllegalArgumentException("Данной компании не существует"));
         Company transportCompany = companyRepository.findById(companyId).orElseThrow(()->new IllegalArgumentException("Данной компании не существует"));
-        File storedFile = new File();
-        storedFile.setPath(storageService.store(file));
-        storedFile.setFileName(fileName);
         contract.setCompany(transportCompany);
         contract.setInitiativeCompany(dispatcherCompany);
-        contract.setFile(storedFile);
+        contract.setFile(storageService.store(file,fileName));
         contractRepository.save(contract);
     }
 
@@ -91,18 +124,11 @@ public class UploadController {
     @PostMapping(value = "/order/{orderId}", produces = "application/json; charset=UTF-8")
     public void uploadOrderDocument(@RequestParam("file") MultipartFile file, @RequestParam String fileName, @PathVariable Integer orderId) throws Exception {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new IllegalArgumentException("Данная заявка не существует"));
-        File storedFile = new File();
-        storedFile.setPath(storageService.store(file));
-        storedFile.setFileName(fileName);
-        fileRepository.save(storedFile);
-        order.getFiles().add(storedFile);
+        order.getFiles().add(storageService.store(file,fileName));
         orderRepository.save(order);
     }
 
-    @GetMapping("/test")
-    public String testUpload(){
-        return "upload";
-    }
+
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/getFile/{filename:.+}")

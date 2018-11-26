@@ -15,7 +15,7 @@ import javax.persistence.*;
         @Index(name = "files_id_uindex", columnList = "id", unique = true),
 })
 @EqualsAndHashCode
-public class File {
+public class StoredFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView(DataTablesOutput.View.class)
@@ -27,4 +27,7 @@ public class File {
 
     @Column
     private String path;
+
+    @Column(name = "url")
+    private String remoteUrl;
 }

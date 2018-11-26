@@ -276,7 +276,7 @@ $(document).ready(function () {
                     {
                         "name": "totalCost",
                         "data": null,
-                        title: "Ст. за маршрут",
+                        title: "₽/Маршрут",
                         searchable: false,
                         orderable: false,
                         render: function (data, type, full) {
@@ -412,7 +412,7 @@ $(document).ready(function () {
             }
         });
 
-        //I didn't have time to figure out how to change selectize's ajax url on the fly;
+        //I didn't have time to figure out how to change selectize's ajax remoteUrl on the fly;
         //If you do know how - please do so
         let currentlySelectedClient = "";
 
@@ -483,6 +483,14 @@ $(document).ready(function () {
                     idSrc: 'id',
 
                     fields: [
+                        {
+                            label: 'Порядковый номер (№)', name: 'queueNumber', type: 'mask', mask: "000",
+                            maskOptions: {
+                                reverse: true,
+                                placeholder: ""
+                            },
+                            fieldInfo: "Первый пункт разгрузки - 1, второй - 2 и т.д."
+                        },
                         {
                             label: 'Расстояние (км)', name: 'distance', type: 'mask', mask: "0000",
                             maskOptions: {
@@ -573,14 +581,7 @@ $(document).ready(function () {
                                 placeholder: ""
                             }
                         },
-                        {
-                            label: 'Порядковый номер (№)', name: 'queueNumber', type: 'mask', mask: "000",
-                            maskOptions: {
-                                reverse: true,
-                                placeholder: ""
-                            },
-                            fieldInfo: "Первый пункт разгрузки - 1, второй - 2 и т.д."
-                        },
+
                         {
                             label: 'Пункт', name: 'point', type: 'selectize', options: [], opts: {
                                 searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",

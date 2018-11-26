@@ -27,15 +27,17 @@ public class InfoController {
     private final CompanyRepository companyRepository;
     private final ContactRepository contactRepository;
     private final ContractRepository contractRepository;
+    private final DriverRepository driverRepository;
 
     @Autowired
-    public InfoController(OrderRepository orderRepository, OrderOfferRepository orderOfferRepository, RouteReviewRepository routeReviewRepository, CompanyRepository companyRepository, ContactRepository contactRepository, ContractRepository contractRepository) {
+    public InfoController(OrderRepository orderRepository, OrderOfferRepository orderOfferRepository, RouteReviewRepository routeReviewRepository, CompanyRepository companyRepository, ContactRepository contactRepository, ContractRepository contractRepository, DriverRepository driverRepository) {
         this.orderRepository = orderRepository;
         this.orderOfferRepository = orderOfferRepository;
         this.reviewRepository = routeReviewRepository;
         this.companyRepository = companyRepository;
         this.contactRepository = contactRepository;
         this.contractRepository = contractRepository;
+        this.driverRepository = driverRepository;
     }
 
     @GetMapping(value = "/company/{companyId}")
@@ -130,5 +132,21 @@ public class InfoController {
         Hibernate.initialize(offer.getManagerCompany());
         modelMap.addAttribute("offer", offer);
         return "info/offer";
+    }
+
+    @GetMapping(value = "/drivers/{driverId}")
+    private String getDriverInfo(@PathVariable Integer driverId, ModelMap modelMap){
+        Driver driver = driverRepository.findById(driverId).orElse(null);
+        assert driver !=null;
+        Company company = companyRepository.findById(driver.getOriginator()).orElse(null);
+
+        Hibernate.initialize(driver.getPhoto());
+        Hibernate.initialize(driver.getLicense());
+        Hibernate.initialize(driver.getPassport());
+        Hibernate.initialize(driver.getFiles());
+
+        modelMap.addAttribute("company",company);
+        modelMap.addAttribute("driver", driver);
+        return "info/driver";
     }
 }

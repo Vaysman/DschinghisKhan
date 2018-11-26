@@ -62,7 +62,7 @@ public class RegisterService {
 
 
     @Transactional
-    public User register(UserRegistrationData registrationData) throws Exception {
+    public User registerDispatcher(UserRegistrationData registrationData) throws Exception {
         userRepository.findByLogin(registrationData.getLogin()).ifPresent((x)->{
             throw new IllegalArgumentException("Данный пользователь уже существует");
         });
@@ -98,9 +98,9 @@ public class RegisterService {
                 .point(point)
 
                 //i feel like i should explain this bit with putting an empty hashSet into managedOffers;
-                //See, right after register() is used, the brand new user is redirected to the mainPage,
+                //See, right after registerDispatcher() is used, the brand new user is redirected to the mainPage,
                 //where AuthorizedController requires managedOffers to be loaded.
-                //But since register() of this service and of RegisterController are transactional,
+                //But since registerDispatcher() of this service and of RegisterController are transactional,
                 //the new user never leaves persistence context and managed offer stays as null
                 //instead of being an empty HashSet if we don't specify it in the builder.
                 //If we build an object using Lombok's builder - it doesn't account for default field values,
@@ -160,5 +160,59 @@ public class RegisterService {
 
 
         return user;
+    }
+
+    @Transactional
+    public void registerCompany(Company company){
+//        if (!companyRepository.findFirstByInn(company.getInn()).isPresent()) {
+//
+//            if (!company.getType().equals(CompanyType.TRANSPORT)) {
+//                return;
+//            } else {
+//                company.setShortName(removeAbbreviations(company.getName()));
+//
+//            }
+//            String companyUserLogin = cyr2lat(company.getShortName().replaceAll(" ", ""));
+//            while (userRepository.findByLogin(companyUserLogin).isPresent()) {
+//                companyUserLogin = companyUserLogin + "1";
+//            }
+//            String userPassword = RandomStringGenerator.randomAlphaNumeric(8);
+//            User user = User.builder()
+//                    .login(companyUserLogin)
+//                    .userRole(UserRole.ROLE_TRANSPORT_COMPANY)
+//                    .username(company.getShortName())
+////                    .company(company)
+//                    .email(company.getEmail())
+//                    .passAndSalt(userPassword)
+//                    .build();
+//            userRepository.save(user);
+//            Set<User> userList = new HashSet<>();
+//            userList.add(user);
+//            company.setUsers(userList);
+//
+//            Point point = new Point();
+//            pointRepository.save(point);
+//            company.setPoint(point);
+//
+//
+//            MimeMessage message = sender.createMimeMessage();
+//            MimeMessageHelper helper = new MimeMessageHelper(message, false);
+//            helper.setFrom("tarificationsquad@gmail.com");
+//            helper.setTo(company.getEmail());
+//            helper.setText("Зарегистрирован пользователь для транспортой компании: " +
+//                    company.getName() +
+//                    "\nЛогин: " + user.getLogin() +
+//                    "\nПароль: " + userPassword);
+//            helper.setSubject("Регистрационные данные");
+//            if (!company.getEmail().equals("test@tesе.test")) sender.send(message);
+//
+//            Contact contact = Contact.builder()
+//                    .company(company)
+//                    .email(company.getEmail())
+//                    .type(ContactType.PRIMARY)
+//                    .build();
+//
+//            contactRepository.save(contact);
+//        }
     }
 }

@@ -2441,7 +2441,7 @@ Editor.prototype.create = function ( arg1, arg2, arg3, arg4 )
  * @param {string|object|function} url Callback definition. This can be:
  *   * A string, which will be used as a URL to submit the request for update to
  *   * An object, which is used to extend an Ajax object for the request. The
- *     `url` parameter must be specified.
+ *     `remoteUrl` parameter must be specified.
  *   * A function, which is used as a callback, allowing non-ajax updates.
  * @return {Editor} Editor instance, for chaining
  */
@@ -6005,7 +6005,7 @@ Editor.defaults = {
 	 * This option matches the `dt-init ajax` option in that is can be provided
 	 * in one of three different ways:
 	 *
-	 * * string - As a string, the value given is used as the url to target
+	 * * string - As a string, the value given is used as the remoteUrl to target
 	 *   the Ajax request to, using the default Editor Ajax options. Note that
 	 *   for backwards compatibility you can use the form "METHOD URL" - for
 	 *   example: `"PUT api/users"`, although it is recommended you use the
@@ -6039,7 +6039,7 @@ Editor.defaults = {
 	 *      var editor = new $.fn.Editor( {
 	 *        "ajax": {
 	 *          "type": 'GET',
-	 *          "url": 'php/index.php
+	 *          "remoteUrl": 'php/index.php
 	 *        },
 	 *        "table": "#example"
 	 *      } );
@@ -6065,15 +6065,15 @@ Editor.defaults = {
 	 *        "ajax": {
 	 *          "create": {
 	 *          	type: 'POST',
-	 *          	url:  '/rest/user/create'
+	 *          	remoteUrl:  '/rest/user/create'
 	 *          },
 	 *          "edit": {
 	 *          	type: 'PUT',
-	 *          	url:  '/rest/user/edit/_id_'
+	 *          	remoteUrl:  '/rest/user/edit/_id_'
 	 *          },
 	 *          "remove": {
 	 *          	type: 'DELETE',
-	 *          	url:  '/rest/user/delete'
+	 *          	remoteUrl:  '/rest/user/delete'
 	 *          }
 	 *        },
 	 *        "table": "#example"
@@ -6085,10 +6085,10 @@ Editor.defaults = {
 	 *      var editor = new $.fn.Editor( {
 	 *        "ajax": "php/index.php",
 	 *        "table": "#example",
-	 *        "ajax": function ( method, url, data, successCallback, errorCallback ) {
+	 *        "ajax": function ( method, remoteUrl, data, successCallback, errorCallback ) {
 	 *          $.ajax( {
 	 *            "type": method,
-	 *            "url":  url,
+	 *            "remoteUrl":  remoteUrl,
 	 *            "data": data,
 	 *            "dataType": "json",
 	 *            "success": function (json) {

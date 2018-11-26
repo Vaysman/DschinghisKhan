@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${driver.getName()}"></title>
+    <th:block th:include="fragments/header :: scripts-no-const"></th:block>
+
+</head>
+<body class="grey">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8 container white spaced-container">
+            <div class="row">
+                <div th:if="${driver.photo!=null}" class="col-4">
+                    <img style="width:100%; border-radius: 4px;" th:src="@{../../upload/getFile/}+${driver.photo.path}">
+                </div>
+                <div class="col-8">
+                    <h4 th:text="${'Водитель: '+driver.getName()}"></h4>
+                    <div class="row">
+                        <div class="col-6">
+                            <span th:text="${'Телефон: '+driver.phone}"></span><br>
+                            <span th:text="${'Рейтинг: '+driver.rating}"></span><br>
+                            <a th:href="@{../company/}+${company.id}" th:text="${'Компания: '+company.name}"></a><br>
+                        </div>
+                        <div class="col-6">
+                            <span th:text="${'Номер паспорта: '+driver.passportNumber}"></span><br>
+                            <span th:text="${'Номер водительского удостверения: '+driver.licenseNumber}"></span><br>
+                            <span th:text="${'Оплата: '+driver.paymentType.getName()}"></span><br>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <br>
+                    <div class="card" th:if="${driver.license!=null}">
+
+                        <a class="card-header" data-toggle="collapse" href="#licenseCollapsible" role="button"
+                           aria-expanded="false" aria-controls="licenseCollapsible">
+                            Водительское удостверение
+                        </a>
+
+                        <div class="collapse" id="licenseCollapsible">
+                            <img style="width:100%;" th:src="@{../../upload/getFile/}+${driver.license.path}">
+                        </div>
+                    </div>
+                    <div class="card" th:if="${driver.passport!=null}">
+
+                        <a class="card-header" data-toggle="collapse" href="#passportCollapsible" role="button"
+                           aria-expanded="false" aria-controls="passportCollapsible">
+                            Паспорт
+                        </a>
+
+                        <div class="collapse" id="passportCollapsible">
+                            <img style="width:100%;" th:src="@{../../upload/getFile/}+${driver.passport.path}">
+                        </div>
+                    </div>
+                    <div class="card" th:if="${driver.files!=null && #lists.size(driver.files) > 0}">
+                        <a class="card-header" data-toggle="collapse" href="#filesCollapsible" role="button"
+                           aria-expanded="false" aria-controls="filesCollapsible">
+                            Документы
+                        </a>
+
+                        <div class="collapse" id="filesCollapsible">
+                            <ul>
+                                <th:block th:each="file : ${driver.files}">
+                                    <li>
+                                        <a th:href="@{../../upload/getFile/}+${file.path}" th:utext="${'<i class=''fa fa-file''></i> '+file.fileName}"></a>
+                                    </li>
+                                </th:block>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

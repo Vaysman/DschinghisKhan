@@ -7897,7 +7897,7 @@
         // Main method
         ajax: function (url, options) {
 
-            // If url is an object, simulate pre-1.5 signature
+            // If remoteUrl is an object, simulate pre-1.5 signature
             if (typeof url === "object") {
                 options = url;
                 url = undefined;
@@ -8017,8 +8017,8 @@
 
             // Remove hash character (#7531: and string promotion)
             // Add protocol if not provided (prefilters might expect it)
-            // Handle falsy url in the settings object (#10093: consistency with old signature)
-            // We also use the url parameter if available
+            // Handle falsy remoteUrl in the settings object (#10093: consistency with old signature)
+            // We also use the remoteUrl parameter if available
             s.url = ( ( url || s.url || ajaxLocation ) + "" ).replace(rhash, "")
                 .replace(rprotocol, ajaxLocParts[1] + "//");
 
@@ -8073,14 +8073,14 @@
             // More options handling for requests with no content
             if (!s.hasContent) {
 
-                // If data is available, append data to url
+                // If data is available, append data to remoteUrl
                 if (s.data) {
                     cacheURL = ( s.url += ( rquery.test(cacheURL) ? "&" : "?" ) + s.data );
                     // #9682: remove data so that it's not used in an eventual retry
                     delete s.data;
                 }
 
-                // Add anti-cache in url if needed
+                // Add anti-cache in remoteUrl if needed
                 if (s.cache === false) {
                     s.url = rts.test(cacheURL) ?
 
@@ -8727,7 +8727,7 @@
                 s.jsonpCallback() :
                 s.jsonpCallback;
 
-            // Insert callback into url or form data
+            // Insert callback into remoteUrl or form data
             if (jsonProp) {
                 s[jsonProp] = s[jsonProp].replace(rjsonp, "$1" + callbackName);
             } else if (s.jsonp !== false) {
@@ -8814,7 +8814,7 @@
     var _load = jQuery.fn.load;
 
     /**
-     * Load a url into a page
+     * Load a remoteUrl into a page
      */
     jQuery.fn.load = function (url, params, callback) {
         if (typeof url !== "string" && _load) {
