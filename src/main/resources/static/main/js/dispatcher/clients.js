@@ -86,7 +86,7 @@ $(document).ready(function () {
                     url: "dataTables/clientsForUser", // json datasource
                     type: "post"  // method  , by default get
                 },
-                dom: 'Bfrtip',
+                dom: 'Bfrtp',
                 language: {
                     url: '/localization/dataTablesRus.json'
                 },
@@ -221,7 +221,7 @@ $(document).ready(function () {
                             url: `dataTables/pointsForClient/${clientId}`, // json datasource
                             type: "post"  // method  , by default get
                         },
-                        dom: 'Bfrtip',
+                        dom: 'Bfrtp',
                         language: {
                             url: '/localization/dataTablesRus.json'
                         },
@@ -336,6 +336,7 @@ $(document).ready(function () {
                         {
                             label: 'Пункт', name: 'point', type: 'selectize', options: [], opts: {
                                 searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                                delimiter: null,
                                 load: function (query, callback) {
                                     $.get(`api/points/search/findTop10ByClientIdAndNameContaining/?name=${query}&clientId=${clientId}`,
                                         function (data) {
@@ -371,7 +372,7 @@ $(document).ready(function () {
                             url: `dataTables/contactsForClient/${clientId}`, // json datasource
                             type: "post"  // method  , by default get
                         },
-                        dom: 'Bfrtip',
+                        dom: 'Bfrtp',
                         language: {
                             url: '/localization/dataTablesRus.json'
                         },

@@ -15,3 +15,9 @@ CREATE INDEX clients_originator_index ON clients (originator);
 ALTER TABLE contacts ADD client_id int NULL;
 ALTER TABLE points ADD client_id int NULL;
 ALTER TABLE route_points ADD client_id int NULL;
+ALTER TABLE transport_companies ADD city VARCHAR(64) NULL;
+ALTER TABLE files ADD url varchar(512) NULL;
+
+ALTER TABLE drivers ADD photo_id int NULL;
+ALTER TABLE drivers ADD license_id int NULL;
+ALTER TABLE drivers ADD passport_id int NULL;

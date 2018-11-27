@@ -27,7 +27,7 @@ public class Contract {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "FILE_ID", referencedColumnName = "ID")
-    private File file;
+    private StoredFile file;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COMPANY_ID", referencedColumnName = "ID")

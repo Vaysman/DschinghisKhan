@@ -4,6 +4,7 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.constant.OrderObligation;
+import ru.dao.entity.Point;
 import ru.dao.entity.RouteReview;
 import ru.dao.entity.RouteReviewOpinion;
 import ru.dao.repository.*;
@@ -78,6 +79,10 @@ public class UserInfoService {
             Hibernate.initialize(x.getReview());
             Hibernate.initialize(x.getReview().getCompany());
         }).collect(Collectors.toList());
+    }
+
+    public Point getCompanyPoint(Integer companyid){
+        return companyRepository.findById(companyid).get().getPoint();
     }
 
 

@@ -230,6 +230,7 @@ $(document).ready(function () {
                 label: 'Маршрут<sup class="red">*</sup>', name: 'route', type: 'selectize',
                 options: [],
                 opts: {
+                    delimiter: null,
                     searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
                     loadThrottle: 400,
                     preload: true,

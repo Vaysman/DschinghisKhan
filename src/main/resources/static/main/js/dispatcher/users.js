@@ -17,7 +17,7 @@ $(document).ready(function () {
                         $.each(d.data, function (key, value) {
                             value.originator = currentCompanyId;
                             value.company = currentCompany._links.self.href;
-                            value.role = "Диспетчер";
+                            value.userRole = "Диспетчер";
                             newdata = JSON.stringify(value);
                         });
                         console.log(newdata);
@@ -93,7 +93,7 @@ $(document).ready(function () {
                 var username = this.field( 'username' );
                 var login = this.field( 'login' );
                 var passAndSalt = this.field( 'passAndSalt' );
-                var userRole = this.field( 'userRole' );
+                // var userRole = this.field( 'userRole' );
 
                 // Only validate user input values - different values indicate that
                 // the end user has not entered a value
@@ -106,9 +106,9 @@ $(document).ready(function () {
                 if(action!=='edit'&&(!passAndSalt.val() || passAndSalt.val()==="dummy") ){
                     passAndSalt.error("Пароль должен быть указан")
                 }
-                if(!userRole.val()){
-                    userRole.error("Роль должна быть указана")
-                }
+                // if(!userRole.val()){
+                //     userRole.error("Роль должна быть указана")
+                // }
                 // ... additional validation rules
 
                 // If any error was reported, cancel the submission so it can be corrected
@@ -132,7 +132,7 @@ $(document).ready(function () {
                     url: "dataTables/usersForUser", // json datasource
                     type: "post"  // method  , by default get
                 },
-                dom: 'Bfrtip',
+                dom: 'Bfrtp',
                 language: {
                     url: '/localization/dataTablesRus.json'
                 },

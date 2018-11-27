@@ -1,0 +1,22 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing page</title>
+    <th:block th:include="fragments/header :: scripts-no-const"></th:block>
+</head>
+<body class="grey">
+    <div class="row">
+
+        <div class="col-4 container white spaced-container">
+            <h4>
+                Тестовая страница
+            </h4>
+            Протестировать:
+            <ul>
+                <li><a th:href="@{upload}"> Загрузку файлов</a></li>
+                <li><a th:href="@{crop}"> Обрезку фотографий</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

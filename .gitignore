@@ -61,3 +61,4 @@ fabric.properties
 out
 gen
 /.idea/inspectionProfiles/Project_Default.xml
+/src/main/resources/application.yml

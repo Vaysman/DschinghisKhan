@@ -59,13 +59,13 @@ exports.decode = function(input) {
     var dataUrlPrefix = "data:";
 
     if (input.substr(0, dataUrlPrefix.length) === dataUrlPrefix) {
-        // This is a common error: people give a data url
+        // This is a common error: people give a data remoteUrl
         // (data:image/png;base64,iVBOR...) with a {base64: true} and
         // wonders why things don't work.
-        // We can detect that the string input looks like a data url but we
+        // We can detect that the string input looks like a data remoteUrl but we
         // *can't* be sure it is one: removing everything up to the comma would
         // be too dangerous.
-        throw new Error("Invalid base64 input, it looks like a data url.");
+        throw new Error("Invalid base64 input, it looks like a data remoteUrl.");
     }
 
     input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");

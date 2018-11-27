@@ -53,7 +53,7 @@ public class AuthorizedController {
         modelAndView.addAttribute("contact", contact);
         modelAndView.addAttribute("user", user);
         modelAndView.addAttribute("point", point);
-        return "main";
+        return "profile";
     }
 
     @GetMapping("/routes")
@@ -63,7 +63,7 @@ public class AuthorizedController {
 
     @RequestMapping(value = "/orders")
     public String orders() {
-        return "orders";
+        return "main";
     }
 
     //Any methods with @ModelAttribute on them must be public in order for autoWired fields to work.
@@ -84,6 +84,7 @@ public class AuthorizedController {
             model.addAttribute("sentContracts", authentication.getSentContracts());
             model.addAttribute("reviews", authentication.getRouteReviews());
         }
+        model.addAttribute("companyAddress", authentication.getCompanyPoint().getAddress());
         model.addAttribute("currentCompanyId", String.valueOf(authentication.getCompanyId()));
 
         model.addAttribute("currentUser", authentication.getUser());

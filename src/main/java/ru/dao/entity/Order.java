@@ -182,7 +182,7 @@ public class Order {
             indexes = {@Index(name = "files_to_orders_order_id_index", columnList = "order_id"),
                     @Index(name = "files_to_orders_file_id_index", columnList = "file_id")}
     )
-    Set<File> files;
+    Set<StoredFile> files;
 
     @PrePersist
     private void setPricing(){

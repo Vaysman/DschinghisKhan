@@ -13,7 +13,7 @@ import ru.service.RegisterService;
 import java.util.Map;
 
 @Controller
-//@RequestMapping("/register")
+//@RequestMapping("/registerDispatcher")
 public class RegisterController {
 
     private final RegisterService registerService;
@@ -31,7 +31,7 @@ public class RegisterController {
 
         if (errors.size() == 0) {
             try {
-                User registeredUser = registerService.register(registrationData);
+                User registeredUser = registerService.registerDispatcher(registrationData);
                 if(registeredUser!=null) {
                     registerService.setAuthorized(registeredUser, registrationData.getPassword());
                     return "redirect:/main";

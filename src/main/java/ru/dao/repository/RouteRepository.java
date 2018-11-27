@@ -1,7 +1,6 @@
 package ru.dao.repository;
 
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.Param;
 import ru.dao.entity.Route;
 
@@ -16,4 +15,6 @@ public interface RouteRepository extends DataTablesRepository<Route, Integer> {
     Optional<Route> findRouteById(@Param("id") Integer integer);
 
     List<Route> findTop10ByNameContainingAndOriginator(@Param("name") String name, @Param("originator") Integer originator);
+
+
 }

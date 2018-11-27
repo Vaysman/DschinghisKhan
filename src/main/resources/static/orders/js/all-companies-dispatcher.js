@@ -1,3 +1,4 @@
+let suggestions = {};
 $(document).ready(function () {
     $('#tab-companies-link a').one('shown.bs.tab', function () {
 
@@ -17,9 +18,6 @@ $(document).ready(function () {
             // data.append("CustomField", "This is some extra data, testing");
 
             let id = data.get("id");
-            console.log(id);
-            console.log(data);
-
 
             // disabled the submit button
             $("#uploadContract").prop("disabled", true);
@@ -44,9 +42,9 @@ $(document).ready(function () {
                 error: function (e) {
                     console.log("ERROR : ", e);
                     $("#uploadContract").prop("disabled", false);
-                    if(e.responseJSON.message.includes("Maximum upload size exceeded")){
+                    if (e.responseJSON.message.includes("Maximum upload size exceeded")) {
                         $("#contractUploadError").text("Ошибка: файл слишком большой")
-                    } else{
+                    } else {
                         $("#contractUploadError").text(e.responseJSON.message);
                     }
                 }
@@ -89,11 +87,13 @@ $(document).ready(function () {
                     name: 'taxationType',
                     type: 'selectize',
                     options: [{label: "С НДС", value: "С НДС"}, {label: "Без НДС", value: "Без НДС"}]
-                }
+                },
+                {label: 'Город', name: 'city', type: 'text'},
             ],
             table: '#transportCompaniesTable',
             idSrc: 'id',
         });
+
 
         let companyEditor = new $.fn.dataTable.Editor({
             ajax: {
@@ -118,7 +118,7 @@ $(document).ready(function () {
                         console.log(jqXHR);
                         console.log(exception);
                         var cause = jqXHR.responseJSON.cause.cause.message;
-                        if (cause.includes("Duplicate entry")){
+                        if (cause.includes("Duplicate entry")) {
                             companyEditor.field("inn").error("Указанный ИНН уже существует");
                         } else {
                             companyInfoEditor.field("email").error(cause);
@@ -132,14 +132,113 @@ $(document).ready(function () {
 
             fields: [
 
-                {label: 'Название', name: 'name', type: 'text'},
-                {label: 'ИНН', name: 'inn', type: 'text'},
+                {label: 'Название', name: 'name', type: 'hidden'},
+                {
+                    label: 'ИНН', name: 'inn', type: 'selectize',
+                    opts: {
+                        placeholder: "Введите ИНН",
+                        labelField: "label",
+                        valueField: "value",
+                        searchField: "inn",
+                        delimiter: null,
+                        loadThrottle: 400,
+                        preload: false,
+                        maxItems: 1,
+                        maxOptions: 20,
+                        create: false,
+                        load: function (query, callback) {
+                            $.ajax({
+                                url: `https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party`,
+                                type: "POST",
+                                dataType: "json",
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify({
+                                    query: query
+                                }),
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader("Authorization", "Token 2aa6402023ed529e79ba4ddb92872b0709f9b859");
+                                    xhr.setRequestHeader("Accept", "application/json");
+                                },
+                                success: function (response) {
+                                    var companyOptions = [];
+                                    // suggestions = response.suggestions;
+                                    response.suggestions.forEach(function (entry) {
+                                        companyOptions.push({
+                                            "label": `${entry.data.inn}\n${entry.value}`,
+                                            "inn": entry.data.inn,
+                                            "value": entry.data.hid
+                                        });
+                                        suggestions[entry.data.hid] = entry;
+                                    });
+                                    callback(companyOptions);
+                                }
+                            });
+                        },
+                        onChange: (value) => {
+                            if(suggestions.hasOwnProperty(value)) {
+                                let hid = value;
+                                // $("#companyName").val(suggestions[value].unrestricted_value);
+                                companyEditor.field('name').set(suggestions[hid].unrestricted_value);
+                                console.log(hid);
+                                console.log(value);
+                                let fetchedData = suggestions[hid].data;
+                                console.log(fetchedData);
+                                if (fetchedData.inn != null) {
+                                    console.log("fgfds");
+                                    companyEditor.field('inn').inst().addOption({
+                                        value: fetchedData.inn,
+                                        label: `${fetchedData.inn} ${suggestions[hid].unrestricted_value}`
+                                    });
+                                    companyEditor.field('inn').inst().setValue(fetchedData.inn);
+                                    console.log("fh");
+
+                                }
+                                if(fetchedData.okved!=null){
+                                    companyEditor.field("ocved").set(fetchedData.okved)
+                                }
+                                if(fetchedData.kpp!=null){
+                                    companyEditor.field("kpp").set(fetchedData.kpp)
+                                }
+                                if(fetchedData.ogrn!=null){
+                                    companyEditor.field("ogrn").set(fetchedData.ogrn);
+                                }
+                                if(fetchedData.okpo!=null){
+                                    companyEditor.field("ocpo").set(fetchedData.okpo)
+                                }
+                                if(fetchedData.management!=null && fetchedData.management.name!=null){
+                                    companyEditor.field("directorFullname").set(fetchedData.management.name);
+                                }
+                            }
+
+                        }
+                    }
+                },
                 {
                     label: "E-mail",
                     name: "email",
                     type: 'text',
                     fieldInfo: "На данный адрес будет отправлен логин и пароль"
-                }
+                },
+                {
+                    type: 'hidden',
+                    name: 'ocved',
+                },
+                {
+                    type: 'hidden',
+                    name: 'ocpo',
+                },
+                {
+                    type: 'hidden',
+                    name: 'kpp',
+                },
+                {
+                    type: 'hidden',
+                    name: 'ogrn',
+                },
+                {
+                    type: 'hidden',
+                    name: 'directorFullname',
+                },
             ]
         });
 
@@ -156,7 +255,7 @@ $(document).ready(function () {
                     url: "dataTables/transportCompanies", // json datasource
                     type: "post"  // method  , by default get
                 },
-                dom: 'Bfrtip',
+                dom: 'Bfrtp',
                 language: {
                     url: '/localization/dataTablesRus.json'
                 },
@@ -167,21 +266,21 @@ $(document).ready(function () {
                     {
                         extend: "create",
                         editor: companyEditor
-                    },{
+                    }, {
                         extend: 'selectedSingle',
                         text: '<i class="fa fa-file"></i> Прикрепить договор',
                         action: function (e, dt, node, config) {
                             $("#contractUploadError").text("");
                             document.getElementById("contractUploadForm").reset();
-                            $("#companyIdInput").val(dt.rows( { selected: true } ).data()[0].id);
+                            $("#companyIdInput").val(dt.rows({selected: true}).data()[0].id);
                             $("#contractUploadModal").modal();
-                            console.log(dt.rows( { selected: true } ).data()[0].id);
+                            console.log(dt.rows({selected: true}).data()[0].id);
                         }
                     },
                     {
                         text: "Только мои перевозчики",
                         action: function () {
-                            if(companiesTable.ajax.url()==="dataTables/transportCompanies"){
+                            if (companiesTable.ajax.url() === "dataTables/transportCompanies") {
                                 companiesTable.ajax.url("dataTables/transportCompaniesForUser");
                                 companiesTable.ajax.reload();
                                 this.text('Все перевозчики');
@@ -192,7 +291,7 @@ $(document).ready(function () {
                             }
 
                         },
-                        attr:{
+                        attr: {
                             'data-toggle': 'button'
                         }
                     }
@@ -203,7 +302,7 @@ $(document).ready(function () {
                     {"name": "id", "data": "id", "targets": 0, visible: false},
                     {
                         "name": "name", "data": "name", "targets": 1,
-                        render: function(data, type, full){
+                        render: function (data, type, full) {
                             return `<a target="_blank" href='info/company/${full.id}'>${data}</a>`;
                         }
                     },
@@ -251,9 +350,17 @@ $(document).ready(function () {
                         orderable: false,
                         searchable: false
                     },
+                    {
+                        "name": "city",
+                        "data": "city",
+                        "targets": 11,
+                        defaultContent: "",
+                        orderable: false,
+                        searchable: true
+                    },
                 ],
                 createdRow: function (row, data, dataIndex) {
-                    if(sentContracts.some(contract => contract.companyId==data.id)){
+                    if (sentContracts.some(contract => contract.companyId == data.id)) {
                         $(row).addClass("table-warning");
                     }
                     if (data.originator == currentCompanyId) {
@@ -267,7 +374,7 @@ $(document).ready(function () {
             if (type === 'row') {
                 var data = companiesTable.rows(indexes).data('id');
 
-                if(currentCompanyId==data[0].originator){
+                if (currentCompanyId == data[0].originator) {
                     $('#companyContactsTableWrapper').show();
                     reInitCompanyContactsTable(data[0].id);
                 } else {
@@ -292,7 +399,7 @@ $(document).ready(function () {
                                 $.each(d.data, function (key, value) {
                                     value.originator = currentCompanyId;
                                     value.company = companyHref;
-                                    value.type="SECONDARY";
+                                    value.type = "SECONDARY";
                                     newdata = JSON.stringify(value);
                                 });
                                 return newdata;
@@ -340,10 +447,15 @@ $(document).ready(function () {
                     idSrc: 'id',
 
                     fields: [
-                        {label: 'ФИО контакта', name: 'name', type: 'text', attr:{maxlength: 128}},
-                        {label: 'Телефон', name: 'phone', type: "text", attr:{maxlength: 20,placeholder:"+7 (000) 000 00-00"}},
-                        {label: 'E-mail', name: 'email', type: "text", attr:{maxlength: 64}},
-                        {label: 'Должность', name: 'position', type: "text", attr:{maxlength: 64}},
+                        {label: 'ФИО контакта', name: 'name', type: 'text', attr: {maxlength: 128}},
+                        {
+                            label: 'Телефон',
+                            name: 'phone',
+                            type: "text",
+                            attr: {maxlength: 20, placeholder: "+7 (000) 000 00-00"}
+                        },
+                        {label: 'E-mail', name: 'email', type: "text", attr: {maxlength: 64}},
+                        {label: 'Должность', name: 'position', type: "text", attr: {maxlength: 64}},
                     ]
                 });
 
@@ -361,7 +473,7 @@ $(document).ready(function () {
                             url: `dataTables/contactsForCompany/${id}`, // json datasource
                             type: "post"  // method  , by default get
                         },
-                        dom: 'Bfrtip',
+                        dom: 'Bfrtp',
                         language: {
                             url: '/localization/dataTablesRus.json'
                         },

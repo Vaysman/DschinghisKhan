@@ -47,6 +47,7 @@ $(document).ready(function () {
         companyData.name = $("#companyName").val();
         companyData.atiCode = $("#atiCode").val();
         companyData.email = $("#companyEmail").val();
+        companyData.city = $("#city").val();
         companyData.ocved = $("#ocved").val();
         companyData.ocpo = $("#ocpo").val();
         companyData.inn = $("#inn").val();
@@ -168,7 +169,7 @@ $(document).ready(function () {
     // $("#loadFromOgrn").on("click", function(){
     //     let inn = $("#inn").val();
     //     $.ajax({
-    //             url:`https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party`,
+    //             remoteUrl:`https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party`,
     //             type: "POST",
     //             dataType: "json",
     //             contentType: "application/json; charset=utf-8",
@@ -193,6 +194,7 @@ $(document).ready(function () {
         searchField: "inn",
         loadThrottle: 400,
         preload: false,
+        delimiter: null,
         maxItems: 1,
         maxOptions: 20,
         create: true,

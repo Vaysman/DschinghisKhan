@@ -33,7 +33,7 @@ public class RouteListener {
         if(route.getOriginator()==null) return;
         Company company = companyRepository.findById(route.getOriginator()).orElse(null);
         if (company==null) return;
-        if(company.getPoint()!=null){
+        if(company.getPoint()!=null && route.getRoutePoints().isEmpty()){
             RoutePoint firstRoutePoint = RoutePoint
                     .builder()
                     .point(company.getPoint())

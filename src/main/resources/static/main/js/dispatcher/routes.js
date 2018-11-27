@@ -259,6 +259,23 @@ $(document).ready(function () {
                     {
                         extend: "remove",
                         editor: routeEditor
+                    },
+                    {
+                        text: "Дублировать",
+                        extend: "selectedSingle",
+                        action: function(e,dt,node,config){
+                            $.ajax({
+                                url: `/misc/dupeRoute/${dt.rows({selected: true}).data()[0].id}`,
+                                type: "POST",
+                                dataType: "json",
+                                contentType: "application/json; charset=utf-8",
+                                success: function (response) {
+                                    routeDataTable.draw();
+                                    alert(`Номер нового маршрута: ${response.id}`);
+
+                                }
+                            })
+                        }
                     }
                 ],
                 "paging": 10,
@@ -276,7 +293,7 @@ $(document).ready(function () {
                     {
                         "name": "totalCost",
                         "data": null,
-                        title: "Ст. за маршрут",
+                        title: "₽/Маршрут",
                         searchable: false,
                         orderable: false,
                         render: function (data, type, full) {
@@ -412,7 +429,7 @@ $(document).ready(function () {
             }
         });
 
-        //I didn't have time to figure out how to change selectize's ajax url on the fly;
+        //I didn't have time to figure out how to change selectize's ajax remoteUrl on the fly;
         //If you do know how - please do so
         let currentlySelectedClient = "";
 
@@ -454,7 +471,9 @@ $(document).ready(function () {
                                     if (value['point'] == "") {
                                         delete value['point'];
                                     }
-                                    if (value['contact'] == "") {
+
+                                    if (value['client'] == "") {
+                                        delete value['client'];
                                         delete value['contact'];
                                     }
                                     newdata = JSON.stringify(value);
@@ -484,6 +503,14 @@ $(document).ready(function () {
 
                     fields: [
                         {
+                            label: 'Порядковый номер (№)', name: 'queueNumber', type: 'mask', mask: "000",
+                            maskOptions: {
+                                reverse: true,
+                                placeholder: ""
+                            },
+                            fieldInfo: "Первый пункт разгрузки - 1, второй - 2 и т.д."
+                        },
+                        {
                             label: 'Расстояние (км)', name: 'distance', type: 'mask', mask: "0000",
                             maskOptions: {
                                 reverse: true,
@@ -493,6 +520,7 @@ $(document).ready(function () {
                         {
                             label: 'Клиент', name: 'client', type: 'selectize', options: [], opts: {
                                 searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                                delimiter: null,
                                 load: function (query, callback) {
                                     $.get(`api/clients/search/findTop10ByOriginatorAndNameContaining/?name=${query}&originator=${currentCompanyId}`,
                                         function (data) {
@@ -524,7 +552,7 @@ $(document).ready(function () {
                         },
                         {
                             label: 'Контакт', name: 'contact', type: 'selectize', options: [],  opts: {
-                                searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                                searchField: "label", create: false,
                                 load: function (query, callback) {
                                     $.get(`api/contacts/search/findTop10ByClientAndNameContaining/?name=${query}&client=${currentlySelectedClient}`,
                                         function (data) {
@@ -540,6 +568,7 @@ $(document).ready(function () {
                                     )
                                 },
                                 // preload: true,
+                                delimiter: null,
                                 loadThrottle: 500
                             }
                         },
@@ -571,14 +600,7 @@ $(document).ready(function () {
                                 placeholder: ""
                             }
                         },
-                        {
-                            label: 'Порядковый номер (№)', name: 'queueNumber', type: 'mask', mask: "000",
-                            maskOptions: {
-                                reverse: true,
-                                placeholder: ""
-                            },
-                            fieldInfo: "Первый пункт разгрузки - 1, второй - 2 и т.д."
-                        },
+
                         {
                             label: 'Пункт', name: 'point', type: 'selectize', options: [], opts: {
                                 searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",

@@ -8,10 +8,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.constant.ReviewStatus;
 import ru.constant.UserRole;
-import ru.dao.entity.Company;
-import ru.dao.entity.RouteReview;
-import ru.dao.entity.RouteReviewOpinion;
-import ru.dao.entity.User;
+import ru.dao.entity.*;
 import ru.service.UserInfoService;
 
 import java.util.Collection;
@@ -57,6 +54,9 @@ public class AuthToken extends AbstractAuthenticationToken {
 
     @Getter
     private List<Map<String,String>> sentContracts;
+
+    @Getter
+    private Point companyPoint;
 
 
 
@@ -155,6 +155,10 @@ public class AuthToken extends AbstractAuthenticationToken {
         this.pendingOpinions = this.opinions.stream().filter(x->x.getReview().getStatus().equals(ReviewStatus.CREATED)).count();
     }
 
+    public void refreshPoint(){
+        this.companyPoint = userInfoService.getCompanyPoint(this.companyId);
+    }
+
     public void refreshReceivedContracts(){
         this.receivedContracts = userInfoService.getReceivedContracts(this.companyId);
     }
@@ -176,10 +180,12 @@ public class AuthToken extends AbstractAuthenticationToken {
             this.refreshPendingOrders();
             this.refreshOpinions();
             this.refreshReceivedContracts();
+            this.refreshPoint();
         } else if (this.getUser().getUserRole().equals(UserRole.ROLE_DISPATCHER)){
             this.refreshManagedOffers();
             this.refreshReviews();
             this.refreshSentContracts();
+            this.refreshPoint();
         }
     }
 
