@@ -471,7 +471,9 @@ $(document).ready(function () {
                                     if (value['point'] == "") {
                                         delete value['point'];
                                     }
-                                    if (value['contact'] == "") {
+
+                                    if (value['client'] == "") {
+                                        delete value['client'];
                                         delete value['contact'];
                                     }
                                     newdata = JSON.stringify(value);
@@ -550,7 +552,7 @@ $(document).ready(function () {
                         },
                         {
                             label: 'Контакт', name: 'contact', type: 'selectize', options: [],  opts: {
-                                searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                                searchField: "label", create: false,
                                 load: function (query, callback) {
                                     $.get(`api/contacts/search/findTop10ByClientAndNameContaining/?name=${query}&client=${currentlySelectedClient}`,
                                         function (data) {
