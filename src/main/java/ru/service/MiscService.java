@@ -8,6 +8,8 @@ import ru.dao.repository.RoutePointRepository;
 import ru.dao.repository.RouteRepository;
 
 import javax.persistence.EntityManager;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class MiscService {
@@ -30,7 +32,8 @@ public class MiscService {
         for(RoutePoint routePoint :route.getRoutePoints()){
             routePoint.setId(null);
         }
-        route.setName(route.getName()+" (Копия)");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy");
+        route.setName(route.getName()+" "+simpleDateFormat.format(new Date()));
         routeRepository.save(route);
 
         return route;
