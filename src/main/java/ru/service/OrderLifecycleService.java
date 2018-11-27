@@ -51,6 +51,7 @@ public class OrderLifecycleService {
 
 
     public Order duplicateOrder(User currentUser, Integer orderId){
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Заявки не существует"));
         Order newOrder = Order.builder()

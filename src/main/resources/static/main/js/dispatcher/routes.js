@@ -259,6 +259,23 @@ $(document).ready(function () {
                     {
                         extend: "remove",
                         editor: routeEditor
+                    },
+                    {
+                        text: "Дублировать",
+                        extend: "selectedSingle",
+                        action: function(e,dt,node,config){
+                            $.ajax({
+                                url: `/misc/dupeRoute/${dt.rows({selected: true}).data()[0].id}`,
+                                type: "POST",
+                                dataType: "json",
+                                contentType: "application/json; charset=utf-8",
+                                success: function (response) {
+                                    routeDataTable.draw();
+                                    alert(`Номер нового маршрута: ${response.id}`);
+
+                                }
+                            })
+                        }
                     }
                 ],
                 "paging": 10,
