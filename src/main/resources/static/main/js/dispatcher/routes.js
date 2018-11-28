@@ -744,6 +744,39 @@ $(document).ready(function () {
                         }
                     ]
                 });
+
+                routePointEditor.on('preSubmit', function (e, o, action) {
+                    if (action !== 'remove') {
+                        let checkedFields = [
+                            this.field('queueNumber'),
+                        ];
+
+                        let pointField = this.field('point');
+                        if (action == 'create') {
+                            if (pointField.val() == '') {
+                                pointField.error("Пункт должен быть указан при создании");
+                            }
+                        }
+
+
+                        for (let field of checkedFields) {
+                            if (field.val() == '') {
+                                field.error('Поле должно быть указано');
+                            }
+                        }
+
+                        // Only validate user input values - different values indicate that
+                        // the end user has not entered a value
+
+                        // ... additional validation rules
+
+                        // If any error was reported, cancel the submission so it can be corrected
+                        if (this.inError()) {
+                            console.log("inError");
+                            return false;
+                        }
+                    }
+                })
             });
         }
 
