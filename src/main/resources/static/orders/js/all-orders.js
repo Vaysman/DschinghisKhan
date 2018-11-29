@@ -1,6 +1,5 @@
-
-
 $(document).ready(function () {
+
 
     $("#uploadOrderDocument").click(function (event) {
 
@@ -44,9 +43,9 @@ $(document).ready(function () {
             error: function (e) {
                 console.log("ERROR : ", e);
                 $("#uploadOrderDocument").prop("disabled", false);
-                if(e.responseJSON.message.includes("Maximum upload size exceeded")){
+                if (e.responseJSON.message.includes("Maximum upload size exceeded")) {
                     $("#orderDocumentUploadError").text("Ошибка: файл слишком большой")
-                } else{
+                } else {
                     $("#orderDocumentUploadError").text(e.responseJSON.message);
                 }
 
@@ -88,7 +87,11 @@ $(document).ready(function () {
         },
         fields: [
             {
-                label: 'Статус', name: 'status', data: "status", type: "selectize", options: statusesForDispatcherOptions
+                label: 'Статус',
+                name: 'status',
+                data: "status",
+                type: "selectize",
+                options: statusesForDispatcherOptions
             }
         ]
     });
@@ -126,7 +129,9 @@ $(document).ready(function () {
         },
         fields: [
             {
-                label: 'Компании', name: 'assignedCompanies', type: 'selectize',
+                label: '<span data-tooltip tooltiptext="Можно указать до 10 компаний. Если заявка обязательная - то только 1.">Компании <i class="fa fa-info"></i></span>',
+                name: 'assignedCompanies',
+                type: 'selectize',
                 options: [],
                 opts: {
                     searchField: "label",
@@ -146,12 +151,10 @@ $(document).ready(function () {
                             }
                         );
                     }
-                },
-                fieldInfo: "Можно указать до 10 компаний. Если заявка обязательная - то только 1."
+                }
             },
             {
-                label: 'Стоимость', name: 'dispatcherPrice', data: "route.totalCost", type: 'numeric',
-                fieldInfo: "Стоимость без НДС<br>"
+                label: '<span data-tooltip tooltiptext="Стоимость без НДС">Стоимость <i class="fa fa-info" ></i></span>', name: 'dispatcherPrice', data: "route.totalCost", type: 'numeric',
             }
         ]
     });
@@ -306,13 +309,16 @@ $(document).ready(function () {
                 type: 'numeric'
             },
             {
-                label: 'Догруз', name: 'afterLoad', type: "radio", options: [{ label:"Отдельная машина", value:false}, {label:"Возможен догруз",value:true}]
+                label: 'Догруз',
+                name: 'afterLoad',
+                type: "radio",
+                options: [{label: "Отдельная машина", value: false}, {label: "Возможен догруз", value: true}]
             },
             {
                 label: 'Кол-во паллет',
                 name: 'numberOfPallets',
                 type: 'mask',
-                removeMaskOnSubmit:false,
+                removeMaskOnSubmit: false,
                 mask: '09999',
             },
             {
@@ -325,12 +331,12 @@ $(document).ready(function () {
                 }
             },
             {
-                label: 'Дней для оплаты', name: 'paymentDate', type: "mask", mask: "00",
-                fieldInfo:"Через сколько дней статус заявки сменится с 'Документы получены' на 'Ожидает оплаты'"
+                label: '<span data-tooltip tooltiptext="Через сколько дней статус заявки сменится с \'Документы получены\' на \'Ожидает оплаты\'">Дней для оплаты <i class="fa fa-info"></i></span>', name: 'paymentDate', type: "mask", mask: "00",
+                // fieldInfo: "Через сколько дней статус заявки сменится с 'Документы получены' на 'Ожидает оплаты'"
             },
             {
-                label: 'Дней для возврата документов', name: 'documentReturnDate', type: "mask", mask: "00",
-                fieldInfo:"Через сколько дней статус заявки сменится с 'Доставлено'/'Подтверждение доставки' на 'Ожидает возврата документов'"
+                label: '<span data-tooltip tooltiptext="Через сколько дней статус заявки сменится с \'Доставлено\'/\'Подтверждение доставки\' на \'Ожидает возврата документов\'">Дней для возврата документов <i class="fa fa-info"></i></span>', name: 'documentReturnDate', type: "mask", mask: "00",
+                // fieldInfo: "Через сколько дней статус заявки сменится с 'Доставлено'/'Подтверждение доставки' на 'Ожидает возврата документов'"
             },
 
             {
@@ -340,13 +346,27 @@ $(document).ready(function () {
                     placeholder: "100"
                 }
             },
-            {label: 'Обязательность заявки<sup class="red">*</sup>', name: 'orderObligation', type: "selectize", options: obligationOptions},
-            {label: "Оплата<sup class=\"red\">*</sup>", name: "paymentType", type: "selectize", options: orderPaymentOptions},
-            {label: "Дата исполнения", name: "dispatchDate", type: "datetime", format: "DD/MM/YYYY HH:mm", keyInput: false}
+            {
+                label: 'Обязательность заявки<sup class="red">*</sup>',
+                name: 'orderObligation',
+                type: "selectize",
+                options: obligationOptions
+            },
+            {
+                label: "Оплата<sup class=\"red\">*</sup>",
+                name: "paymentType",
+                type: "selectize",
+                options: orderPaymentOptions
+            },
+            {
+                label: "Дата исполнения",
+                name: "dispatchDate",
+                type: "datetime",
+                format: "DD/MM/YYYY HH:mm",
+                keyInput: false
+            }
         ]
     });
-
-
 
 
     var orderDataTable = $("table#orderTable").DataTable({
@@ -393,7 +413,7 @@ $(document).ready(function () {
                         });
                     },
                     enabled: false
-                },{
+                }, {
 
                     text: "Изменить статус",
                     action: function (e, dt, node, config) {
@@ -405,15 +425,15 @@ $(document).ready(function () {
                         });
                     },
                     enabled: false
-                },{
+                }, {
                     extend: 'selectedSingle',
                     text: '<i class="fa fa-file"></i> Прикрепить документ',
                     action: function (e, dt, node, config) {
                         $("#orderDocumentUploadError").text("");
                         document.getElementById("orderDocumentUploadForm").reset();
-                        $("#orderIdInput").val(dt.rows( { selected: true } ).data()[0].id);
+                        $("#orderIdInput").val(dt.rows({selected: true}).data()[0].id);
                         $("#orderDocumentUploadModal").modal();
-                        console.log(dt.rows( { selected: true } ).data()[0].id);
+                        console.log(dt.rows({selected: true}).data()[0].id);
                     }
                 },
                 {
@@ -421,14 +441,14 @@ $(document).ready(function () {
                     action: function () {
                         orderDataTable.page.len(-1).draw();
                     }
-                },{
+                }, {
                     extend: "excelHtml5",
                     text: "<i class='fa fa-file-excel-o'></i> Экспорт",
-                    title: `Заявки ${new Date().getDate()}.${(new Date().getMonth()+1)}.${new Date().getFullYear()}`
-                },{
+                    title: `Заявки ${new Date().getDate()}.${(new Date().getMonth() + 1)}.${new Date().getFullYear()}`
+                }, {
                     text: "Дублировать",
                     extend: "selectedSingle",
-                    action: function(e,dt,node,config){
+                    action: function (e, dt, node, config) {
                         $.ajax({
                             url: `/orderLifecycle/dupeOrder/${dt.rows({selected: true}).data()[0].id}`,
                             type: "POST",
@@ -446,9 +466,11 @@ $(document).ready(function () {
             "paging": 10,
             "columnDefs": [
                 {"name": "id", "data": "id", "targets": 0, visible: false},
-                {"name": "number", "data": "number", "targets": 1, render: function(data, type, full){
+                {
+                    "name": "number", "data": "number", "targets": 1, render: function (data, type, full) {
                         return `<a target="_blank" href='info/orders/${full.id}'>${data}</a>`;
-                    }},
+                    }
+                },
 
                 {"name": "status", "data": "status", searchable: false, orderable: false, "targets": 2}, {
                     name: "offers",
@@ -457,7 +479,7 @@ $(document).ready(function () {
                     searchable: false,
                     orderable: false,
                     render: function (data, type, full) {
-                        if(full.status==="Принято"){
+                        if (full.status === "Принято") {
                             return `<button class="btn display-offers"><i class="fa fa-plus"></i></button>`;
                         } else {
                             return "";
@@ -507,7 +529,7 @@ $(document).ready(function () {
                 },
                 {
                     "name": "cargoDescription",
-                    "data":"cargoDescription",
+                    "data": "cargoDescription",
                     "targets": 10,
                     searchable: false,
                     orderable: false,
@@ -531,7 +553,7 @@ $(document).ready(function () {
                 },
                 {
                     "name": "numberOfPallets",
-                    data:"numberOfPallets",
+                    data: "numberOfPallets",
                     "targets": 13,
                     searchable: false,
                     orderable: false,
@@ -621,13 +643,13 @@ $(document).ready(function () {
     );
 
 
-    orderDataTable.on('click', 'td button.display-offers',function () {
+    orderDataTable.on('click', 'td button.display-offers', function () {
         console.log("fgsfds");
         var tr = $(this).closest('tr');
-        var row = orderDataTable.row( tr );
+        var row = orderDataTable.row(tr);
         console.log(row.data());
 
-        if ( row.child.isShown() ) {
+        if (row.child.isShown()) {
             // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');
@@ -635,10 +657,10 @@ $(document).ready(function () {
         else {
             let orderId = row.data().id;
             // Open this row
-            var list ="";
+            var list = "";
             $.get(`data/offersForOrder/${orderId}`).success(function (data) {
                 data.forEach(function (offer) {
-                    list+=`<li><a href="/info/offers/${offer.id}">${offer.company.name}</a></li>`
+                    list += `<li><a href="/info/offers/${offer.id}">${offer.company.name}</a></li>`
                 });
 
                 row.child(`<h5>Предложения компаний:</h5><ul>${list}</ul>`).show();
@@ -647,7 +669,6 @@ $(document).ready(function () {
 
         }
     });
-
 
 
     orderDataTable.on('select', function (e, dt, type, indexes) {
@@ -665,7 +686,7 @@ $(document).ready(function () {
 
             }
         }
-        );
+    );
 
     orderDataTable.on('deselect', function () {
         orderDataTable.button(3).disable();
@@ -698,5 +719,7 @@ $(document).ready(function () {
                 return false;
             }
         }
-    })
+    });
+
+
 });

@@ -187,20 +187,20 @@ $(document).ready(function () {
                     idSrc: 'id',
 
                     fields: [
-                        {label: 'Грузополучатель', name: 'name', type: 'text', attr: {maxlength: 256}},
+                        {label: '<span data-tooltip tooltiptext="Будет использован только в геосервисах. Не будет показываться диспетчерам/перевозчикам.">Грузополучатель <i class="fa fa-info"></i></span>', name: 'name', type: 'text', attr: {maxlength: 256}},
                         {
                             label: 'Адрес',
                             name: 'address',
                             type: 'text',
                             attr: {maxlength: 256},
-                            fieldInfo: "Будет использован только в геосервисах. <br>Не будет показываться диспетчерам/перевозчикам."
+                            // fieldInfo: "Будет использован только в геосервисах. <br>Не будет показываться диспетчерам/перевозчикам."
                         },
                         {
-                            label: 'Полный адрес',
+                            label: '<span data-tooltip tooltiptext="Для отображения другим диспетчерам и перевозчикам. ">Полный адрес <i class="fa fa-info"></i></span>',
                             name: 'fullAddress',
                             type: 'text',
                             attr: {maxlength: 256},
-                            fieldInfo: "Для отображения другим диспетчерам и перевозчикам. "
+                            // fieldInfo: "Для отображения другим диспетчерам и перевозчикам. "
                         },
                         {label: 'Комментарий', name: 'comment', type: 'textarea', attr: {maxlength: 256}},
                         {label: 'Рабочее время', name: 'workTime', type: 'textarea', attr: {maxlength: 128}},

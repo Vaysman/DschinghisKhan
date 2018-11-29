@@ -124,10 +124,10 @@ $(document).ready(function () {
 
             fields: [
                 {
-                    label: 'Название<sup class="red">*</sup>',
+                    label: '<span data-tooltip tooltiptext="Краткая информация о маршруте, например: Москва-Рязань, 20т 15 000 рублей без НДС, тент">Название<sup class="red">*</sup> <i class="fa fa-info"></i></span>',
                     name: 'name',
                     type: 'text',
-                    fieldInfo: "Краткая информация о маршруте, например: Москва-Рязань, 20т 15 000 рублей без НДС, тент"
+                    // fieldInfo: "Краткая информация о маршруте, например: Москва-Рязань, 20т 15 000 рублей без НДС, тент"
                 },
                 {
                     label: 'ТК<sup class="red">*</sup>',
@@ -503,12 +503,12 @@ $(document).ready(function () {
 
                     fields: [
                         {
-                            label: 'Порядковый номер (№)', name: 'queueNumber', type: 'mask', mask: "000",
+                            label: '<span data-tooltip tooltiptext="Первый пункт разгрузки - 1, второй - 2 и т.д.">Порядковый номер (№) <i class="fa fa-info"></i></span>', name: 'queueNumber', type: 'mask', mask: "000",
                             maskOptions: {
                                 reverse: true,
                                 placeholder: ""
                             },
-                            fieldInfo: "Первый пункт разгрузки - 1, второй - 2 и т.д."
+                            // fieldInfo: "Первый пункт разгрузки - 1, второй - 2 и т.д."
                         },
                         {
                             label: 'Расстояние (км)', name: 'distance', type: 'mask', mask: "0000",

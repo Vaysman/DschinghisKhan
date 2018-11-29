@@ -1,0 +1,23 @@
+body {
+    margin: 5em;
+}
+
+[data-tooltip]:hover:before, [data-tooltip]:hover:after {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+[data-tooltip]:hover:before {
+    z-index: 5;
+    border-radius: 0;
+    content: attr(tooltiptext);
+    background-color: rgba(0, 0, 0, 0.9);
+    margin-top: -3em;
+    padding: 0.3em;
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
