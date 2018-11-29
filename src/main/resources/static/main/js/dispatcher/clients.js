@@ -196,7 +196,7 @@ $(document).ready(function () {
                             // fieldInfo: "Будет использован только в геосервисах. <br>Не будет показываться диспетчерам/перевозчикам."
                         },
                         {
-                            label: '<span data-tooltip tooltiptext="Для отображения другим диспетчерам и перевозчикам. ">Полный адрес <i class="fa fa-info"></i></span>',
+                            label: '<span data-tooltip tooltiptext="Для отображения в документах">Полный адрес <i class="fa fa-info"></i></span>',
                             name: 'fullAddress',
                             type: 'text',
                             attr: {maxlength: 256},
