@@ -252,6 +252,12 @@ public class OrderLifecycleService {
         order.setOffers(new HashSet<>());
         if (order.getStatus().equals(OrderStatus.PRICE_CHANGED)) order.setAssignedCompanies(new HashSet<>());
         order.setStatus(OrderStatus.CONFIRMED);
+        if(orderOffer.getDriver()!=null){
+            if (orderOffer.getDriver().getIsNew()){
+                orderOffer.getDriver().setIsNew(false);
+                driverRepository.save(orderOffer.getDriver());
+            }
+        }
 
         saveOrder(order);
 

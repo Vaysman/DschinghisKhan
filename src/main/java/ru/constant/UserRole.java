@@ -2,8 +2,9 @@ package ru.constant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
 
-public enum UserRole {
+public enum UserRole implements GrantedAuthority {
     @JsonProperty("Админ")
     ROLE_ADMIN("Админ",OrderStatus.values()),
     @JsonProperty("ТЭК")
@@ -38,5 +39,10 @@ public enum UserRole {
     UserRole(String roleName, OrderStatus orderStatuses[]) {
         this.roleName = roleName;
         this.orderStatuses=orderStatuses;
+    }
+
+    @Override
+    public String getAuthority() {
+        return name();
     }
 }

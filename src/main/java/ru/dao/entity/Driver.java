@@ -72,6 +72,9 @@ public class Driver {
     @JsonView(DataTablesOutput.View.class)
     private Boolean isHired;
 
+    @Transient
+    private Boolean isNew = false;
+
     @Column
     @Enumerated(EnumType.STRING)
     @JsonView(DataTablesOutput.View.class)

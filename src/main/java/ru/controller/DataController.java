@@ -52,6 +52,13 @@ public class DataController {
         Hibernate.initialize(offer.getDriver());
         Hibernate.initialize(offer.getOrder().getRoute().getRoutePoints());
         Hibernate.initialize(offer.getTransport());
+        if (offer.getDriver()!=null){
+            if (orderRepository.findFirstByOriginatorAndDriverId(offer.getOrder().getOriginator(), offer.getDriver().getId()).isPresent()){
+                offer.getDriver().setIsNew(false);
+            } else {
+                offer.getDriver().setIsNew(true);
+            }
+        }
         for(RoutePoint routePoint : offer.getOrder().getRoute().getRoutePoints()){
             Hibernate.initialize(routePoint.getPoint());
         }

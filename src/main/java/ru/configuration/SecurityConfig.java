@@ -7,10 +7,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.configuration.authentication.CustomAuthenticationManager;
+import ru.configuration.authentication.CustomPersistentRememberMeService;
+import ru.configuration.authentication.CustomUserDetailsService;
 
 import javax.sql.DataSource;
 
@@ -21,6 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     DataSource dataSource;
+
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Autowired
     public SecurityConfig(CustomAuthenticationManager customAuthenticationManager) {
@@ -47,11 +54,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/orders")
                 .successForwardUrl("/orders")
                 .and()
-//                .rememberMe().tokenRepository(persistentTokenRepository()).userDetailsService()
-//                .and()
+                .rememberMe().rememberMeServices(rememberMeServices())
+                .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login");
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServices(){
+        return new CustomPersistentRememberMeService(dataSource,persistentTokenRepository(), userDetailsService);
     }
 
     @Bean
@@ -61,8 +73,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return tokenRepositoryImpl;
     }
 
+    @Bean
+    public UserDetailsService userDetailsService(){
+        return new CustomUserDetailsService();
+    }
+
     @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
+    protected AuthenticationManager authenticationManager() {
         return customAuthenticationManager;
     }
 }

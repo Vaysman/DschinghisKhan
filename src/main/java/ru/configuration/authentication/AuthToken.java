@@ -80,7 +80,7 @@ public class AuthToken extends AbstractAuthenticationToken {
         super(authorities);
         this.principal = user.getLogin();
         this.credentials = credentials;
-        this.name = user.getUsername();
+        this.name = user.getLogin();
         this.role = user.getUserRole().name();
         this.roleName = user.getUserRole().getRoleName();
         this.user = user;
