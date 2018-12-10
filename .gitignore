@@ -62,3 +62,4 @@ out
 gen
 /.idea/inspectionProfiles/Project_Default.xml
 /src/main/resources/application.yml
+/src/test/resources/application.yml
