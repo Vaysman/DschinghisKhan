@@ -61,6 +61,11 @@ public class User {
     @JsonView(DataTablesOutput.View.class)
     private String email;
 
+    @JsonView(DataTablesOutput.View.class)
+    private String phone;
+
+
+
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

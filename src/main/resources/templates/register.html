@@ -4,28 +4,31 @@
     <meta charset="UTF-8">
     <title>Регистрация</title>
 
-    <th:block th:include="fragments/header :: styling"></th:block>
     <link rel="stylesheet" type="text/css" href="/media/Selectize/css/selectize.min.css"/>
 
-    <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <th:block th:include="fragments/header :: styling"></th:block>
+
+    <script src="/media/jquery-mask/dist/jquery.mask.min.js"></script>
+    <!--<script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>-->
     <script src="/media/Selectize/js/standalone/selectize.min.js"></script>
+
     <script th:inline="javascript">
-        let checkMap;
+        // let checkMap;
 
         $(document).ready(function () {
-
-            ymaps.ready(function () {
-                if (typeof ymaps !== 'undefined') {
-                    checkMap = new ymaps.Map('addressCheckMap', {
-                        center: [40, 50],
-                        zoom: 15
-                    }, {
-                        searchControlProvider: 'yandex#search'
-                    });
-                } else {
-                    console.log("ymaps is undefined (????)");
-                }
-            })
+            $("#phone").mask("+7 (999) 999-9999",{placeholder:"+7 (___) ___-____"});
+            // ymaps.ready(function () {
+            //     if (typeof ymaps !== 'undefined') {
+            //         checkMap = new ymaps.Map('addressCheckMap', {
+            //             center: [40, 50],
+            //             zoom: 15
+            //         }, {
+            //             searchControlProvider: 'yandex#search'
+            //         });
+            //     } else {
+            //         console.log("ymaps is undefined (????)");
+            //     }
+            // })
 
             let suggestions = {};
             let loadInnSelectize = $("#inn").selectize({
@@ -38,7 +41,7 @@
                 preload: false,
                 maxItems: 1,
                 maxOptions: 20,
-                create: true,
+                create: false,
                 load: function (query, callback) {
                     $.ajax({
                         url:`https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party`,
@@ -95,22 +98,22 @@
             });
         });
 
-        function checkAddress() {
-            if (typeof ymaps !== 'undefined') {
-                let address = $('#pointAddress').val();
-                console.log(address);
-
-                ymaps.geocode(address).then(function (coords) {
-                    console.log(coords.geoObjects.get(0));
-                    checkMap.setCenter(coords.geoObjects.get(0).geometry._coordinates, 15, {
-                        checkZoomRange: true
-                    });
-                    checkMap.geoObjects.add(coords.geoObjects.get(0));
-                });
-                $('#addressCheckMap').show();
-
-            }
-        }
+        // function checkAddress() {
+        //     if (typeof ymaps !== 'undefined') {
+        //         let address = $('#pointAddress').val();
+        //         console.log(address);
+        //
+        //         ymaps.geocode(address).then(function (coords) {
+        //             console.log(coords.geoObjects.get(0));
+        //             checkMap.setCenter(coords.geoObjects.get(0).geometry._coordinates, 15, {
+        //                 checkZoomRange: true
+        //             });
+        //             checkMap.geoObjects.add(coords.geoObjects.get(0));
+        //         });
+        //         $('#addressCheckMap').show();
+        //
+        //     }
+        // }
 
 
 
@@ -132,9 +135,9 @@
                     <div th:if="${error!=null}" class="form-group red">
                         <h5 th:text="${error}"></h5>
                     </div>
-                    <div class="form-group">
-                        <label for="companyName" class="cols-sm-2 control-label">Полное название компании<sup
-                                class="red">*</sup></label>
+                    <div class="form-group" hidden>
+                        <label for="companyName" class="cols-sm-2 control-label">Полное название компании
+                            <sup class="red">*</sup></label>
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:classappend="${companyNameError!=null} ? 'error-red' : ''"
@@ -145,8 +148,7 @@
                                    class="text-sm form-text red"></small>
                         </div>
                     </div>
-                    <div class="form-group">
-                            ИНН<sup class="red">*</sup>
+                    <div class="form-group">ИНН<sup class="red">*</sup>
 
                                 <input type="text" th:classappend="${innError!=null} ? 'error-red' : ''"
                                        th:field="*{inn}" class="form-control" id="inn"
@@ -155,11 +157,21 @@
                                class="text-sm form-text red"></small>
                     </div>
                     <div class="form-group">
-                        <label for="email" class="cols-sm-2 control-label">E-mail</label>
+                        <small th:if="${emailError!=null}" th:text="${emailError}"
+                        class="text-sm form-text red"></small>
+                        <label for="email" class="cols-sm-2 control-label">E-mail<sup class="red">*</sup></label>
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:field="*{email}" class="form-control" id="email"
                                        placeholder="E-mail"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="control-label">Мобильный телефон<sup class="red">*</sup></label>
+                        <div class="cols-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="text" th:field="*{phone}" class="form-control" id="phone"/>
                             </div>
                         </div>
                     </div>
@@ -208,30 +220,30 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="login" class="cols-sm-2 control-label">Логин<sup class="red">*</sup></label>
-                        <div class="cols-sm-10">
-                            <div class="input-group mb-3">
-                                <input type="text" th:classappend="${loginError!=null} ? 'error-red' : ''"
-                                       th:field="*{login}" class="form-control" id="login" placeholder="Логин"/>
-                            </div>
-                            <small th:if="${loginError!=null}" th:text="${loginError}"
-                                   class="text-sm form-text red"></small>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="cols-sm-2 control-label">Пароль<sup class="red">*</sup></label>
-                        <div class="cols-sm-10">
-                            <div class="input-group mb-3">
-                                <input type="password" th:classappend="${passwordError!=null} ? 'error-red' : ''"
-                                       th:field="*{password}" class="form-control" id="password"/>
-                            </div>
-                            <small th:if="${passwordError!=null}" th:text="${passwordError}"
-                                   class="text-sm form-text red"></small>
-                            <small th:if="${passwordError==null}" class="text-muted form-text">Не менее 6 символов
-                            </small>
-                        </div>
-                    </div>
+                    <!--<div class="form-group">-->
+                        <!--<label for="login" class="cols-sm-2 control-label">Логин<sup class="red">*</sup></label>-->
+                        <!--<div class="cols-sm-10">-->
+                            <!--<div class="input-group mb-3">-->
+                                <!--<input type="text" th:classappend="${loginError!=null} ? 'error-red' : ''"-->
+                                       <!--th:field="*{login}" class="form-control" id="login" placeholder="Логин"/>-->
+                            <!--</div>-->
+                            <!--<small th:if="${loginError!=null}" th:text="${loginError}"-->
+                                   <!--class="text-sm form-text red"></small>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                        <!--<label for="password" class="cols-sm-2 control-label">Пароль<sup class="red">*</sup></label>-->
+                        <!--<div class="cols-sm-10">-->
+                            <!--<div class="input-group mb-3">-->
+                                <!--<input type="password" th:classappend="${passwordError!=null} ? 'error-red' : ''"-->
+                                       <!--th:field="*{password}" class="form-control" id="password"/>-->
+                            <!--</div>-->
+                            <!--<small th:if="${passwordError!=null}" th:text="${passwordError}"-->
+                                   <!--class="text-sm form-text red"></small>-->
+                            <!--<small th:if="${passwordError==null}" class="text-muted form-text">Не менее 6 символов-->
+                            <!--</small>-->
+                        <!--</div>-->
+                    <!--</div>-->
                     <div class="form-group">
                         <label for="pointName" class="cols-sm-2 control-label">Основной склад отправки</label>
                         <div class="cols-sm-10">
@@ -244,29 +256,30 @@
                                    class="text-sm form-text red"></small>
                         </div>
                     </div>
-                    <div class="form-group" hidden>
-                        <label for="pointAddress" class="cols-sm-2 control-label">Адрес склада отправки</label>
-                        <div class="cols-sm-10">
-                            <div class="input-group mb-3">
-                                <input type="text" th:classappend="${pointAddressError!=null} ? 'error-red' : ''"
-                                       th:field="*{pointAddress}" class="form-control" id="pointAddress"
-                                       placeholder="Адрес"/>
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-outline-secondary field-inline-button"
-                                            onclick="checkAddress()">Проверить адрес
-                                    </button>
-                                </div>
-                            </div>
-                            <small th:if="${pointAddressError!=null}" th:text="${pointAddressError}"
-                                   class="text-sm form-text red"></small>
-                        </div>
-                    </div>
+                    <!--<div class="form-group" hidden>-->
+                        <!--<label for="pointAddress" class="cols-sm-2 control-label">Адрес склада отправки</label>-->
+                        <!--<div class="cols-sm-10">-->
+                            <!--<div class="input-group mb-3">-->
+                                <!--<input type="text" th:classappend="${pointAddressError!=null} ? 'error-red' : ''"-->
+                                       <!--th:field="*{pointAddress}" class="form-control" id="pointAddress"-->
+                                       <!--placeholder="Адрес"/>-->
+                                <!--<div class="input-group-append">-->
+                                    <!--<button type="button" class="btn btn-outline-secondary field-inline-button"-->
+                                            <!--onclick="checkAddress()">Проверить адрес-->
+                                    <!--</button>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<small th:if="${pointAddressError!=null}" th:text="${pointAddressError}"-->
+                                   <!--class="text-sm form-text red"></small>-->
+                        <!--</div>-->
+                    <!--</div>-->
                     <div class="form-group" id="addressCheckMap" style="height: 400px; display: none;"></div>
 
                     <div class="form-group ">
                         <input type="submit" class="btn btn-primary btn-block" value="Зарегистрироваться">
                     </div>
                 </form>
+                <a th:href="@{login}" class="btn btn-block">Уже зарегистрированы?</a>
             </div>
         </div>
         <div class="col-3"></div>

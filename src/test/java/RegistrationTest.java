@@ -45,10 +45,7 @@ public class RegistrationTest {
         UserRegistrationData registrationData = UserRegistrationData.builder()
                 .companyName("ИП tCompany")
                 .email("test@test.test")
-                .login("tcomp")
-                .password("test")
                 .pointName("testPointName")
-                .pointAddress("Москва")
                 .build();
 
         User registeredUser = registerService.registerDispatcher(registrationData);

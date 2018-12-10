@@ -11,6 +11,7 @@ import ru.dao.entity.Company;
 import ru.dao.entity.User;
 import ru.dao.repository.CompanyRepository;
 import ru.dao.repository.UserRepository;
+import ru.service.RegisterService;
 
 import java.util.List;
 
@@ -20,13 +21,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestEntityManager
 @Transactional
 @SpringBootTest(classes = Application.class)
-public class CompanyListenerTest {
+public class CompanyRegisterTest {
+
+    @Autowired
+    RegisterService registerService;
 
     @Autowired
     CompanyRepository companyRepository;
 
     @Autowired
     UserRepository userRepository;
+
 
     @Test
     public void createCompany_whenSave_thenCheckUser(){
@@ -37,15 +42,21 @@ public class CompanyListenerTest {
                 .originator(0)
                 .type(CompanyType.TRANSPORT)
                 .build();
-        companyRepository.save(company);
+
+        try {
+            registerService.registerCompany(company);
+            List<Company> companyList = companyRepository.findTop10ByNameContaining("ООО Тестерони");
+            assertThat(companyList.size()).isNotEqualTo(0);
+            Company savedCompany = companyList.get(0);
+            User user = userRepository.findByLogin("Testeroni").orElse(null);
+            assertThat(user).isNotEqualTo(null);
+            assertThat(savedCompany).isNotEqualTo(null);
+            assertThat(savedCompany).isEqualTo(company);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
 
-        List<Company> companyList = companyRepository.findTop10ByNameContaining("ООО Тестерони");
-        assertThat(companyList.size()).isNotEqualTo(0);
-        Company savedCompany = companyList.get(0);
-        User user = userRepository.findByLogin("Testeroni").orElse(null);
-        assertThat(user).isNotEqualTo(null);
-        assertThat(savedCompany).isNotEqualTo(null);
-        assertThat(savedCompany).isEqualTo(company);
+
     }
 }

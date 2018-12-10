@@ -1,6 +1,7 @@
 package ru.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,9 +16,12 @@ public class GmailService implements MailService {
     @Autowired
     private JavaMailSender sender;
 
+    @Value("${mail-from}")
+    private String from;
+
 
     @Override
-    public void send(String to, String subject, String text, String from) throws MessagingException {
+    public void send(String to, String subject, String text) throws MessagingException {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, false);
         helper.setFrom(from);
@@ -28,7 +32,7 @@ public class GmailService implements MailService {
     }
 
     @Override
-    public void send(String[] to, String subject, String text, String from) throws MessagingException {
+    public void send(String[] to, String subject, String text) throws MessagingException {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, false);
         helper.setFrom(from);
@@ -39,7 +43,7 @@ public class GmailService implements MailService {
     }
 
     @Override
-    public void send(String to, String subject, String text, String from, String attachmentName, ByteArrayResource attachment) throws MessagingException{
+    public void send(String to, String subject, String text, String attachmentName, ByteArrayResource attachment) throws MessagingException{
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setFrom(from);
@@ -51,7 +55,7 @@ public class GmailService implements MailService {
     }
 
     @Override
-    public void send(String[] to, String subject, String text, String from, String attachmentName, ByteArrayResource attachment) throws MessagingException{
+    public void send(String[] to, String subject, String text, String attachmentName, ByteArrayResource attachment) throws MessagingException{
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setFrom(from);

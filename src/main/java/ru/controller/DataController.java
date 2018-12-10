@@ -2,14 +2,13 @@ package ru.controller;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.constant.ContactType;
 import ru.dao.entity.*;
 import ru.dao.repository.*;
+import ru.service.RegisterService;
 
+import javax.mail.MessagingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,15 +23,22 @@ public class DataController {
     private final OrderOfferRepository offerRepository;
     private final ContactRepository contactRepository;
     private final ContractRepository contractRepository;
+    private final RegisterService registerService;
 
     @Autowired
-    public DataController(OrderRepository orderRepository, RouteRepository routeRepository, CompanyRepository companyRepository, OrderOfferRepository offerRepository, ContactRepository contactRepository, ContractRepository contractRepository) {
+    public DataController(OrderRepository orderRepository, RouteRepository routeRepository, CompanyRepository companyRepository, OrderOfferRepository offerRepository, ContactRepository contactRepository, ContractRepository contractRepository, RegisterService registerService) {
         this.orderRepository = orderRepository;
         this.routeRepository = routeRepository;
         this.companyRepository = companyRepository;
         this.offerRepository = offerRepository;
         this.contactRepository = contactRepository;
         this.contractRepository = contractRepository;
+        this.registerService = registerService;
+    }
+
+    @PostMapping("/registerTransportCompany")
+    public Company registerCompany(@RequestBody Company company) throws MessagingException {
+        return registerService.registerCompany(company);
     }
 
     @GetMapping(value = "/contracts/{contractId}", produces = "application/json; charset=UTF-8")

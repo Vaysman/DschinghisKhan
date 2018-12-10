@@ -37,16 +37,22 @@ public class CustomPersistentRememberMeService implements RememberMeServices {
     @Override
     public Authentication autoLogin(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies) {
-            if (cookie.getName().equals("remember-me")){
+        if (cookies == null) {
+            return null;
+        }
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("remember-me")) {
                 PersistentRememberMeToken rememberMeToken = persistentTokenRepository.getTokenForSeries(cookie.getValue());
-                if(rememberMeToken!=null){
+                if (rememberMeToken != null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(rememberMeToken.getUsername());
 
-                    Authentication authToken = new RememberMeAuthenticationToken(rememberMeToken.getTokenValue(),rememberMeToken.getUsername(),userDetails.getAuthorities());
-                    persistentTokenRepository.updateToken(cookie.getValue(),rememberMeToken.getTokenValue(),new Date());
+                    Authentication authToken = new RememberMeAuthenticationToken(rememberMeToken.getTokenValue(), rememberMeToken.getUsername(), userDetails.getAuthorities());
+                    persistentTokenRepository.updateToken(cookie.getValue(), rememberMeToken.getTokenValue(), new Date());
 
                     return authToken;
+                } else {
+                    cookie.setValue("");
+                    cookie.setMaxAge(0);
                 }
             }
         }
@@ -56,10 +62,10 @@ public class CustomPersistentRememberMeService implements RememberMeServices {
     @Override
     public void loginFail(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies) {
-            if (cookie.getName().equals("remember-me")){
-                cookie.setMaxAge(0);
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("remember-me")) {
                 cookie.setValue("");
+                cookie.setMaxAge(0);
             }
         }
 
@@ -68,17 +74,25 @@ public class CustomPersistentRememberMeService implements RememberMeServices {
 
     @Override
     public void loginSuccess(HttpServletRequest request, HttpServletResponse response, Authentication successfulAuthentication) {
-        String login = (String) successfulAuthentication.getPrincipal();
-        String series = RandomStringGenerator.randomAlphaNumeric(64);
-        String value = RandomStringGenerator.randomAlphaNumeric(64);
-//        String value = "";
-        PersistentRememberMeToken token = new PersistentRememberMeToken(login, series,value ,new Date());
-        persistentTokenRepository.createNewToken(token);
-        Cookie cookie = new Cookie("remember-me",series);
-        //valid for 30 days
-        cookie.setMaxAge(((60*60)*24)*30);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+        if (request.getParameterMap().get("remember-me")!=null && request.getParameterMap().get("remember-me").equals("on")) {
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("remember-me")) {
+                    cookie.setValue("");
+                    cookie.setMaxAge(0);
+                }
+            }
+            String login = (String) successfulAuthentication.getPrincipal();
+            String series = RandomStringGenerator.randomAlphaNumeric(64);
+            String value = RandomStringGenerator.randomAlphaNumeric(64);
+            PersistentRememberMeToken token = new PersistentRememberMeToken(login, series, value, new Date());
+            persistentTokenRepository.createNewToken(token);
+            Cookie cookie = new Cookie("remember-me", series);
+            //valid for 30 days
+            cookie.setMaxAge(((60 * 60) * 24) * 30);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+        }
 
     }
 }

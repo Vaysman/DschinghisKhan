@@ -34,13 +34,28 @@
     <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
     <script src="/media/jquery.ba-throttle-debounce.min.js"></script>
 
+    <script>
+        $(document).ready(function () {
+            // Javascript to enable link to tab
+            var url = document.location.toString();
+            if (url.match('#')) {
+                $('#nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+                console.log(`shown ${url.split('#')[1]} tab`);
+            }
+
+            // Change hash for page-reload
+            $('#nav-tabs a').on('shown.bs.tab', function (e) {
+                window.location.hash = e.target.hash;
+            })
+        });
+    </script>
 </head>
 <body class="grey">
 <div th:insert="fragments/header :: header('orders')"></div>
 
 <nav class="logist-tabs">
     <div>
-        <ul class="ml-md-auto flex-row nav container nav-fill" role="tablist">
+        <ul class="ml-md-auto flex-row nav container nav-fill" id="nav-tabs" role="tablist">
             <li id="tab-all-orders-link" class="nav-item"
                 sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-all-orders"><i

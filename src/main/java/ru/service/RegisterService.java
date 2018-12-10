@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.authentication.UserCredentials;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,63 +23,74 @@ import ru.dao.repository.ContactRepository;
 import ru.dao.repository.PointRepository;
 import ru.dao.repository.UserRepository;
 import ru.dto.json.user.UserRegistrationData;
+import ru.util.Translit;
+import ru.util.generator.RandomStringGenerator;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class RegisterService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final PointRepository pointRepository;
-    private final JavaMailSender sender;
     private final ResourceLoader resourceLoader;
     private final ContactRepository contactRepository;
     private final UserInfoService userInfoService;
+    private final MailService mailService;
+    private final SmsService smsService;
+    private final Translit translit = new Translit();
 
     @Autowired
-    public RegisterService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, JavaMailSender sender, ResourceLoader resourceLoader, ContactRepository contactRepository, UserInfoService userInfoService) {
+    public RegisterService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, ResourceLoader resourceLoader, ContactRepository contactRepository, UserInfoService userInfoService, MailService mailService, SmsService smsService) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.pointRepository = pointRepository;
-        this.sender = sender;
         this.resourceLoader = resourceLoader;
         this.contactRepository = contactRepository;
         this.userInfoService = userInfoService;
+        this.mailService = mailService;
+        this.smsService = smsService;
     }
 
 
-    public void setAuthorized(User user, String password){
-        UserCredentials forgedCredentials = new UserCredentials(user.getUsername(),password);
+    public void setAuthorized(User user, String password) {
+        UserCredentials forgedCredentials = new UserCredentials(user.getUsername(), password);
         Authentication auth = new AuthToken(user, forgedCredentials, Collections.singletonList(new SimpleGrantedAuthority(user.getUserRole().name())), userInfoService);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
-
+    @Transactional
+    public void resendPassword(User user) throws Exception{
+        User user1 = userRepository.findById(user.getId()).orElseThrow(()->new IllegalArgumentException("No such user exists"));
+        String newPassword = RandomStringGenerator.randomAlphaNumeric(6);
+        user1.setSalt("");
+        user1.setPassAndSalt(newPassword);
+        userRepository.save(user1);
+        if(!translit.removeSpecialCharacters(user1.getPhone()).isEmpty()){
+                smsService.sms(translit.removeSpecialCharacters(user1.getPhone()), "Новый пароль: " + newPassword);
+        } else if(translit.isValidEmail(user1.getEmail())){
+            mailService.send(user1.getEmail(),"Новый пароль","Новый пароль: "+newPassword);
+        }
+    }
 
     @Transactional
     public User registerDispatcher(UserRegistrationData registrationData) throws Exception {
-        userRepository.findByLogin(registrationData.getLogin()).ifPresent((x)->{
-            throw new IllegalArgumentException("Данный пользователь уже существует");
-        });
+
         companyRepository.findFirstByInn(registrationData.getInn()).ifPresent((x) -> {
-            throw new IllegalArgumentException(String.format("Компания с таким ИНН уже существует\n(%s/%s)",x.getName(),x.getEmail()));
+            throw new IllegalArgumentException(String.format("Компания с таким ИНН уже существует\n(%s/%s)", x.getName(), x.getEmail()));
         });
+
 
         Point point = Point.builder()
-                    .address(registrationData.getPointAddress())
-                    .name(registrationData.getPointName())
-                    .build();
+                .name(registrationData.getPointName())
+                .build();
         pointRepository.save(point);
 
-        String[] abbreviations = {"ОАО","ЗАО","ООО","ИП","ПАО","\"","'","!","{","}","(",")","<",">"};
-        String shortName = registrationData.getCompanyName();
 
-        for(String abbreviation : abbreviations){
-            shortName = shortName.replace(abbreviation,"");
-        }
+        String shortName = translit.removeAbbreviations(registrationData.getCompanyName());
 
         Company company = Company
                 .builder()
@@ -112,39 +121,51 @@ public class RegisterService {
                 .build();
         companyRepository.save(company);
 
-        if(point!=null) {
-            point.setOriginator(company.getId());
-            pointRepository.save(point);
+        point.setOriginator(company.getId());
+        pointRepository.save(point);
+
+        String companyUserLogin = translit.removeSpecialCharacters(translit.cyr2lat(company.getShortName()));
+        while (userRepository.findByLogin(companyUserLogin).isPresent()) {
+            companyUserLogin = companyUserLogin + "1";
         }
 
+        String userPassword = RandomStringGenerator.randomAlphaNumeric(6);
+
         User user = User.builder()
-                .login(registrationData.getLogin())
+                .login(companyUserLogin)
                 .email(registrationData.getEmail())
                 .originator(company.getId())
                 .username(company.getShortName())
                 .userRole(UserRole.ROLE_DISPATCHER)
-                .passAndSalt(registrationData.getPassword())
+                .phone(registrationData.getPhone())
+                .passAndSalt(userPassword)
                 .company(company)
                 .build();
         userRepository.save(user);
 
-        if(!company.getEmail().equals("test@test.test")) {
+        if(!registrationData.getPhone().isEmpty()){
+            smsService.sms(translit.removeSpecialCharacters(registrationData.getPhone()),"Код регистрации:"+userPassword);
+        } else if (!company.getEmail().equals("test@test.test") && !company.getEmail().isEmpty()) {
             try {
-                MimeMessage message = sender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true);
-                helper.setFrom("tarificationsquad@gmail.com");
-                helper.setTo(company.getEmail());
-                helper.setSubject("Регистрация прошла успешно!");
-                helper.setText("Теперь вам доступен весь функционал сервиса \"Кулуртай\"!\n" +
+                String text = "Теперь вам доступен весь функционал сервиса \"Кулуртай\"!\n" +
                         "Ведите работу с вашими перевозчиками, добавляйте новых, обменивайтесь информацией онлайн.\n" +
-                        "В приложении подробная инструкция по работе с сервисом. В любое время вам поможет служба поддержки пользователей." +
+                        "В приложении подробная инструкция по работе с сервисом. В любое время вам поможет служба поддержки пользователей.\n\n" +
+                        "Логин: "+user.getLogin()+"\n"+
+                        "Код для входа:\n"+
+                        userPassword+
                         "\n\nС уважением,\n" +
-                        "команда проекта \"Курултай\".\n");
-                helper.addAttachment("Kurulway.pdf", new ByteArrayResource(IOUtils.toByteArray(resourceLoader.getResource("classpath:Kurulway.pdf").getInputStream())));
-                sender.send(message);
+                        "команда проекта \"Курултай\".\n";
+                mailService.send(company.getEmail(),
+                        "Регистрация прошла успешно!",
+                        text,
+                        "Kurulway.pdf",
+                        new ByteArrayResource(IOUtils.toByteArray(resourceLoader.getResource("classpath:Kurulway.pdf").getInputStream()))
+                );
             } catch (MessagingException e) {
                 throw new IllegalArgumentException(String.format("Невозможно отослать письмо о регистрации:\n%s", e.getMessage()));
             }
+        } else {
+            throw new IllegalArgumentException("Неправильно указан адрес почты, либо телефон");
         }
 
         Contact contact = Contact
@@ -158,61 +179,58 @@ public class RegisterService {
         contactRepository.save(contact);
 
 
-
         return user;
     }
 
     @Transactional
-    public void registerCompany(Company company){
-//        if (!companyRepository.findFirstByInn(company.getInn()).isPresent()) {
-//
-//            if (!company.getType().equals(CompanyType.TRANSPORT)) {
-//                return;
-//            } else {
-//                company.setShortName(removeAbbreviations(company.getName()));
-//
-//            }
-//            String companyUserLogin = cyr2lat(company.getShortName().replaceAll(" ", ""));
-//            while (userRepository.findByLogin(companyUserLogin).isPresent()) {
-//                companyUserLogin = companyUserLogin + "1";
-//            }
-//            String userPassword = RandomStringGenerator.randomAlphaNumeric(8);
-//            User user = User.builder()
-//                    .login(companyUserLogin)
-//                    .userRole(UserRole.ROLE_TRANSPORT_COMPANY)
-//                    .username(company.getShortName())
-////                    .company(company)
-//                    .email(company.getEmail())
-//                    .passAndSalt(userPassword)
-//                    .build();
-//            userRepository.save(user);
-//            Set<User> userList = new HashSet<>();
-//            userList.add(user);
-//            company.setUsers(userList);
-//
-//            Point point = new Point();
-//            pointRepository.save(point);
-//            company.setPoint(point);
-//
-//
-//            MimeMessage message = sender.createMimeMessage();
-//            MimeMessageHelper helper = new MimeMessageHelper(message, false);
-//            helper.setFrom("tarificationsquad@gmail.com");
-//            helper.setTo(company.getEmail());
-//            helper.setText("Зарегистрирован пользователь для транспортой компании: " +
-//                    company.getName() +
-//                    "\nЛогин: " + user.getLogin() +
-//                    "\nПароль: " + userPassword);
-//            helper.setSubject("Регистрационные данные");
-//            if (!company.getEmail().equals("test@tesе.test")) sender.send(message);
-//
-//            Contact contact = Contact.builder()
-//                    .company(company)
-//                    .email(company.getEmail())
-//                    .type(ContactType.PRIMARY)
-//                    .build();
-//
-//            contactRepository.save(contact);
-//        }
+    public Company registerCompany(Company company) throws MessagingException {
+        companyRepository.findFirstByInn(company.getInn()).ifPresent((x) -> {
+            throw new IllegalArgumentException(String.format("Компания с таким ИНН уже существует\n(%s/%s)", x.getName(), x.getEmail()));
+        });
+
+        company.setShortName(translit.removeAbbreviations(company.getName()));
+        String companyUserLogin = translit.removeSpecialCharacters(translit.cyr2lat(company.getShortName()));
+        while (userRepository.findByLogin(companyUserLogin).isPresent()) {
+            companyUserLogin = companyUserLogin + "1";
+        }
+        String userPassword = RandomStringGenerator.randomAlphaNumeric(8);
+        User user = User.builder()
+                .login(companyUserLogin)
+                .userRole(UserRole.ROLE_TRANSPORT_COMPANY)
+                .username(company.getShortName())
+                .email(company.getEmail())
+                .passAndSalt(userPassword)
+                .build();
+        userRepository.save(user);
+        Set<User> userList = new HashSet<>();
+        userList.add(user);
+        company.setUsers(userList);
+
+        Point point = new Point();
+        pointRepository.save(point);
+        company.setPoint(point);
+
+
+        if (!company.getEmail().equals("test@tesе.test")) {
+            mailService.send(company.getEmail(),
+                    "Регистрационные данные",
+                    ("Зарегистрирован пользователь для транспортой компании: " +
+                            company.getName() +
+                            "\nЛогин: " + user.getLogin() +
+                            "\nПароль: " + userPassword));
+        }
+
+        Contact contact = Contact.builder()
+                .company(company)
+                .email(company.getEmail())
+                .type(ContactType.PRIMARY)
+                .build();
+
+        contactRepository.save(contact);
+        companyRepository.save(company);
+
+        user.setCompany(company);
+        userRepository.save(user);
+        return company;
     }
 }

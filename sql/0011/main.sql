@@ -21,3 +21,14 @@ ALTER TABLE files ADD url varchar(512) NULL;
 ALTER TABLE drivers ADD photo_id int NULL;
 ALTER TABLE drivers ADD license_id int NULL;
 ALTER TABLE drivers ADD passport_id int NULL;
+
+CREATE TABLE persistent_logins (
+  username varchar(64) NOT NULL,
+  series varchar(64) NOT NULL,
+  token varchar(64) NOT NULL,
+  last_used timestamp NOT NULL,
+  PRIMARY KEY (series)
+);
+
+
+ALTER TABLE users ADD phone varchar(20) NULL;

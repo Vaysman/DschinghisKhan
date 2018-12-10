@@ -32,4 +32,8 @@ spring:
     open-in-view: true
     show-sql: true
 google-maps-key: AIzaSyCbWvhz07RoOhD8qs9dFtIxf3W4d_qQjAk
-upload-directory: /Users/Roman\ 1/Desktop/uploads
+upload-directory: /Users/Roman 1/Desktop/uploads/
+sms-service-login: iSosnitsky
+sms-service-password: Fgsfds12
+sms-service-sender: TEST-SMS
+mail-from: tarificationSquad@gmail.com

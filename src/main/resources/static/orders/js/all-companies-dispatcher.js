@@ -100,7 +100,7 @@ $(document).ready(function () {
                 create: {
                     type: 'POST',
                     contentType: 'application/json',
-                    url: 'api/companies',
+                    url: 'data/registerTransportCompany',
                     data: function (d) {
                         let newdata;
                         $.each(d.data, function (key, value) {
@@ -114,14 +114,13 @@ $(document).ready(function () {
                         companyEditor.close();
                         // alert(response.responseText);
                     },
-                    error: function (jqXHR, exception) {
+                    error: function (jqXHR) {
                         console.log(jqXHR);
-                        console.log(exception);
-                        var cause = jqXHR.responseJSON.cause.cause.message;
+                        var cause = jqXHR.responseJSON.message;
                         if (cause.includes("Duplicate entry")) {
                             companyEditor.field("inn").error("Указанный ИНН уже существует");
                         } else {
-                            companyInfoEditor.field("email").error(cause);
+                            companyEditor.field("inn").error(cause);
                         }
 
                     }

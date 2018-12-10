@@ -1,10 +1,13 @@
 package ru.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static java.lang.Character.toUpperCase;
 
 public class Translit {
 
-    public static String lat2cyr(String s){
+    public  String lat2cyr(String s){
         StringBuilder sb = new StringBuilder(s.length());
         int i = 0;
         while(i < s.length()){// Идем по строке слева направо. В принципе, подходит для обработки потока
@@ -78,7 +81,7 @@ public class Translit {
         return sb.toString();
     }
 
-    private static String cyr2lat(char ch){
+    private String cyr2lat(char ch){
         switch (ch){
             case 'А': return "A";
             case 'Б': return "B";
@@ -117,7 +120,7 @@ public class Translit {
         }
     }
 
-    public static String cyr2lat(String s){
+    public String cyr2lat(String s){
         StringBuilder sb = new StringBuilder(s.length()*2);
         for(char ch: s.toCharArray()){
             char upCh = toUpperCase(ch);
@@ -138,12 +141,22 @@ public class Translit {
     }
 
 
-    public static String removeAbbreviations(String s){
+    public String removeSpecialCharacters(String s){
+        return s.replaceAll("[^a-zA-Z0-9]", "");
+    }
+
+    public String removeAbbreviations(String s){
         String[] abbreviations = {"ОАО","ЗАО","ООО","ИП","\"","'","!","{","}","(",")","<",">"};
 
         for(String abbreviation : abbreviations){
             s = s.replace(abbreviation,"");
         }
         return s.trim();
+    }
+
+    public boolean isValidEmail(String mail){
+        Pattern mailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher mailMatcher = mailPattern.matcher(mail);
+        return (!mail.isEmpty() && mailMatcher.find());
     }
 }
