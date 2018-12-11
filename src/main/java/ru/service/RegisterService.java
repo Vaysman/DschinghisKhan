@@ -6,11 +6,13 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.authentication.UserCredentials;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.configuration.authentication.AuthToken;
+import ru.configuration.authentication.CustomAuthenticationManager;
 import ru.constant.CompanyType;
 import ru.constant.ContactType;
 import ru.constant.UserRole;
@@ -42,9 +44,10 @@ public class RegisterService {
     private final MailService mailService;
     private final SmsService smsService;
     private final Translit translit = new Translit();
+    private final CustomAuthenticationManager authenticationManager;
 
     @Autowired
-    public RegisterService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, ResourceLoader resourceLoader, ContactRepository contactRepository, UserInfoService userInfoService, MailService mailService, SmsService smsService) {
+    public RegisterService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, ResourceLoader resourceLoader, ContactRepository contactRepository, UserInfoService userInfoService, MailService mailService, SmsService smsService, CustomAuthenticationManager authenticationManager) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.pointRepository = pointRepository;
@@ -53,6 +56,15 @@ public class RegisterService {
         this.userInfoService = userInfoService;
         this.mailService = mailService;
         this.smsService = smsService;
+        this.authenticationManager = authenticationManager;
+    }
+
+    public Authentication authorize(String username, String password) throws AuthenticationException {
+        User user = userRepository.findByLogin(username).orElseThrow(()-> new IllegalArgumentException("Данного пользователя не существует"));
+        Authentication auth = new AuthToken(user, password, Collections.singletonList(new SimpleGrantedAuthority(user.getUserRole().name())), userInfoService);
+        Authentication successfullAuthentication  = authenticationManager.authenticate(auth);
+        SecurityContextHolder.getContext().setAuthentication(successfullAuthentication);
+        return  successfullAuthentication;
     }
 
 
@@ -144,14 +156,14 @@ public class RegisterService {
         userRepository.save(user);
 
         if(!registrationData.getPhone().isEmpty()){
-            smsService.sms(translit.removeSpecialCharacters(registrationData.getPhone()),"Код регистрации:"+userPassword);
+            smsService.sms(translit.removeSpecialCharacters(registrationData.getPhone()),"Логин: "+companyUserLogin+"\nКод регистрации и пароль:"+userPassword);
         } else if (!company.getEmail().equals("test@test.test") && !company.getEmail().isEmpty()) {
             try {
                 String text = "Теперь вам доступен весь функционал сервиса \"Кулуртай\"!\n" +
                         "Ведите работу с вашими перевозчиками, добавляйте новых, обменивайтесь информацией онлайн.\n" +
                         "В приложении подробная инструкция по работе с сервисом. В любое время вам поможет служба поддержки пользователей.\n\n" +
                         "Логин: "+user.getLogin()+"\n"+
-                        "Код для входа:\n"+
+                        "Код регистрации и пароль для входа:\n"+
                         userPassword+
                         "\n\nС уважением,\n" +
                         "команда проекта \"Курултай\".\n";

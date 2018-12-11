@@ -12,7 +12,7 @@
         <div class="col-8 container white spaced-container">
             <div class="row">
                 <div th:if="${driver.photo!=null}" class="col-4">
-                    <img style="width:100%; border-radius: 4px;" th:src="@{../../upload/getFile/}+${driver.photo.path}">
+                    <img style="width:100%; border-radius: 4px;" alt="photo" th:src="@{../../upload/getFile/}+${driver.photo.path}">
                 </div>
                 <div class="col-8">
                     <h4 th:text="${'Водитель: '+driver.getName()}"></h4>
@@ -39,7 +39,7 @@
                         </a>
 
                         <div class="collapse" id="licenseCollapsible">
-                            <img style="width:100%;" th:src="@{../../upload/getFile/}+${driver.license.path}">
+                            <img style="width:100%;" alt="license" th:src="@{../../upload/getFile/}+${driver.license.path}">
                         </div>
                     </div>
                     <div class="card" th:if="${driver.passport!=null}">
@@ -50,7 +50,7 @@
                         </a>
 
                         <div class="collapse" id="passportCollapsible">
-                            <img style="width:100%;" th:src="@{../../upload/getFile/}+${driver.passport.path}">
+                            <img style="width:100%;" alt="passport" th:src="@{../../upload/getFile/}+${driver.passport.path}">
                         </div>
                     </div>
                     <div class="card" th:if="${driver.files!=null && #lists.size(driver.files) > 0}">

@@ -74,14 +74,9 @@ public class CustomPersistentRememberMeService implements RememberMeServices {
 
     @Override
     public void loginSuccess(HttpServletRequest request, HttpServletResponse response, Authentication successfulAuthentication) {
-        if (request.getParameterMap().get("remember-me")!=null && request.getParameterMap().get("remember-me").equals("on")) {
-            Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("remember-me")) {
-                    cookie.setValue("");
-                    cookie.setMaxAge(0);
-                }
-            }
+
+        if (request.getParameterMap().containsKey("remember-me") && request.getParameter("remember-me").equals("on")) {
+
             String login = (String) successfulAuthentication.getPrincipal();
             String series = RandomStringGenerator.randomAlphaNumeric(64);
             String value = RandomStringGenerator.randomAlphaNumeric(64);

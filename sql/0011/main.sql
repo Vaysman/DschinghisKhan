@@ -32,3 +32,5 @@ CREATE TABLE persistent_logins (
 
 
 ALTER TABLE users ADD phone varchar(20) NULL;
+
+ALTER TABLE drivers ADD comment TEXT NULL;

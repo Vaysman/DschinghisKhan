@@ -4940,10 +4940,5 @@ INSERT INTO route_points (id, point_id, queue_number, distance, cost, route_id, 
 INSERT INTO transports (id, number, is_gps, type, body_type, tonnage, volume, loading_type, conics, comment, hydrobort, originator, wialon_id) VALUES (1, 'LSS-01', 0, 'TRANSPORT', 'THERMOS', 10, 10, 'BACK,SIDE,UPPER', 1, 'Commentary', 1, 1, null);
 INSERT INTO drivers (id, name, phone, passport_number, license_number, rating, has_mobile_app, is_tracked, is_hired, payment_type, originator) VALUES (1, 'Курбанов Р.Н.', '9829340294', '1245543545', '5235232', 120, 1, 1, 0, 'CASH', 1);
 
-CREATE TABLE persistent_logins (
-  username varchar(64) NOT NULL,
-  series varchar(64) NOT NULL,
-  token varchar(64) NOT NULL,
-  last_used timestamp NOT NULL,
-  PRIMARY KEY (series)
-) DEFAULT CHARSET=utf8
+CREATE TABLE persistent_logins ( username varchar(64),series varchar(64) PRIMARY KEY,token varchar(64),last_used timestamp)
+

@@ -287,3 +287,7 @@ div.selectize-dropdown {
     left: 30%;
 }
 
+#driversForm .col-form-label{
+    padding-top: 0;
+}
+

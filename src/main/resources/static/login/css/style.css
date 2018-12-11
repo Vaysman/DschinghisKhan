@@ -66,6 +66,10 @@ label {
     font-weight: bold;
 }
 
+.register-code{
+    font-size: 20px !important;
+}
+
 #loginButton {
     font-family: "Gerbera Light",Arial,"Helvetica Neue", Helvetica, Tahoma,  serif;
     float: right;

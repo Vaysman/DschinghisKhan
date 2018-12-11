@@ -12,115 +12,6 @@
     <!--<script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>-->
     <script src="/media/Selectize/js/standalone/selectize.min.js"></script>
 
-    <script th:inline="javascript">
-        // let checkMap;
-
-        $(document).ready(function () {
-            $("#phone").mask("+7 (999) 999-9999",{placeholder:"+7 (___) ___-____"});
-            // ymaps.ready(function () {
-            //     if (typeof ymaps !== 'undefined') {
-            //         checkMap = new ymaps.Map('addressCheckMap', {
-            //             center: [40, 50],
-            //             zoom: 15
-            //         }, {
-            //             searchControlProvider: 'yandex#search'
-            //         });
-            //     } else {
-            //         console.log("ymaps is undefined (????)");
-            //     }
-            // })
-
-            let suggestions = {};
-            let loadInnSelectize = $("#inn").selectize({
-                placeholder: "Введите ИНН",
-                labelField: "label",
-                valueField: "value",
-                searchField: "inn",
-                delimiter: null,
-                loadThrottle: 400,
-                preload: false,
-                maxItems: 1,
-                maxOptions: 20,
-                create: false,
-                load: function (query, callback) {
-                    $.ajax({
-                        url:`https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party`,
-                        type: "POST",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({
-                            query: query
-                        }),
-                        beforeSend: function(xhr){
-                            xhr.setRequestHeader("Authorization","Token 2aa6402023ed529e79ba4ddb92872b0709f9b859");
-                            xhr.setRequestHeader("Accept","application/json");
-                        },
-                        success: function (response) {
-                            var companyOptions = [];
-                            // suggestions = response.suggestions;
-                            response.suggestions.forEach(function (entry) {
-                                companyOptions.push({"label": `${entry.data.inn}\n${entry.value}`, "inn":entry.data.inn, "value": entry.data.hid});
-                                suggestions[entry.data.hid] = entry;
-                            });
-                            callback(companyOptions);
-                            console.log(response);
-                            console.log(suggestions);
-                        }});
-                },
-                onChange: (value) => {
-
-                    if(suggestions.hasOwnProperty(value)){
-                        $("#companyName").val(suggestions[value].unrestricted_value);
-                        let fetchedData = suggestions[value].data;
-
-                        if(fetchedData.inn!=null){
-                            $("#inn").val(fetchedData.inn);
-                        }
-                        if(fetchedData.okved!=null){
-                            $("#ocved").val(fetchedData.okved)
-                        }
-                        if(fetchedData.kpp!=null){
-                            $("#kpp").val(fetchedData.kpp)
-                        }
-                        if(fetchedData.ogrn!=null){
-                            $("#ogrn").val(fetchedData.ogrn);
-                        }
-                        if(fetchedData.okpo!=null){
-                            $("#ocpo").val(fetchedData.okpo)
-                        }
-                        if(fetchedData.management!=null && fetchedData.management.name!=null){
-                            $("#directorFullname").val(fetchedData.management.name);
-                        }
-                    } else {
-                        $("#inn").val(value)
-                    }
-                }
-            });
-        });
-
-        // function checkAddress() {
-        //     if (typeof ymaps !== 'undefined') {
-        //         let address = $('#pointAddress').val();
-        //         console.log(address);
-        //
-        //         ymaps.geocode(address).then(function (coords) {
-        //             console.log(coords.geoObjects.get(0));
-        //             checkMap.setCenter(coords.geoObjects.get(0).geometry._coordinates, 15, {
-        //                 checkZoomRange: true
-        //             });
-        //             checkMap.geoObjects.add(coords.geoObjects.get(0));
-        //         });
-        //         $('#addressCheckMap').show();
-        //
-        //     }
-        // }
-
-
-
-
-
-
-    </script>
 </head>
 <body class="grey">
 <div class="container">
@@ -156,7 +47,9 @@
                         <small th:if="${innError!=null}" th:text="${innError}"
                                class="text-sm form-text red"></small>
                     </div>
-                    <div class="form-group">
+                    <div class="row">
+
+                    <div class="form-group col-5">
                         <small th:if="${emailError!=null}" th:text="${emailError}"
                         class="text-sm form-text red"></small>
                         <label for="email" class="cols-sm-2 control-label">E-mail<sup class="red">*</sup></label>
@@ -164,16 +57,22 @@
                             <div class="input-group mb-3">
                                 <input type="text" th:field="*{email}" class="form-control" id="email"
                                        placeholder="E-mail"/>
+
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                        <div class="col-1">
+                            <small class="text-muted"><br><br>Или</small>
+                        </div>
+                    <div class="form-group col-6">
                         <label for="phone" class="control-label">Мобильный телефон<sup class="red">*</sup></label>
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:field="*{phone}" class="form-control" id="phone"/>
                             </div>
                         </div>
+
+                    </div>
                     </div>
                     <div class="form-group" hidden>
                         <label for="ocved" class="cols-sm-2 control-label">ОКВЕД</label>
@@ -202,6 +101,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="form-group" hidden>
                         <label for="ogrn" class="cols-sm-2 control-label">ОГРН</label>
                         <div class="cols-sm-10">
@@ -286,4 +186,103 @@
     </div>
 </div>
 </body>
+<script>
+    // let checkMap;
+
+    $(document).ready(function () {
+
+
+        let suggestions = {};
+        let loadInnSelectize = $("#inn").selectize({
+            placeholder: "Введите ИНН",
+            labelField: "label",
+            valueField: "value",
+            searchField: "inn",
+            delimiter: null,
+            loadThrottle: 400,
+            preload: false,
+            maxItems: 1,
+            maxOptions: 20,
+            create: false,
+            load: function (query, callback) {
+                $.ajax({
+                    url:`https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party`,
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        query: query
+                    }),
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader("Authorization","Token 2aa6402023ed529e79ba4ddb92872b0709f9b859");
+                        xhr.setRequestHeader("Accept","application/json");
+                    },
+                    success: function (response) {
+                        var companyOptions = [];
+                        // suggestions = response.suggestions;
+                        response.suggestions.forEach(function (entry) {
+                            companyOptions.push({"label": `${entry.data.inn}\n${entry.value}`, "inn":entry.data.inn, "value": entry.data.hid});
+                            suggestions[entry.data.hid] = entry;
+                        });
+                        callback(companyOptions);
+                        console.log(response);
+                        console.log(suggestions);
+                    }});
+            },
+            onChange: (value) => {
+
+                if(suggestions.hasOwnProperty(value)){
+                    $("#companyName").val(suggestions[value].unrestricted_value);
+                    let fetchedData = suggestions[value].data;
+
+                    if(fetchedData.inn!=null){
+                        $("#inn").val(fetchedData.inn);
+                    }
+                    if(fetchedData.okved!=null){
+                        $("#ocved").val(fetchedData.okved)
+                    }
+                    if(fetchedData.kpp!=null){
+                        $("#kpp").val(fetchedData.kpp)
+                    }
+                    if(fetchedData.ogrn!=null){
+                        $("#ogrn").val(fetchedData.ogrn);
+                    }
+                    if(fetchedData.okpo!=null){
+                        $("#ocpo").val(fetchedData.okpo)
+                    }
+                    if(fetchedData.management!=null && fetchedData.management.name!=null){
+                        $("#directorFullname").val(fetchedData.management.name);
+                    }
+                } else {
+                    $("#inn").val(value)
+                }
+            }
+        });
+        $("#phone").mask("+7 (999) 999-9999",{placeholder:"+7 (___) ___-____"});
+    });
+
+    // function checkAddress() {
+    //     if (typeof ymaps !== 'undefined') {
+    //         let address = $('#pointAddress').val();
+    //         console.log(address);
+    //
+    //         ymaps.geocode(address).then(function (coords) {
+    //             console.log(coords.geoObjects.get(0));
+    //             checkMap.setCenter(coords.geoObjects.get(0).geometry._coordinates, 15, {
+    //                 checkZoomRange: true
+    //             });
+    //             checkMap.geoObjects.add(coords.geoObjects.get(0));
+    //         });
+    //         $('#addressCheckMap').show();
+    //
+    //     }
+    // }
+
+
+
+
+
+
+</script>
+
 </html>

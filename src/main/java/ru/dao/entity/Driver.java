@@ -111,4 +111,8 @@ public class Driver {
     @JsonIgnore
     private StoredFile license;
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String comment;
+
 }

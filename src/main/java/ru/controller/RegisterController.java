@@ -1,16 +1,20 @@
 package ru.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import ru.configuration.authentication.CustomPersistentRememberMeService;
 import ru.dao.entity.User;
 import ru.dto.json.user.UserRegistrationData;
 import ru.service.RegisterService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -20,12 +24,14 @@ import java.util.Map;
 public class RegisterController {
 
     private final RegisterService registerService;
+    private final CustomPersistentRememberMeService rememberMeService;
 
     @Autowired
     public RegisterController(
-            RegisterService registerService
-    ) {
+            RegisterService registerService,
+            CustomPersistentRememberMeService rememberMeService) {
         this.registerService = registerService;
+        this.rememberMeService = rememberMeService;
     }
 
     @PostMapping("/register")
@@ -58,9 +64,22 @@ public class RegisterController {
 
     @PostMapping("/resendCode")
     @ResponseBody
-    public String enterCode(@ModelAttribute User user){
-
+    public String resendCode(@ModelAttribute User user){
         return "code";
+    }
+
+    @PostMapping("/code")
+    public String enterCode(@ModelAttribute User user, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap){
+        try{
+            Authentication successfulAuthentication = registerService.authorize(user.getUsername(), request.getParameter("password").toUpperCase());
+            rememberMeService.loginSuccess(request,response, successfulAuthentication);
+            return "redirect:/main";
+        } catch (Exception e ){
+            user.setLogin(user.getUsername());
+            modelMap.addAttribute("error",e.getMessage());
+            modelMap.addAttribute("user",user);
+            return "code";
+        }
     }
 
     @GetMapping("/register")

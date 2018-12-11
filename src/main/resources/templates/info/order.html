@@ -8,7 +8,7 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-            let currentOrderId = /*[[${order.id}]]*/;
+        let currentOrderId = /*[[${order.id}]]*/;
         /*]]>*/
     </script>
     <script src="/info/order/order.js"></script>
@@ -40,9 +40,25 @@
                     Обязательность: <span th:text="${order.getOrderObligation().getObligationName()}"></span><br>
 
                 </div>
+                <div class="col-6">
+                    <div th:if="${order.getDriver()!=null}">
+                        <h4>Водитель</h4>
+                        <div>
+                            ФИО: <div th:text="${order.getDriver().getName()}"></div><br>
+                            Водительское удостверение: <div th:text="${order.getDriver().getLicenseNumber()}"></div><br>
+                            Паспорт: <div th:text="${order.getDriver().getPassportNumber()}"></div><br>
+                            <span th:if="${order.getDriver().hasMobileApp}" th:text="${'Номер в мобильном приложении: '+order.getDriver().getMobileAppNumber()}"></span><br>
+                            <span th:if="${order.getDriver().isTracked}" th:text="${'Номер для отслеживания: '+order.getDriver().getTrackingNumber()}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6" >
+                    <div th:if="${order.getTransport()!=null}">
+                    </div>
+                </div>
                 <div class="col-4">
                     <div sec:authorize="hasAuthority('ROLE_DISPATCHER')" th:if="${order.getOffers().size()>0}">
-                    <h4>Предложения:</h4>
+                        <h4>Предложения:</h4>
                         <ul>
                             <th:block th:each="offer : ${order.getOffers()}">
                                 <li>
@@ -52,8 +68,11 @@
                         </ul>
                     </div>
                 </div>
+
                 <div class="col-4"></div>
-                <div class="col-4"><button id="printButton" class="btn btn-secondary btn-block">Печать</button></div>
+                <div class="col-4">
+                    <button id="printButton" class="btn btn-secondary btn-block">Печать</button>
+                </div>
                 <br>
                 <div class="col-12">
                     <h4>Документы</h4>

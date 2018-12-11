@@ -36,8 +36,9 @@ public class CustomAuthenticationManager implements AuthenticationManager {
             if (user != null) {
                 Hibernate.initialize(user.getCompany());
                 return new AuthToken(user, authentication, Collections.singletonList(user.getUserRole()), userInfoService);
-            } else throw new BadCredentialsException("Invalid username or password");
+            } else throw new BadCredentialsException("Invalid username");
         } else if (user != null) {
+
             final String encodedPassword = DigestUtils.md5DigestAsHex(authentication.getCredentials().toString().getBytes());
             final String encodedPasswordWithOldSalt = DigestUtils.md5DigestAsHex((encodedPassword + user.getSalt()).getBytes());
 
@@ -46,9 +47,9 @@ public class CustomAuthenticationManager implements AuthenticationManager {
             if (user.getPassAndSalt().equals(encodedPasswordWithOldSalt)) {
                 return new AuthToken(user, authentication, Collections.singletonList(user.getUserRole()), userInfoService);
             } else {
-                throw new BadCredentialsException("Invalid username or password");
+                throw new BadCredentialsException("Invalid password");
             }
-        } else throw new BadCredentialsException("Invalid username or password");
+        } else throw new BadCredentialsException("Invalid username");
     }
 
 

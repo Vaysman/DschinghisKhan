@@ -62,6 +62,7 @@ $(document).ready(function () {
 
     let driverEditor = new $.fn.dataTable.Editor({
         table: '#driverDataTable',
+        template: '#driversForm',
         idSrc: 'id',
         ajax: {
             create: {
@@ -128,24 +129,23 @@ $(document).ready(function () {
             {
                 label: 'Номер паспорта',
                 name: 'passportNumber',
-                type: 'mask',
-                mask: '00 00 000000'
+                type: 'text',
+                attr:{maxlength:20}
             },
             {
                 label: 'Номер водительского удостверения',
                 name: 'licenseNumber',
-                type: 'mask',
-                mask: '00 00 000000'
+                type: 'text',
+                attr:{maxlength:20}
             },
             {
-                label: 'Рейтинг',
+                label: 'Рейтинг (1-10)',
                 name: 'rating',
                 type: 'mask',
-                mask: '######',
-                placeholder: ""
+                mask: '##',
             },
             {
-                label: 'Мобильное приложение', name: 'hasMobileApp', type: "radio", options: [{ label:"Есть", value:true}, {label:"Нет",value:false}]
+                label: 'Наличие мобильного приложения', name: 'hasMobileApp', type: "radio", options: [{ label:"Есть", value:true}, {label:"Нет",value:false}]
             },
             {
                 label: 'Телефон для приложения',
@@ -154,7 +154,7 @@ $(document).ready(function () {
                 mask: '+7 (000)-000-00-00'
             },
             {
-                label: 'Отслеживание по телефону', name: 'isTracked', type: "radio", options: [{ label:"Есть", value:true}, {label:"Нет",value:false}]
+                label: 'Возможность отслеживания по телефону', name: 'isTracked', type: "radio", options: [{ label:"Есть", value:true}, {label:"Нет",value:false}]
             },
             {
                 label: 'Телефон для отслеживания',
@@ -173,6 +173,11 @@ $(document).ready(function () {
                 opts: {
                     searchField: "label", create: false
                 }
+            },
+            {
+                label:'Комментарий',
+                name: 'comment',
+                type:'textarea'
             }
         ]
 
@@ -317,6 +322,13 @@ $(document).ready(function () {
                     "targets": 11,
                     searchable: false,
                     orderable: false
+                },
+                {
+                    name: 'comment',
+                    data: "comment",
+                    targets:12,
+                    searchable: false,
+                    orderable: false
                 }
             ]
         }
@@ -394,5 +406,15 @@ $(document).ready(function () {
                 });
             });
         }
+    });
+    driverEditor.on('open', function () {
+        $('#driversForm').closest(".DTE_Action_Edit").parent().parent().css('max-width', '820px');
+        $('#driversForm').closest(".DTE_Action_Create").parent().parent().css('max-width', '820px');
+    });
+
+
+    driverEditor.on('close', function () {
+        $('#driversForm').closest(".DTE_Action_Edit").parent().parent().css('max-width', '500px');
+        $('#driversForm').closest(".DTE_Action_Create").parent().parent().css('max-width', '500px');
     });
 });

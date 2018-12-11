@@ -12,8 +12,8 @@
 <body class="grey">
 <div class="container">
     <div class="main">
-        <p th:if="${loginError}" class="error">Неправильный логин или пароль</p>
-        <form class="form form" method="post"  th:action="@{login}">
+        <p th:if="${error}" class="error">Неверно введен код</p>
+        <form class="form form" method="post"  th:action="@{code}">
             <div class="input-group" hidden>
                 <label for="username">Логин :</label>
                 <input type="text" placeholder="Введите логин" th:value="${user.login}" name="username" autofocus="autofocus" id="username">
@@ -25,7 +25,7 @@
             <br>
             <div class="input-group">
                 <label for="passwordInput"></label>
-                <input type="password" placeholder="Код" name="password" id="passwordInput">
+                <input type="text"  class="register-code" name="password" id="passwordInput">
 
             </div>
             <div class="form-check" style="margin-bottom: 10px;" hidden>
