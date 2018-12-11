@@ -127,22 +127,39 @@ $(document).ready(function () {
                 mask: '+7 (000)-000-00-00'
             },
             {
-                label: 'Номер паспорта',
+                label: 'Паспорт',
                 name: 'passportNumber',
                 type: 'text',
                 attr:{maxlength:20}
             },
             {
-                label: 'Номер водительского удостверения',
+                label: 'Водительское удостверение',
                 name: 'licenseNumber',
                 type: 'text',
                 attr:{maxlength:20}
             },
             {
-                label: 'Рейтинг (1-10)',
+                label: 'Рейтинг',
                 name: 'rating',
                 type: 'mask',
                 mask: '##',
+                maskOptions:{
+                    onKeyPress: function(cep, event, currentField, options){
+                        let min=1;
+                        let max=10
+                        let value = currentField.val();
+                        if(parseInt(value) < min || isNaN(parseInt(value))){
+                            currentField.val(min);
+                        } else if(parseInt(value) > max){
+                            currentField.val(max);
+                        } else {
+                            currentField.val(value);
+                        }
+
+                    }
+                }
+
+
             },
             {
                 label: 'Наличие мобильного приложения', name: 'hasMobileApp', type: "radio", options: [{ label:"Есть", value:true}, {label:"Нет",value:false}]
