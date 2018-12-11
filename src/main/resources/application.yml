@@ -22,8 +22,8 @@ spring:
           writetimeout: 10000
           starttls:
             enable: true
-    username: tarificationSquad
-    password: Fgsfds12
+    username: mail_username
+    password: mail_password
   thymeleaf:
     cache: false
   jpa:
