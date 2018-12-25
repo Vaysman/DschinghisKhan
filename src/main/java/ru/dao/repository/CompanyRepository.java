@@ -5,6 +5,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import ru.constant.CompanyType;
 import ru.dao.entity.Company;
@@ -12,6 +13,7 @@ import ru.dao.entity.Company;
 import java.util.List;
 import java.util.Optional;
 
+@PreAuthorize("isFullyAuthenticated()")
 public interface CompanyRepository extends DataTablesRepository<Company, Integer> {
     @Override
     DataTablesOutput<Company> findAll(DataTablesInput input, Specification<Company> additionalSpecification);
@@ -24,18 +26,22 @@ public interface CompanyRepository extends DataTablesRepository<Company, Integer
     Optional<Company> findFirstByInn(String inn);
 
     @Override
+    @RestResource(exported = false)
     @PreAuthorize("hasAuthority('ADMIN')")
     void delete(Company entity);
 
     @Override
+    @RestResource(exported = false)
     @PreAuthorize("hasAuthority('ADMIN')")
     void deleteAll();
 
     @Override
+    @RestResource(exported = false)
     @PreAuthorize("hasAuthority('ADMIN')")
     void deleteAll(Iterable<? extends Company> entities);
 
     @Override
+    @RestResource(exported = false)
     @PreAuthorize("hasAuthority('ADMIN')")
     void deleteById(Integer integer);
 }

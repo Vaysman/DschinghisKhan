@@ -12,6 +12,7 @@ import javax.mail.MessagingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 //@PreAuthorize("isAuthenticated()")
@@ -48,6 +49,18 @@ public class DataController {
         Hibernate.initialize(contract.getFile());
         Hibernate.initialize(contract.getInitiativeCompany());
         return contract;
+    }
+
+    @GetMapping(value = "/routePointsForRoute/{routeId}", produces = "application/json; charset=UTF-8")
+    private Set<RoutePoint> getRoutePointsForRoute(@PathVariable Integer routeId){
+        Route route = routeRepository.findById(routeId).orElseThrow(()->new IllegalArgumentException("Данного маршрута не существует"));
+        Hibernate.initialize(route.getRoutePoints());
+        for(RoutePoint routePoint : route.getRoutePoints()){
+            Hibernate.initialize(routePoint.getPoint());
+            Hibernate.initialize(routePoint.getClient());
+            Hibernate.initialize(routePoint.getContact());
+        }
+        return route.getRoutePoints();
     }
 
     @GetMapping(value = "/offers/{offerId}", produces = "application/json; charset=UTF-8")

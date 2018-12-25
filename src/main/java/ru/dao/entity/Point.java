@@ -1,6 +1,7 @@
 package ru.dao.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -18,7 +19,7 @@ import javax.persistence.*;
         @Index(name = "point_name_index", columnList = "name")
 })
 @EqualsAndHashCode(exclude = {"client"})
-@ToString
+@ToString(exclude = {"client"})
 @EntityListeners(PointListener.class)
 public class Point {
     @Id
@@ -57,6 +58,7 @@ public class Point {
     private String workTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "CLIENT_ID")
     private Client client;
 }

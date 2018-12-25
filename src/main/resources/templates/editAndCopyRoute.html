@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${route.getName()}"></title>
+    <th:block th:include="fragments/header :: scripts-no-const"></th:block>
+</head>
+<script th:inline="javascript">
+    let routeId = /*[[${route.getId()}]]*/;
+    let currentCompanyId = /*[[${currentCompanyId}]]*/;
+    let currentRoute = /*[[${route}]]*/;
+
+</script>
+<body class="grey">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-11 container white spaced-container">
+            <h4 th:text="${route.getName()}"></h4>
+            <div class="row">
+
+                <div class="col-12">
+                    <table id="routePointsTable" class="table table-striped table-bordered">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script>
+    var editor; // use a global for the submit and return data rendering in the examples
+
+
+    $(document).ready(function() {
+        let currentlySelectedClient = "";
+        let editor = new $.fn.dataTable.Editor({
+            table: '#routePointsTable',
+            fields: [
+                {
+                    label: '<span data-tooltip tooltiptext="Первый пункт разгрузки - 1, второй - 2 и т.д.">Порядковый номер (№) <i class="fa fa-info"></i></span>', name: 'queueNumber', type: 'mask', mask: "000",
+                    maskOptions: {
+                        reverse: true,
+                        placeholder: ""
+                    },
+                    // fieldInfo: "Первый пункт разгрузки - 1, второй - 2 и т.д."
+                },
+                {
+                    label: 'Расстояние (км)', name: 'distance', type: 'mask', mask: "0000",
+                    maskOptions: {
+                        reverse: true,
+                        placeholder: ""
+                    }
+                },
+                {
+                    label: 'Клиент', name: 'client', type: 'selectize', options: [], opts: {
+                        searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                        delimiter: null,
+                        load: function (query, callback) {
+                            $.get(`/api/clients/search/findTop10ByOriginatorAndNameContaining/?name=${query}&originator=${currentCompanyId}`,
+                                function (data) {
+                                    let clientOptions = [];
+                                    data._embedded.clients.forEach(function (entry) {
+                                        clientOptions.push({
+                                            "label": entry.name,
+                                            "value": entry._links.self.href
+                                        });
+                                    });
+                                    callback(clientOptions);
+                                }
+                            )
+                        },
+                        onChange: function(value) {
+                            currentlySelectedClient = value;
+                            if (value!=""){
+                                editor.field("contact").enable();
+                                editor.field("contact").inst().onSearchChange("");
+                            } else {
+                                editor.field("contact").disable();
+                                editor.field("contact").inst().clear();
+                            }
+
+                        },
+                        preload: true,
+                        loadThrottle: 500
+                    }
+                },
+                {
+                    label: 'Контакт', name: 'contact', type: 'selectize', options: [],  opts: {
+                        searchField: "label", create: false,
+                        load: function (query, callback) {
+                            $.get(`/api/contacts/search/findTop10ByClientAndNameContaining/?name=${query}&client=${currentlySelectedClient}`,
+                                function (data) {
+                                    let pointOptions = [];
+                                    data._embedded.contacts.forEach(function (entry) {
+                                        pointOptions.push({
+                                            "label": entry.name,
+                                            "value": entry._links.self.href
+                                        });
+                                    });
+                                    callback(pointOptions);
+                                }
+                            )
+                        },
+                        // preload: true,
+                        delimiter: null,
+                        loadThrottle: 500
+                    }
+                },
+                {
+                    label: 'Стоимость ПРР (₽)', name: 'prrCost', type: 'mask', mask: "000000",
+                    maskOptions: {
+                        reverse: true,
+                        placeholder: ""
+                    }
+                },
+                {
+                    label: 'Время ПРР (м)', name: 'loadingTime', type: 'mask', mask: "000",
+                    maskOptions: {
+                        reverse: true,
+                        placeholder: ""
+                    }
+                },
+                {
+                    label: 'Время в пути', name: 'timeEnRoute', type: 'mask', mask: "000",
+                    maskOptions: {
+                        reverse: true,
+                        placeholder: ""
+                    }
+                },
+                {
+                    label: 'Время прибытия', name: 'arrivalTime', type: 'mask', mask: "00:00",
+                    maskOptions: {
+                        reverse: true,
+                        placeholder: ""
+                    }
+                },
+
+                {
+                    label: 'Пункт', name: 'point', type: 'selectize', options: [], opts: {
+                        searchField: "label", create: false, placeholder: "Нажмите, чтобы изменить",
+                        load: function (query, callback) {
+                            $.get(`/api/points/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
+                                function (data) {
+                                    let pointOptions = [];
+                                    data._embedded.points.forEach(function (entry) {
+                                        pointOptions.push({
+                                            "label": entry.name,
+                                            "value": entry._links.self.href
+                                        });
+                                    });
+                                    callback(pointOptions);
+                                }
+                            )
+                        },
+                        preload: true,
+                        loadThrottle: 500
+                    }
+                }
+            ]
+        });
+
+        let routePointDataTable = $("#routePointsTable").DataTable({
+            processing: true,
+            searchDelay: 800,
+            ajax: {
+                contentType: 'application/json',
+                processing: true,
+                data: function (d) {
+                    return JSON.stringify(d);
+                },
+                url: `/dataTables/routePoints/routePointsForRoute/${routeId}`, // json datasource
+                type: "post"  // method  , by default get
+            },
+            dom: 'Btp',
+            language: {
+                url: '/localization/dataTablesRus.json'
+            },
+            select: {
+                style: 'single'
+            },
+            "buttons": [
+                {
+                    extend: "create",
+                    editor: editor
+                },
+                {
+                    extend: "edit",
+                    editor: editor
+                },
+                {
+                    extend: "remove",
+                    editor: editor
+                }
+            ],
+            "paging": 10,
+            "columnDefs": [
+                {"name": "id", "data": "id", searchable: false, orderable: false, "targets": 0, visible: false},
+                {"name": "point.name", "data": "point.name", "targets": 1, defaultContent: "", title:"Пункт"},
+                {"name": "point.address", "data": "point.address", "targets": 2, defaultContent: "", title:"Адрес"},
+                {"name": "client.name", "data": "client.name", targets: 3, defaultContent: "", title:"Клиент"},
+                {"name": "contact.name", "data": "contact.name", targets: 4, defaultContent: "", title:"Контакт"},
+                {
+                    "name": "distance",
+                    "data": "distance",
+                    "targets": 5,
+                    searchable: false,
+                    orderable: false,
+                    render: function (data) {
+                        return (data !== null) ? `${data}км` : "";
+                    }
+                    , title:"Расстояние"
+                },
+
+                // {
+                //     "name": "cost",
+                //     "data": "cost",
+                //     "targets": 4,
+                //     searchable: false,
+                //     orderable: false,
+                //     render: function (data) {
+                //         return (data !== null) ? `${data}₽` : "";
+                //     }
+                // },
+                {
+                    "name": "prrCost",
+                    "data": "prrCost",
+                    "targets": 6,
+                    searchable: false,
+                    orderable: false,
+                    render: function (data) {
+                        return (data !== null) ? `${data}₽` : "";
+                    }
+                    , title:"Стоимость ПРР"
+                },
+                {
+                    "name": "timeEnRoute", "data": "timeEnRoute", "targets": 7, render: function (data) {
+                        if (data != null) {
+                            return `${data}м`;
+                        } else return "";
+                    }
+                    , title:"Время в пути"
+                },
+                {
+                    "name": "arrivalTime", "data": "arrivalTime", "targets": 8, render: function (data) {
+                        if (data != null && data.length==4) {
+                            return(data.slice(0,2)+":"+data.slice(2,4))
+                        } else return "";
+                    }
+                    , title:"Время прибытия"
+                },
+                {
+                    "name": "loadingTime",
+                    data: "loadingTime",
+                    "targets": 9,
+                    searchable: false,
+                    orderable: false,
+                    render: function (data) {
+                        return (data !== null) ? `${data}м` : "";
+                    }
+                    , title:"Время погрузки"
+                },
+                {
+                    "name": "queueNumber", "data": "queueNumber", "targets": 10, render: function (data) {
+                        if (data != null) {
+                            return (data != "0") ? `№${data}` : "Склад отправки";
+                        } else return "";
+                    }
+                    , title:"Порядковый номер"
+                }
+
+            ]
+        });
+    } );
+
+</script>
+
+</body>
+</html>

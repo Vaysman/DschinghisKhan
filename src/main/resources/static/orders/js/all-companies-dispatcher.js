@@ -118,7 +118,7 @@ $(document).ready(function () {
                         console.log(jqXHR);
                         var cause = jqXHR.responseJSON.message;
                         if (cause.includes("Duplicate entry")) {
-                            companyEditor.field("inn").error("Указанный ИНН уже существует");
+                            companyEditor.field("inn").error("Перевозчик с указанным ИНН уже существует.\nЕсли перевозчик не имеет доступа к системе - можете выслать сообщение о регистрации повторно.");
                         } else {
                             companyEditor.field("inn").error(cause);
                         }
@@ -239,6 +239,26 @@ $(document).ready(function () {
                     name: 'directorFullname',
                 },
             ]
+        });
+
+        companyEditor.on('preSubmit', function (e, o, action) {
+            if (action !== 'remove') {
+
+                if (action == 'create') {
+                    if (this.field('inn').val() == '') {
+                        this.field('inn').error("ИНН должен быть указан");
+                    }
+                    if(this.field('email').val()==''){
+                        this.field('email').error('E-Mail должен быть указан')
+                    }
+                }
+
+                // If any error was reported, cancel the submission so it can be corrected
+                if (this.inError()) {
+                    console.log("inError");
+                    return false;
+                }
+            }
         });
 
         var companiesTable = $("#transportCompaniesTable").DataTable({
@@ -510,4 +530,5 @@ $(document).ready(function () {
         }
 
     });
+
 });

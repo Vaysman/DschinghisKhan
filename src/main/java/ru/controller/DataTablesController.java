@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.configuration.authentication.AuthToken;
 import ru.constant.CompanyType;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/dataTables")
+@PreAuthorize("isFullyAuthenticated()")
 public class DataTablesController {
 
     private final OrderHistoryRepository orderHistoryRepository;

@@ -15,5 +15,7 @@ public class RepositoryConfiguration extends RepositoryRestConfigurerAdapter {
         config.exposeIdsFor(Transport.class);
         config.exposeIdsFor(Order.class);
         config.exposeIdsFor(Client.class);
+//        config.setRepositoryDetectionStrategy(RepositoryDetectionStrategy.RepositoryDetectionStrategies.ANNOTATED);
+
     }
 }

@@ -1,6 +1,7 @@
 package ru.dao.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -129,9 +130,10 @@ public class Route {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name = "TRANSPORT_COMPANY_ID", referencedColumnName = "ID")
+    @JsonIgnore
     private Company company;
 
     @OneToMany(mappedBy = "route", fetch = FetchType.LAZY, cascade = { CascadeType.ALL})

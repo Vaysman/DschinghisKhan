@@ -30,6 +30,7 @@ import ru.util.generator.RandomStringGenerator;
 
 import javax.mail.MessagingException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -75,18 +76,58 @@ public class RegisterService {
     }
 
     @Transactional
-    public void resendPassword(User user) throws Exception{
-        User user1 = userRepository.findById(user.getId()).orElseThrow(()->new IllegalArgumentException("No such user exists"));
-        String newPassword = RandomStringGenerator.randomAlphaNumeric(6);
-        user1.setSalt("");
-        user1.setPassAndSalt(newPassword);
-        userRepository.save(user1);
-        if(!translit.removeSpecialCharacters(user1.getPhone()).isEmpty()){
-                smsService.sms(translit.removeSpecialCharacters(user1.getPhone()), "Новый пароль: " + newPassword);
-        } else if(translit.isValidEmail(user1.getEmail())){
-            mailService.send(user1.getEmail(),"Новый пароль","Новый пароль: "+newPassword);
-        }
+    public void resendPassword(Integer companyId) throws Exception{
+        Company company = companyRepository.findById(companyId).orElseThrow(()->new IllegalArgumentException("Компании не существует"));
+        this.resendPassword(company);
     }
+
+
+    @Transactional
+    public void resendPassword(Company company) throws Exception{
+        User user = company.getUsers().stream().findFirst().orElseThrow(()->new IllegalStateException("У компании не имеется пользователей. Пожалуйста, свяжитесь с поддержкой."));
+        String newPassword = RandomStringGenerator.randomAlphaNumeric(6);
+        user.setSalt("");
+        user.setPassAndSalt(newPassword);
+        userRepository.save(user);
+        if(translit.isValidEmail(user.getEmail())){
+            if (!company.getEmail().equals("test@tesе.test")) {
+                mailService.send(company.getEmail(),
+                        "Регистрационные данные",
+                        ("Зарегистрирован пользователь для транспортой компании " +
+                                company.getName() +
+                                "\nЛогин: " + user.getLogin() +
+                                "\nПароль: " + newPassword));
+            }
+        } else throw new IllegalStateException("Компания имеет некорректный E-mail");
+    }
+
+    @Transactional
+    public void resendPassword(Company company, String eMail) throws Exception{
+        User user = company.getUsers().stream().findFirst().orElseThrow(()->new IllegalStateException("У компании не имеется пользователей. Пожалуйста, свяжитесь с поддержкой."));
+        user.setEmail(eMail);
+        this.resendPassword(company);
+    }
+
+    @Transactional
+    public void resendPassword(Integer userId, String eMail) throws Exception{
+        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("Данного пользователя не существует"));
+        String newPassword = RandomStringGenerator.randomAlphaNumeric(6);
+        user.setSalt("");
+        user.setPassAndSalt(newPassword);
+        userRepository.save(user);
+        if(translit.isValidEmail(user.getEmail())){
+            if (!eMail.equals("test@tesе.test")) {
+                mailService.send(eMail,
+                        "Регистрационные данные",
+                        ("Зарегистрирован пользователь для транспортой компании " +
+                                user.getCompany().getName() +
+                                "\nЛогин: " + user.getLogin() +
+                                "\nПароль: " + newPassword));
+            }
+        } else throw new IllegalStateException("Компания имеет некорректный E-mail");
+    }
+
+
 
     @Transactional
     public User registerDispatcher(UserRegistrationData registrationData) throws Exception {
@@ -146,7 +187,7 @@ public class RegisterService {
         User user = User.builder()
                 .login(companyUserLogin)
                 .email(registrationData.getEmail())
-                .originator(company.getId())
+//                .originator(company.getId())
                 .username(company.getShortName())
                 .userRole(UserRole.ROLE_DISPATCHER)
                 .phone(registrationData.getPhone())
@@ -197,7 +238,7 @@ public class RegisterService {
     @Transactional
     public Company registerCompany(Company company) throws MessagingException {
         companyRepository.findFirstByInn(company.getInn()).ifPresent((x) -> {
-            throw new IllegalArgumentException(String.format("Компания с таким ИНН уже существует\n(%s/%s)", x.getName(), x.getEmail()));
+            throw new IllegalArgumentException(String.format("Компания с таким ИНН уже существует\n(%s)<br> Если перевозчик не имеет доступа к системе - можете выслать сообщение о регистрации повторно.", x.getName()));
         });
 
         company.setShortName(translit.removeAbbreviations(company.getName()));
@@ -244,5 +285,9 @@ public class RegisterService {
         user.setCompany(company);
         userRepository.save(user);
         return company;
+    }
+
+    public void resendRegistrationMessage(Company company){
+        company.getUsers().stream().min(Comparator.comparingInt(User::getId));
     }
 }
