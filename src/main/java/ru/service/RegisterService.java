@@ -61,11 +61,11 @@ public class RegisterService {
     }
 
     public Authentication authorize(String username, String password) throws AuthenticationException {
-        User user = userRepository.findByLogin(username).orElseThrow(()-> new IllegalArgumentException("Данного пользователя не существует"));
+        User user = userRepository.findByLogin(username).orElseThrow(() -> new IllegalArgumentException("Данного пользователя не существует"));
         Authentication auth = new AuthToken(user, password, Collections.singletonList(new SimpleGrantedAuthority(user.getUserRole().name())), userInfoService);
-        Authentication successfullAuthentication  = authenticationManager.authenticate(auth);
+        Authentication successfullAuthentication = authenticationManager.authenticate(auth);
         SecurityContextHolder.getContext().setAuthentication(successfullAuthentication);
-        return  successfullAuthentication;
+        return successfullAuthentication;
     }
 
 
@@ -76,20 +76,20 @@ public class RegisterService {
     }
 
     @Transactional
-    public void resendPassword(Integer companyId) throws Exception{
-        Company company = companyRepository.findById(companyId).orElseThrow(()->new IllegalArgumentException("Компании не существует"));
+    public void resendPassword(Integer companyId) throws Exception {
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new IllegalArgumentException("Компании не существует"));
         this.resendPassword(company);
     }
 
 
     @Transactional
-    public void resendPassword(Company company) throws Exception{
-        User user = company.getUsers().stream().findFirst().orElseThrow(()->new IllegalStateException("У компании не имеется пользователей. Пожалуйста, свяжитесь с поддержкой."));
+    public void resendPassword(Company company) throws Exception {
+        User user = company.getUsers().stream().findFirst().orElseThrow(() -> new IllegalStateException("У компании не имеется пользователей. Пожалуйста, свяжитесь с поддержкой."));
         String newPassword = RandomStringGenerator.randomAlphaNumeric(6);
         user.setSalt("");
         user.setPassAndSalt(newPassword);
         userRepository.save(user);
-        if(translit.isValidEmail(user.getEmail())){
+        if (translit.isValidEmail(user.getEmail())) {
             if (!company.getEmail().equals("test@tesе.test")) {
                 mailService.send(company.getEmail(),
                         "Регистрационные данные",
@@ -102,31 +102,30 @@ public class RegisterService {
     }
 
     @Transactional
-    public void resendPassword(Company company, String eMail) throws Exception{
-        User user = company.getUsers().stream().findFirst().orElseThrow(()->new IllegalStateException("У компании не имеется пользователей. Пожалуйста, свяжитесь с поддержкой."));
+    public void resendPassword(Company company, String eMail) throws Exception {
+        User user = company.getUsers().stream().findFirst().orElseThrow(() -> new IllegalStateException("У компании не имеется пользователей. Пожалуйста, свяжитесь с поддержкой."));
         user.setEmail(eMail);
         this.resendPassword(company);
     }
 
     @Transactional
-    public void resendPassword(Integer userId, String eMail) throws Exception{
-        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("Данного пользователя не существует"));
+    public void resendPassword(Integer userId, String eMail, SendPasswordStrategy passwordStrategy) throws Exception {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Данного пользователя не существует"));
         String newPassword = RandomStringGenerator.randomAlphaNumeric(6);
         user.setSalt("");
         user.setPassAndSalt(newPassword);
         userRepository.save(user);
-        if(translit.isValidEmail(user.getEmail())){
+        if (eMail != null && !eMail.isEmpty() && translit.isValidEmail(eMail)) {
             if (!eMail.equals("test@tesе.test")) {
                 mailService.send(eMail,
-                        "Регистрационные данные",
-                        ("Зарегистрирован пользователь для транспортой компании " +
+                        passwordStrategy.getHeader(),
+                        (passwordStrategy.getText() +
                                 user.getCompany().getName() +
                                 "\nЛогин: " + user.getLogin() +
                                 "\nПароль: " + newPassword));
             }
-        } else throw new IllegalStateException("Компания имеет некорректный E-mail");
+        } else throw new IllegalStateException("Указан некорректный E-mail");
     }
-
 
 
     @Transactional
@@ -196,16 +195,16 @@ public class RegisterService {
                 .build();
         userRepository.save(user);
 
-        if(!registrationData.getPhone().isEmpty()){
-            smsService.sms(translit.removeSpecialCharacters(registrationData.getPhone()),"Логин: "+companyUserLogin+"\nКод регистрации и пароль:"+userPassword);
+        if (!registrationData.getPhone().isEmpty()) {
+            smsService.sms(translit.removeSpecialCharacters(registrationData.getPhone()), "Логин: " + companyUserLogin + "\nКод регистрации и пароль:" + userPassword);
         } else if (!company.getEmail().equals("test@test.test") && !company.getEmail().isEmpty()) {
             try {
                 String text = "Теперь вам доступен весь функционал сервиса \"Кулуртай\"!\n" +
                         "Ведите работу с вашими перевозчиками, добавляйте новых, обменивайтесь информацией онлайн.\n" +
                         "В приложении подробная инструкция по работе с сервисом. В любое время вам поможет служба поддержки пользователей.\n\n" +
-                        "Логин: "+user.getLogin()+"\n"+
-                        "Код регистрации и пароль для входа:\n"+
-                        userPassword+
+                        "Логин: " + user.getLogin() + "\n" +
+                        "Код регистрации и пароль для входа:\n" +
+                        userPassword +
                         "\n\nС уважением,\n" +
                         "команда проекта \"Курултай\".\n";
                 mailService.send(company.getEmail(),
@@ -287,7 +286,10 @@ public class RegisterService {
         return company;
     }
 
-    public void resendRegistrationMessage(Company company){
+    public void resendRegistrationMessage(Company company) {
         company.getUsers().stream().min(Comparator.comparingInt(User::getId));
     }
+
+
 }
+

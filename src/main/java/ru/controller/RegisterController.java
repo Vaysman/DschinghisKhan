@@ -5,14 +5,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import ru.configuration.authentication.CustomPersistentRememberMeService;
 import ru.dao.entity.User;
 import ru.dto.json.user.UserRegistrationData;
 import ru.service.RegisterService;
+import ru.service.SendPasswordStrategy;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -66,6 +64,14 @@ public class RegisterController {
     @ResponseBody
     public String resendCode(@ModelAttribute User user){
         return "code";
+    }
+
+
+    @PostMapping("/resendPassword/{userId}")
+    @ResponseBody
+    public String resendPassword(@PathVariable Integer userId, @RequestBody Map<String, String> params) throws Exception{
+        registerService.resendPassword(userId, params.get("email"), SendPasswordStrategy.FORGOT_PASSWORD);
+        return "ok";
     }
 
     @PostMapping("/code")

@@ -155,7 +155,8 @@ $(document).ready(function () {
 
                     text: "Изменить статус",
                     action: function (e, dt, node, config) {
-                        statusChangeEditor.edit(ordersInWorkDataTable.rows('.selected', {select: true}), 'Изменить статус', {
+                        statusChangeEditor.edit(ordersInWorkDataTable.rows('.selected', {select: true}),
+                            'Изменить статус', {
                             "label": "Изменить статус",
                             "fn": function () {
                                 this.submit();

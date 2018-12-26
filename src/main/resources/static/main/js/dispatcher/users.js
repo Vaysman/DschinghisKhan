@@ -5,6 +5,39 @@ $(document).ready(function () {
         // console.log(currentCompany);
     });
     // console.log(JSON.stringify(userRoles));
+
+    let resendEditor = new $.fn.dataTable.Editor({
+        table: '#usersTable',
+        idSrc: 'id',
+        ajax: {
+            edit: {
+                type: 'POST',
+                contentType: 'application/json',
+                url: 'resendPassword/_id_',
+                data: function (d) {
+                    let newdata;
+                    $.each(d.data, function (key, value) {
+                        newdata = JSON.stringify({
+                            email: value.email
+                        })
+                    });
+                    return newdata;
+                },
+                success: function (response) {
+                    resendEditor.close();
+                },
+                error: function (jqXHR, exception) {
+
+                    console.log(jqXHR);
+                    resendEditor.field('email').error(jqXHR.responseJSON.message);
+                }
+            }
+        },
+        fields: [
+            {label: 'E-Mail', name: 'email', type: 'text'},
+        ]
+    });
+
     let usersEditor = new $.fn.dataTable.Editor({
         ajax: {
             create: {
@@ -173,6 +206,21 @@ $(document).ready(function () {
                         dt.button(2).disable();
                     },
                     enabled: false
+                },
+                {
+                    text: "Восстановить пароль",
+                    action: function (e, dt, node, config) {
+                        resendEditor
+                            .edit(usersDataTable.rows('.selected', {select: true}),
+                                'Восстановить пароль',
+                                {
+                                    "label": "Восстановить",
+                                    "fn": function () {
+                                        this.submit();
+                                    }
+                                }, true
+                            );
+                    }
                 }
             ],
             "paging": 10,
@@ -200,4 +248,8 @@ $(document).ready(function () {
             dt.button(2).enable();
         }
     });
+
+    usersDataTable.on('deselect', function () {
+        usersDataTable.button(2).disable();
+    })
 });

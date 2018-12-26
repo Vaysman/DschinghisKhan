@@ -19,8 +19,8 @@ spring:
           writetimeout: 5000
           starttls:
             enable: true
-    username: mail_username
-    password: mail_password
+    username: tarificationSquad
+    password: Fgsfds12
   thymeleaf:
     cache: false
   jpa:
@@ -31,9 +31,9 @@ spring:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     open-in-view: true
     show-sql: true
-google-maps-key: google_maps_key
-upload-directory: upload_dir
-sms-service-login: smsfeedback_login
-sms-service-password: smsfeedback_password
+google-maps-key: AIzaSyCbWvhz07RoOhD8qs9dFtIxf3W4d_qQjAk
+upload-directory: /Users/Roman 1/Desktop/uploads/
+sms-service-login: iSosnitsky
+sms-service-password: Fgsfds12
 sms-service-sender: TEST-SMS
-mail-from: mail_from
+mail-from: tarificationSquad@gmail.com

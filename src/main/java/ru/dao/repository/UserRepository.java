@@ -2,11 +2,12 @@ package ru.dao.repository;
 
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import ru.dao.entity.User;
 
 import java.util.List;
 import java.util.Optional;
-
+@PreAuthorize("isFullyAuthenticated()")
 public interface UserRepository extends DataTablesRepository<User, Integer> {
 
 
