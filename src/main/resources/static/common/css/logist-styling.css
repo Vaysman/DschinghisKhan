@@ -17,6 +17,14 @@ body{
     font-weight: normal;
 }
 
+.form-control:invalid{
+    border-bottom: 2px solid #d41317;
+}
+
+/*.form-control[value=""]{*/
+    /*border-bottom: 1px solid #d41317;*/
+/*}*/
+
 /*input.form-control:matches([type=text], [type=password]){*/
     /*border: none;*/
     /*border-radius: 0;*/
@@ -30,6 +38,10 @@ input.form-control{
 
 .img-container img {
     max-width: 100%;
+}
+
+#tab-info label{
+    width: 100%;
 }
 
 /*input.form-control:matches([type=text], [type=password]).error-red{*/

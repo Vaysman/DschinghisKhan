@@ -33,6 +33,10 @@
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-info"><i
                         class="fa fa-user" aria-hidden="true"></i> Профиль</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-points"><i
+                        class="fa fa-compass" aria-hidden="true"></i> Пункт отправки</a>
+            </li>
             <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-users"><i class="fa fa-users"
                                                                                                  aria-hidden="true"></i>
@@ -76,7 +80,8 @@
     <div id="tab-users" class="tab-pane">
         <div class=" container-fluid spaced-container white">
             <h4>Пользователи</h4>
-            <div>
+            <div class="row">
+                <div class="col-4">
                 <table class="table table-hover table-striped " id="usersTable">
                     <thead>
                     <tr>
@@ -88,190 +93,34 @@
                     </tr>
                     </thead>
                 </table>
+                </div>
             </div>
         </div>
     </div>
     <div id="tab-points" class="tab-pane">
-
-    </div>
-    <div id="tab-info" class="tab-pane in active">
         <div class="spaced-container white container-fluid">
             <div class="row">
                 <div class="col-1"></div>
-                <div class="col-3">
-                    <h4>Пользователь</h4>
-                    <br>
+                <div class="col-5">
                     <div>
-                        <input th:value="${user.id}" id="userId" hidden>
-                        <div class="form-group">
-                            <label>Логин
-                                <input readonly class="form-control" th:value="${user.login}"
-                                       placeholder="E-mail">
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>E-mail
-                                <input type="text" class="form-control" id="userEmail" th:value="${user.email}"
-                                       placeholder="E-mail">
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>Имя пользователя
-                                <input type="text" class="form-control" id="username" th:value="${user.username}">
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>Изменить пароль
-                                <input type="text" class="form-control" id="newPassword"
-                                       placeholder="Новый пароль">
-                            </label>
-                        </div>
-                        <button id="editUser" class="btn btn-primary">Сохранить</button>
-                    </div>
-
-                </div>
-                <div class="col-8">
-                    <h4>Компания</h4>
-                    <br>
-                    <div class="row">
-                        <div class="col-4">
-                            <input th:value="${company.id}" id="companyId" hidden>
-                            <div class="form-group">
-                                <label>E-mail
-                                    <input type="text" class="form-control" maxlength="64" id="companyEmail"
-                                           th:value="${company.email}"
-                                           placeholder="E-mail">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>Полное название
-                                    <input type="text" class="form-control" maxlength="64" id="companyName"
-                                           th:value="${company.name}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>Краткое название
-                                    <input type="text" class="form-control" maxlength="64" id="shortName"
-                                           th:value="${company.shortName}">
-                                </label>
-                            </div>
-
-
-                            <div sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" class="form-group">
-                                <label>Код ATI.su
-                                    <input type="text" class="form-control" id="atiCode" maxlength="64"
-                                           th:value="${company.atiCode}">
-                                </label>
-                            </div>
-                            <div sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" class="form-group">
-                                <label>Город
-                                    <input type="text" class="form-control" id="city" maxlength="64"
-                                           th:value="${company.city}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label style="width:100%">ИНН
-                                    <input type="text" id="inn" maxlength="64" style="width:100%;"
-                                           th:value="${company.inn}">
-
-                                </label>
-                            </div>
-
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>ОКВЕД
-                                    <input type="text" class="form-control" id="ocved" maxlength="64"
-                                           th:value="${company.ocved}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>ОКПО
-                                    <input type="text" class="form-control" id="ocpo" maxlength="64"
-                                           th:value="${company.ocpo}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>ОГРН
-                                    <input type="text" class="form-control" id="ogrn" maxlength="64"
-                                           th:value="${company.ogrn}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>КПП
-                                    <input type="text" class="form-control" id="kpp" maxlength="64"
-                                           th:value="${company.kpp}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>БИК
-                                    <input type="text" class="form-control" id="bik" maxlength="64"
-                                           th:value="${company.bik}">
-                                </label>
-                            </div>
-
-
-                        </div>
-                        <div class="col-4">
-
-                            <div class="form-group">
-                                <label>Корреспондентский счет
-                                    <input type="text" class="form-control" id="corresAccount" maxlength="64"
-                                           th:value="${company.corresAccount}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>Рассчетный счет
-                                    <input type="text" class="form-control" id="curAccount" maxlength="64"
-                                           th:value="${company.curAccount}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>Наименование банка
-                                    <input type="text" class="form-control" id="bankName" maxlength="64"
-                                           th:value="${company.bankName}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>ФИО директора
-                                    <input type="text" class="form-control" id="directorFullname" maxlength="64"
-                                           th:value="${company.directorFullname}">
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>ФИО глав. бухгалтера
-                                    <input type="text" class="form-control" id="chiefAccFullname" maxlength="64"
-                                           th:value="${company.chiefAccFullname}">
-                                </label>
-                            </div>
-                            <button id="editCompany" class="btn btn-primary">Сохранить</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-3">
-                    <div>
-                        <h4>Пункт</h4>
+                        <h4>Основной склад отправки</h4>
                         <br>
                         <div>
                             <input th:value="${point.id}" id="pointId" hidden>
                             <div class="form-group">
-                                <label>Название пункта
-                                    <input type="text" class="form-control" id="pointName" th:value="${point.name}"
-                                           placeholder="Название">
+                                <label style="width:100%">Наименование
+                                    <input required type="text" class="form-control" id="pointName"
+                                           th:value="${point.name}">
                                 </label>
                             </div>
                             <div class="form-group">
-                                <label>Адрес
+                                <label style="width:100%">Адрес
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" id="pointAddress"
+                                        <input required type="text" class="form-control" id="pointAddress"
                                                th:value="${point.address}">
                                         <div class="input-group-append">
                                             <button type="button" class="btn btn-outline-secondary field-inline-button"
-                                                    id="checkAddress">Проверить адрес
+                                                    id="checkAddress">Показать на карте
                                             </button>
                                         </div>
                                     </div>
@@ -284,413 +133,502 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-3">
-                    <h4>Контакт</h4>
-                    <br>
-                    <div>
-                        <input th:value="${contact.id}" id="contactId" hidden>
-                        <div class="form-group">
-                            <label>Телефон
-                                <input type="text" class="form-control" id="phone" th:value="${contact.phone}">
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>Имя
-                                <input type="text" class="form-control" id="contactName" th:value="${contact.name}">
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>Должность
-                                <input type="text" class="form-control" id="position" th:value="${contact.position}">
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>E-mail
-                                <input type="text" class="form-control" id="contactEmail" th:value="${contact.email}">
-                            </label>
-                        </div>
-                        <button id="editContact" class="btn btn-primary">Сохранить</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-    <div id="tab-transports" class="tab-pane">
-
-        <div class="container-fluid spaced-container white">
-            <h4>Транспорт</h4>
-            <div>
-                <table class="table table-hover  table table-striped table-bordered" style="width: 100%"
-                       id="transportDataTable">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>Номер</th>
-                        <th>Тип</th>
-                        <th>Кузов</th>
-                        <th>Погрузка</th>
-                        <th>Тоннаж</th>
-                        <th>Объем</th>
-                        <th>Коники</th>
-                        <th>Гидроборт</th>
-                        <th>GPS</th>
-                        <th>Комментарий</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-        <div class="modal" id="transportDocumentUploadModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Загрузить документ</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="transportDocumentUploadForm">
-
-                            <input id="transportIdInput" name="id" hidden>
-                            <div class="row">
-                                <div class="col-4">Название файла<sup class="red">*</sup></div>
-                                <div class="col-8"><input class="form-control" type="text" name="fileName"></div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-4">Файл<sup class="red">*</sup></div>
-                                <div class="col-8"><input type="file" name="file"></div>
-                            </div>
-                            <div class="red" id="transportDocumentUploadError">
-
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="uploadTransportDocument" class="btn btn-primary">Загрузить</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="tab-drivers" class="tab-pane">
-
-        <div class="container-fluid spaced-container white">
-            <h4>Водители</h4>
-            <div>
-                <table class="table table-hover table table-striped table-bordered" id="driverDataTable">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>ФИО</th>
-                        <th>Телефон</th>
-                        <th>Паспорт</th>
-                        <th>Водительское удостверение</th>
-                        <th>Рейтинг</th>
-                        <th>Мобильное приложение</th>
-                        <th>Номер для приложения</th>
-                        <th>Отслеживание по телефону</th>
-                        <th>Номер для отслеживания</th>
-                        <th>В штате</th>
-                        <th>Оплата</th>
-                        <th>Комментарий</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-            <div id="driversForm" style="display: flex">
-                <div class="row form-group">
-                    <div class="col-12">
-                        <div data-editor-template="name"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="phone"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="passportNumber"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="licenseNumber"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="rating"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="hasMobileApp"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="isTracked"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="mobileAppNumber"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="trackingNumber"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="paymentType"></div>
-                    </div>
-                    <div class="col-6">
-                        <div data-editor-template="isHired"></div>
-                    </div>
-                    <div class="col-12">
-                        <div data-editor-template="comment"></div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="modal" id="driverDocumentUploadModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Загрузить документ</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="driverDocumentUploadForm">
-                            <div class="row">
-                                <div class="col-4">Название файла<sup class="red">*</sup></div>
-                                <div class="col-8"><input class="form-control" type="text" name="fileName"></div>
-                                <br>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-4">Файл<sup class="red">*</sup></div>
-                                <div class="col-8"><input type="file" name="file"></div>
-                            </div>
-                            <div class="red" id="driverDocumentUploadError">
-
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="uploadDriverDocument" class="btn btn-primary">Загрузить</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal  fade" id="driverPhotoUpload" tabindex="-1" role="dialog" aria-labelledby="uploadDriverPhotoLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="uploadDriverPhotoLabel">Загрузка фотографии</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <input id="driverPhotoInput" type="file" accept="image/png,image/jpeg">
-                        <div class="img-container">
-                            <img id="driverPhoto" th:src="@{../error/images/no-image-icon.png}">
-                        </div>
-                        <div class="alert" role="alert"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="cropDriverPhoto">Загрузить</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="tab-company-users" class="tab-pane">
-        <div class="container-fluid spaced-container white">
-            <h4>Пользователи</h4>
-            <div>
-                <table class="table table-hover table-striped" style="width: 80%" id="companyUsersTable">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>Имя</th>
-                        <th>Логин</th>
-                        <th>Пароль</th>
-                        <th>E-Mail</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div id="tab-received-contracts" class="tab-pane">
-        <div class="spaced-container white container-fluid">
-            <h4>Контракты с диспетчерами</h4>
-            <div class="row" id="receivedContracts">
+    <div id="tab-info" class="tab-pane in active">
+        <div class="spaced-container container-fluid">
+            <div class="row">
                 <div class="col-2">
-                    <h5 th:if="${receivedContracts==null || #lists.size(receivedContracts) == 0}">
+                    <div class="card">
 
-                        <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
-                    </h5>
-                    <div class="list-group">
-                        <div class="input-group">
-                            <input class="form-control">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-search"></i></span>
-                            </div>
-                        </div>
-                        <a href="#" v-for="contract in receivedContracts"
-                           @click="loadContractInfo(contract.id)"
-                           class="list-group-item list-group-item-action grey">
-                            {{contract.contractName}}<br>
-                            <small class="text-muted">{{contract.companyName}}</small>
-                        </a>
-                    </div>
-                </div>
-                <div v-if="contract" class="col-10">
-                    <div class="row">
-                        <div class="col-12">
-                            <h5>Контракт: {{contract.file.fileName}}</h5>
-                            <h5>Компания: {{contract.initiativeCompany.name}}</h5>
-                            <br>
-                        </div>
-                        <div class="col-8">
-                            <div class="row">
-                                <div class="col-4">
 
-                                    Полное название:<br>{{contract.initiativeCompany.name}}<br>
-                                    Краткое наззвание:<br>{{contract.initiativeCompany.shortName}}<br>
-                                    E-mail:<br>
-                                    {{contract.initiativeCompany.email}}<br><br>
-                                </div>
-                                <div class="col-4">
-                                    ИНН:<br>
-                                    {{contract.initiativeCompany.inn}} <br>
-                                    ФИО директора:<br>
-                                    {{contract.initiativeCompany.directorFullname}}<br><br>
-                                </div>
-                                <div class="col-4">
-                                    Налогообложение:<br>
-                                    {{contract.initiativeCompany.taxationType}}<br>
-                                    ФИО глав. бухгалтера:<br>
-                                    {{contract.initiativeCompany.chiefAccFullname}}<br>
-                                    Наименование банка:<br>
-                                    {{contract.initiativeCompany.bankName}}<br>
-                                    Корреспондентский счет:<br>
-                                    {{contract.initiativeCompany.corresAccount}}<br>
-                                    Рассчетный счет:<br>
-                                    {{contract.initiativeCompany.curAccount}}<br>
-                                </div>
-                                <div class="col-4">
-                                    <a class="btn btn-block btn-secondary" :href="'/upload/getFile/'+contract.file.path">
-                                        Скачать контракт
-                                    </a>
-                                </div>
+                        <div class="card-header">Пользователь</div>
+                        <br>
+                        <div class="card-body">
+                            <input th:value="${user.id}" id="userId" hidden>
+                            <div class="form-group">
+                                <label>Логин
+                                    <input readonly class="form-control" th:value="${user.login}"
+                                           placeholder="E-mail">
+                                </label>
                             </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="row">
-                                <div class="col-6">
-                                    БИК:<br>
-                                    {{contract.initiativeCompany.bik}}<br>
-                                    КПП:<br>
-                                    {{contract.initiativeCompany.kpp}}<br>
-                                    ОКПО:<br>
-                                    {{contract.initiativeCompany.okpo}}<br>
-                                </div>
-                                <div class="col-6">
-                                    ОГРН:<br>
-                                    {{contract.initiativeCompany.bik}}<br>
-                                    ОГРН:<br>
-                                    {{contract.initiativeCompany.bik}}<br>
-                                    ОКВЕД:<br>
-                                    {{contract.initiativeCompany.ocved}}<br>
-                                </div>
+                            <div class="form-group">
+                                <label>E-mail
+                                    <input type="text" class="form-control" id="userEmail" th:value="${user.email}"
+                                           placeholder="E-mail">
+                                </label>
                             </div>
+                            <div class="form-group">
+                                <label>Имя пользователя
+                                    <input type="text" class="form-control" id="username" th:value="${user.username}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Изменить пароль
+                                    <input type="text" class="form-control" id="newPassword"
+                                           placeholder="Новый пароль">
+                                </label>
+                            </div>
+                            <button id="editUser" class="btn btn-block btn-primary">Сохранить</button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div id="tab-sent-contracts" class="tab-pane">
-        <div class="spaced-container white container-fluid">
-            <h4>Контракты с перевозчиками</h4>
-            <div class="row" id="sentContracts">
                 <div class="col-2">
-                    <h5 th:if="${sentContracts==null || #lists.size(sentContracts) == 0}">
-
-                        <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
-                    </h5>
-                    <div class="list-group">
-                        <div class="input-group">
-                            <input class="form-control">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                    <div class="card">
+                        <div class="card-header">Контакт</div>
+                        <br>
+                        <div class="card-body">
+                            <input th:value="${contact.id}" id="contactId" hidden>
+                            <div class="form-group">
+                                <label style="width:100%">Телефон
+                                    <input required type="text" class="form-control" id="phone"
+                                           th:value="${contact.phone}">
+                                </label>
                             </div>
+                            <div class="form-group">
+                                <label style="width:100%">Имя
+                                    <input required type="text" class="form-control" id="contactName"
+                                           th:value="${contact.name}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label style="width:100%">Должность
+                                    <input required type="text" class="form-control" id="position"
+                                           th:value="${contact.position}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label style="width:100%">E-mail
+                                    <input required type="text" class="form-control" id="contactEmail"
+                                           th:value="${contact.email}">
+                                </label>
+                            </div>
+                            <button id="editContact" class="btn btn-block btn-primary">Сохранить</button>
                         </div>
-                        <a href="#" v-for="contract in sentContracts"
-                           @click="loadContractInfo(contract.id)"
-                           class="list-group-item list-group-item-action grey">
-                            {{contract.contractName}}<br>{{contract.companyName}}
-                        </a>
                     </div>
                 </div>
-                <div v-if="contract" class="col-10" id="contractInfo">
-                    <div class="row">
-                        <div class="col-12">
-                            <h5>Контракт: {{contract.file.fileName}}</h5>
-                            <h5>Компания: {{contract.company.name}}</h5>
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-header">Компания</div>
+                        <br>
+                        <div class="row card-body">
+                            <div class="col-4">
+                                <input th:value="${company.id}" id="companyId" hidden>
+                                <div class="form-group">
+                                    <label>E-mail
+                                        <input type="text" class="form-control" maxlength="64" id="companyEmail"
+                                               th:value="${company.email}"
+                                               placeholder="E-mail">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Полное название
+                                        <input readonly type="text" class="form-control" maxlength="64" id="companyName"
+                                               th:value="${company.name}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Краткое название
+                                        <input readonly type="text" class="form-control" maxlength="64" id="shortName"
+                                               th:value="${company.shortName}">
+                                    </label>
+                                </div>
+
+
+                                <div sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" class="form-group">
+                                    <label>Код ATI.su
+                                        <input required type="text" class="form-control" id="atiCode" maxlength="64"
+                                               th:value="${company.atiCode}">
+                                    </label>
+                                </div>
+                                <div sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" class="form-group">
+                                    <label>Город
+                                        <input required type="text" class="form-control" id="city" maxlength="64"
+                                               th:value="${company.city}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>ИНН
+                                        <input readonly type="text" class="form-control" id="inn" maxlength="64"
+                                               th:value="${company.inn}">
+
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <button id="editCompany" class="btn btn-block btn-primary">Сохранить</button>
+                                </div>
+
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label>ОКВЕД
+                                        <input readonly type="text" class="form-control" id="ocved" maxlength="64"
+                                               th:value="${company.ocved}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>ОКПО
+                                        <input required type="text" class="form-control" id="ocpo" maxlength="64"
+                                               th:value="${company.ocpo}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>ОГРН
+                                        <input readonly type="text" class="form-control" id="ogrn" maxlength="64"
+                                               th:value="${company.ogrn}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>КПП
+                                        <input required type="text" class="form-control" id="kpp" maxlength="64"
+                                               th:value="${company.kpp}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>БИК
+                                        <input required type="text" class="form-control" id="bik" maxlength="64"
+                                               th:value="${company.bik}">
+                                    </label>
+                                </div>
+
+
+                            </div>
+                            <div class="col-4">
+
+                                <div class="form-group">
+                                    <label>Корреспондентский счет
+                                        <input required type="text" class="form-control" id="corresAccount"
+                                               maxlength="64"
+                                               th:value="${company.corresAccount}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Рассчетный счет
+                                        <input required type="text" class="form-control" id="curAccount" maxlength="64"
+                                               th:value="${company.curAccount}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Наименование банка
+                                        <input required type="text" class="form-control" id="bankName" maxlength="64"
+                                               th:value="${company.bankName}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>ФИО директора
+                                        <input required type="text" class="form-control" id="directorFullname"
+                                               maxlength="64"
+                                               th:value="${company.directorFullname}">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>ФИО глав. бухгалтера
+                                        <input required type="text" class="form-control" id="chiefAccFullname"
+                                               maxlength="64"
+                                               th:value="${company.chiefAccFullname}">
+                                    </label>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+<div id="tab-transports" class="tab-pane">
+
+    <div class="container-fluid spaced-container white">
+        <h4>Транспорт</h4>
+        <div>
+            <table class="table table-hover  table table-striped table-bordered" style="width: 100%"
+                   id="transportDataTable">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Номер</th>
+                    <th>Тип</th>
+                    <th>Кузов</th>
+                    <th>Погрузка</th>
+                    <th>Тоннаж</th>
+                    <th>Объем</th>
+                    <th>Коники</th>
+                    <th>Гидроборт</th>
+                    <th>GPS</th>
+                    <th>Комментарий</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="modal" id="transportDocumentUploadModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Загрузить документ</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="transportDocumentUploadForm">
+
+                        <input id="transportIdInput" name="id" hidden>
+                        <div class="row">
+                            <div class="col-4">Название файла<sup class="red">*</sup></div>
+                            <div class="col-8"><input class="form-control" type="text" name="fileName"></div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-4">Файл<sup class="red">*</sup></div>
+                            <div class="col-8"><input type="file" name="file"></div>
+                        </div>
+                        <div class="red" id="transportDocumentUploadError">
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="uploadTransportDocument" class="btn btn-primary">Загрузить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="tab-drivers" class="tab-pane">
+
+    <div class="container-fluid spaced-container white">
+        <h4>Водители</h4>
+        <div>
+            <table class="table table-hover table table-striped table-bordered" id="driverDataTable">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>ФИО</th>
+                    <th>Телефон</th>
+                    <th>Паспорт</th>
+                    <th>Водительское удостверение</th>
+                    <th>Рейтинг</th>
+                    <th>Мобильное приложение</th>
+                    <th>Номер для приложения</th>
+                    <th>Отслеживание по телефону</th>
+                    <th>Номер для отслеживания</th>
+                    <th>В штате</th>
+                    <th>Оплата</th>
+                    <th>Комментарий</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="driversForm" style="display: flex">
+            <div class="row form-group">
+                <div class="col-12">
+                    <div data-editor-template="name"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="phone"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="passportNumber"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="licenseNumber"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="rating"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="hasMobileApp"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="isTracked"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="mobileAppNumber"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="trackingNumber"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="paymentType"></div>
+                </div>
+                <div class="col-6">
+                    <div data-editor-template="isHired"></div>
+                </div>
+                <div class="col-12">
+                    <div data-editor-template="comment"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal" id="driverDocumentUploadModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Загрузить документ</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="driverDocumentUploadForm">
+                        <div class="row">
+                            <div class="col-4">Название файла<sup class="red">*</sup></div>
+                            <div class="col-8"><input class="form-control" type="text" name="fileName"></div>
                             <br>
                         </div>
-                        <div class="col-8">
-                            <div class="row">
-                                <div class="col-4">
+                        <br>
+                        <div class="row">
+                            <div class="col-4">Файл<sup class="red">*</sup></div>
+                            <div class="col-8"><input type="file" name="file"></div>
+                        </div>
+                        <div class="red" id="driverDocumentUploadError">
 
-                                    Полное название:<br>{{contract.company.name}}<br>
-                                    Краткое наззвание:<br>{{contract.company.shortName}}<br>
-                                    E-mail:<br>
-                                    {{contract.company.email}}<br><br>
-                                </div>
-                                <div class="col-4">
-                                    ИНН:<br>
-                                    {{contract.company.inn}} <br>
-                                    ФИО директора:<br>
-                                    {{contract.company.directorFullname}}<br><br>
-                                </div>
-                                <div class="col-4">
-                                    Налогообложение:<br>
-                                    {{contract.company.taxationType}}<br>
-                                    ФИО глав. бухгалтера:<br>
-                                    {{contract.company.chiefAccFullname}}<br>
-                                    Наименование банка:<br>
-                                    {{contract.company.bankName}}<br>
-                                    Корреспондентский счет:<br>
-                                    {{contract.company.corresAccount}}<br>
-                                    Рассчетный счет:<br>
-                                    {{contract.company.curAccount}}<br>
-                                </div>
-                                <div class="col-4">
-                                    <a class="btn btn-block btn-secondary" :href="'/upload/getFile/'+contract.file.path">
-                                        Скачать контракт
-                                    </a>
-                                </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="uploadDriverDocument" class="btn btn-primary">Загрузить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal  fade" id="driverPhotoUpload" tabindex="-1" role="dialog"
+         aria-labelledby="uploadDriverPhotoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadDriverPhotoLabel">Загрузка фотографии</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="driverPhotoInput" type="file" accept="image/png,image/jpeg">
+                    <div class="img-container">
+                        <img id="driverPhoto" th:src="@{../error/images/no-image-icon.png}">
+                    </div>
+                    <div class="alert" role="alert"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="cropDriverPhoto">Загрузить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="tab-company-users" class="tab-pane">
+    <div class="container-fluid spaced-container white">
+        <h4>Пользователи</h4>
+        <div>
+            <table class="table table-hover table-striped" style="width: 80%" id="companyUsersTable">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Имя</th>
+                    <th>Логин</th>
+                    <th>Пароль</th>
+                    <th>E-Mail</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="tab-received-contracts" class="tab-pane">
+    <div class="spaced-container white container-fluid">
+        <h4>Контракты с диспетчерами</h4>
+        <div class="row" id="receivedContracts">
+            <div class="col-2">
+                <h5 th:if="${receivedContracts==null || #lists.size(receivedContracts) == 0}">
+
+                    <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
+                </h5>
+                <div class="list-group">
+                    <div class="input-group">
+                        <input class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                    <a href="#" v-for="contract in receivedContracts"
+                       @click="loadContractInfo(contract.id)"
+                       class="list-group-item list-group-item-action grey">
+                        {{contract.contractName}}<br>
+                        <small class="text-muted">{{contract.companyName}}</small>
+                    </a>
+                </div>
+            </div>
+            <div v-if="contract" class="col-10">
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Контракт: {{contract.file.fileName}}</h5>
+                        <h5>Компания: {{contract.initiativeCompany.name}}</h5>
+                        <br>
+                    </div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-4">
+
+                                Полное название:<br>{{contract.initiativeCompany.name}}<br>
+                                Краткое наззвание:<br>{{contract.initiativeCompany.shortName}}<br>
+                                E-mail:<br>
+                                {{contract.initiativeCompany.email}}<br><br>
+                            </div>
+                            <div class="col-4">
+                                ИНН:<br>
+                                {{contract.initiativeCompany.inn}} <br>
+                                ФИО директора:<br>
+                                {{contract.initiativeCompany.directorFullname}}<br><br>
+                            </div>
+                            <div class="col-4">
+                                Налогообложение:<br>
+                                {{contract.initiativeCompany.taxationType}}<br>
+                                ФИО глав. бухгалтера:<br>
+                                {{contract.initiativeCompany.chiefAccFullname}}<br>
+                                Наименование банка:<br>
+                                {{contract.initiativeCompany.bankName}}<br>
+                                Корреспондентский счет:<br>
+                                {{contract.initiativeCompany.corresAccount}}<br>
+                                Рассчетный счет:<br>
+                                {{contract.initiativeCompany.curAccount}}<br>
+                            </div>
+                            <div class="col-4">
+                                <a class="btn btn-block btn-secondary"
+                                   :href="'/upload/getFile/'+contract.file.path">
+                                    Скачать контракт
+                                </a>
                             </div>
                         </div>
-                        <div class="col-4">
-                            <div class="row">
-                                <div class="col-6">
-                                    БИК:<br>
-                                    {{contract.company.bik}}<br>
-                                    КПП:<br>
-                                    {{contract.company.kpp}}<br>
-                                    ОКПО:<br>
-                                    {{contract.company.okpo}}<br>
-                                </div>
-                                <div class="col-6">
-                                    ОГРН:<br>
-                                    {{contract.company.bik}}<br>
-                                    ОГРН:<br>
-                                    {{contract.company.bik}}<br>
-                                    ОКВЕД:<br>
-                                    {{contract.company.ocved}}<br>
-                                </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-6">
+                                БИК:<br>
+                                {{contract.initiativeCompany.bik}}<br>
+                                КПП:<br>
+                                {{contract.initiativeCompany.kpp}}<br>
+                                ОКПО:<br>
+                                {{contract.initiativeCompany.okpo}}<br>
+                            </div>
+                            <div class="col-6">
+                                ОГРН:<br>
+                                {{contract.initiativeCompany.bik}}<br>
+                                ОГРН:<br>
+                                {{contract.initiativeCompany.bik}}<br>
+                                ОКВЕД:<br>
+                                {{contract.initiativeCompany.ocved}}<br>
                             </div>
                         </div>
                     </div>
@@ -698,6 +636,97 @@
             </div>
         </div>
     </div>
+</div>
+<div id="tab-sent-contracts" class="tab-pane">
+    <div class="spaced-container white container-fluid">
+        <h4>Контракты с перевозчиками</h4>
+        <div class="row" id="sentContracts">
+            <div class="col-2">
+                <h5 th:if="${sentContracts==null || #lists.size(sentContracts) == 0}">
+
+                    <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
+                </h5>
+                <div class="list-group">
+                    <div class="input-group">
+                        <input class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                    <a href="#" v-for="contract in sentContracts"
+                       @click="loadContractInfo(contract.id)"
+                       class="list-group-item list-group-item-action grey">
+                        {{contract.contractName}}<br>{{contract.companyName}}
+                    </a>
+                </div>
+            </div>
+            <div v-if="contract" class="col-10" id="contractInfo">
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Контракт: {{contract.file.fileName}}</h5>
+                        <h5>Компания: {{contract.company.name}}</h5>
+                        <br>
+                    </div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-4">
+
+                                Полное название:<br>{{contract.company.name}}<br>
+                                Краткое наззвание:<br>{{contract.company.shortName}}<br>
+                                E-mail:<br>
+                                {{contract.company.email}}<br><br>
+                            </div>
+                            <div class="col-4">
+                                ИНН:<br>
+                                {{contract.company.inn}} <br>
+                                ФИО директора:<br>
+                                {{contract.company.directorFullname}}<br><br>
+                            </div>
+                            <div class="col-4">
+                                Налогообложение:<br>
+                                {{contract.company.taxationType}}<br>
+                                ФИО глав. бухгалтера:<br>
+                                {{contract.company.chiefAccFullname}}<br>
+                                Наименование банка:<br>
+                                {{contract.company.bankName}}<br>
+                                Корреспондентский счет:<br>
+                                {{contract.company.corresAccount}}<br>
+                                Рассчетный счет:<br>
+                                {{contract.company.curAccount}}<br>
+                            </div>
+                            <div class="col-4">
+                                <a class="btn btn-block btn-secondary"
+                                   :href="'/upload/getFile/'+contract.file.path">
+                                    Скачать контракт
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-6">
+                                БИК:<br>
+                                {{contract.company.bik}}<br>
+                                КПП:<br>
+                                {{contract.company.kpp}}<br>
+                                ОКПО:<br>
+                                {{contract.company.okpo}}<br>
+                            </div>
+                            <div class="col-6">
+                                ОГРН:<br>
+                                {{contract.company.bik}}<br>
+                                ОГРН:<br>
+                                {{contract.company.bik}}<br>
+                                ОКВЕД:<br>
+                                {{contract.company.ocved}}<br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 <div th:insert="fragments/header :: footer"></div>
 <script sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")' src="/main/js/dispatcher/contracts.js"></script>
