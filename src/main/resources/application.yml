@@ -3,9 +3,9 @@ spring:
     multipart:
       max-file-size: 5MB
   datasource:
-    username: Khan
+    username: username
     url: jdbc:mysql://localhost:3306/dshinghis_khan?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
-    password: Diogenes-412
+    password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     rest:
@@ -22,8 +22,8 @@ spring:
           writetimeout: 10000
           starttls:
             enable: true
-    username: tarificationSquad
-    password: Fgsfds12
+    username: username
+    password: password
   thymeleaf:
     cache: false
   jpa:
@@ -35,10 +35,10 @@ spring:
     open-in-view: true
 #    show-sql: true
 logging:
-  path: /Users/Roman 1/Desktop/exchange/logs
-google-maps-key: AIzaSyCbWvhz07RoOhD8qs9dFtIxf3W4d_qQjAk
-upload-directory: /Users/Roman 1/Desktop/uploads/
-sms-service-login: iSosnitsky
-sms-service-password: Fgsfds12
+  path: /path/to/logs
+google-maps-key: googleMapsKey
+upload-directory: /Upload/Directory
+sms-service-login: login
+sms-service-password: password
 sms-service-sender: TEST-SMS
-mail-from: tarificationSquad@gmail.com
+mail-from: mail-from
