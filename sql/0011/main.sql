@@ -34,3 +34,7 @@ CREATE TABLE persistent_logins (
 ALTER TABLE users ADD phone varchar(20) NULL;
 
 ALTER TABLE drivers ADD comment TEXT NULL;
+
+DROP INDEX users_login_index ON users;
+ALTER TABLE users MODIFY login varchar(64);
+CREATE UNIQUE INDEX users_login_index ON users (login);

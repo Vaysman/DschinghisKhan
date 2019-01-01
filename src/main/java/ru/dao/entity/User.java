@@ -21,10 +21,10 @@ import javax.validation.constraints.NotNull;
 @Transactional
 @Table(name = "users",indexes = {
         @Index(name = "users_id_index", columnList = "id"),
-        @Index(name = "users_login_index", columnList = "login"),
+        @Index(name = "users_login_index", columnList = "login", unique = true),
         @Index(name = "users_originator_index", columnList = "originator")
 })
-@ToString(exclude = {"company",})
+@ToString(exclude = {"company"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class User {
     @JsonView(DataTablesOutput.View.class)
     private String username;
 
-    @Column
+    @Column(unique = true)
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private String login;

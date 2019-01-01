@@ -221,6 +221,8 @@ $(document).ready(function () {
                                 }, true
                             );
                     }
+                    ,
+                    enabled: false
                 }
             ],
             "paging": 10,
@@ -247,9 +249,11 @@ $(document).ready(function () {
         } else {
             dt.button(2).enable();
         }
+        dt.button(3).enable();
     });
 
     usersDataTable.on('deselect', function () {
         usersDataTable.button(2).disable();
+        usersDataTable.button(3).disable();
     })
 });

@@ -299,12 +299,13 @@ $(document).ready(function () {
                     {
                         text: "Только мои перевозчики",
                         action: function () {
-                            if (companiesTable.ajax.url() === "dataTables/transportCompanies") {
-                                companiesTable.ajax.url("dataTables/transportCompaniesForUser");
+                            console.log(companiesTable.ajax.remoteUrl());
+                            if (companiesTable.ajax.remoteUrl() === "dataTables/transportCompanies") {
+                                companiesTable.ajax.remoteUrl("dataTables/transportCompaniesForUser");
                                 companiesTable.ajax.reload();
                                 this.text('Все перевозчики');
                             } else {
-                                companiesTable.ajax.url("dataTables/transportCompanies");
+                                companiesTable.ajax.remoteUrl("dataTables/transportCompanies");
                                 companiesTable.ajax.reload();
                                 this.text('Только мои перевозчики');
                             }
