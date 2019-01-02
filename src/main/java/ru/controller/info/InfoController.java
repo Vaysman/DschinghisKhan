@@ -2,6 +2,7 @@ package ru.controller.info;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -134,6 +135,7 @@ public class InfoController {
         return "info/offer";
     }
 
+    @PreAuthorize("isFullyAuthenticated()")
     @GetMapping(value = "/drivers/{driverId}")
     private String getDriverInfo(@PathVariable Integer driverId, ModelMap modelMap){
         Driver driver = driverRepository.findById(driverId).orElse(null);
