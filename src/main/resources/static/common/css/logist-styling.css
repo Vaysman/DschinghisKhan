@@ -139,6 +139,11 @@ div.selectize-input{
     /*border-color: #ccc;*/
 }
 
+.btn-primary {
+    background-color: rgba(26, 43, 109, 1);
+    border: none;
+}
+
 .btn-default:not(.disabled):hover{
     color: #D41317;
 }

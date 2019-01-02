@@ -14,7 +14,7 @@
 
 </head>
 <body class="grey">
-<div class="container">
+<div class="container" style="color:rgba(26, 43, 109, 1)">
     <div class="row">
         <div class="col-3"></div>
         <div class="white spaced-container col-lg-6" style="margin-top:70px">
@@ -56,15 +56,15 @@
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:field="*{email}" class="form-control" id="email"
-                                       placeholder="E-mail"/>
+                                       />
 
                             </div>
                         </div>
                     </div>
-                        <div class="col-1">
-                            <small class="text-muted"><br><br>Или</small>
+                        <div class="col-2" style="text-align: center">
+                            <small class="text-muted"><br><br>ИЛИ</small>
                         </div>
-                    <div class="form-group col-6">
+                    <div class="form-group col-5">
                         <label for="phone" class="control-label">Мобильный телефон<sup class="red">*</sup></label>
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
@@ -79,7 +79,7 @@
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:field="*{ocved}" class="form-control" id="ocved"
-                                       placeholder="ОКВЕД"/>
+                                       />
                             </div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:field="*{directorFullname}" class="form-control" id="directorFullname"
-                                       placeholder="ФИО Директора"/>
+                                       />
                             </div>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                         <div class="cols-sm-10">
                             <div class="input-group mb-3">
                                 <input type="text" th:field="*{ocpo}" class="form-control" id="ocpo"
-                                       placeholder="ОКПО"/>
+                                       />
                             </div>
                         </div>
                     </div>
@@ -150,7 +150,7 @@
                             <div class="input-group mb-3">
                                 <input type="text" th:classappend="${pointNameError!=null} ? 'error-red' : ''"
                                        th:field="*{pointName}" class="form-control" id="pointName"
-                                       placeholder="Название пункта, например 'РЦ Рязань'"/>
+                                       />
                             </div>
                             <small th:if="${pointNameError!=null}" th:text="${pointNameError}"
                                    class="text-sm form-text red"></small>
@@ -194,7 +194,7 @@
 
         let suggestions = {};
         let loadInnSelectize = $("#inn").selectize({
-            placeholder: "Введите ИНН",
+            placeholder: "",
             labelField: "label",
             valueField: "value",
             searchField: "inn",
@@ -258,7 +258,19 @@
                 }
             }
         });
-        $("#phone").mask("+7 (999) 999-9999",{placeholder:"+7 (___) ___-____"});
+        $('#phone').on('paste', function(e){
+            e.preventDefault();
+            var clipboardCurrentData = (e.originalEvent || e).clipboardData.getData('text/plain');
+            console.log(clipboardCurrentData);
+            clipboardCurrentData = clipboardCurrentData.replace(/\D/g,"");
+            console.log(clipboardCurrentData);
+            if(clipboardCurrentData.length>10){
+                clipboardCurrentData = clipboardCurrentData.slice((clipboardCurrentData.length-10), clipboardCurrentData.length)
+            }
+            console.log(clipboardCurrentData);
+            window.document.execCommand('insertText', false, clipboardCurrentData);
+        });
+        $("#phone").mask("+7 (999) 999-9999",{placeholder:""});
     });
 
     // function checkAddress() {
