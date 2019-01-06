@@ -5,10 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import ru.constant.OrderStatus;
 import ru.dao.entity.Order;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,5 +29,7 @@ public interface OrderRepository extends DataTablesRepository<Order, Integer> {
 
     Optional<Order> findFirstByOriginatorAndDriverId(Integer originator, Integer driverId);
 
+    @RestResource(exported = false)
+    List<Order> findAllByOriginatorAndStatusChangeDateBetween(Integer originator, Date from, Date to);
 
 }

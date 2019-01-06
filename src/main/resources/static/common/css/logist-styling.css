@@ -191,7 +191,7 @@ th{
     border:none;
     background-color: transparent;
     border-radius: 0px;
-    border-bottom: 2px solid rgba(26, 43, 109, 1);
+    border-bottom: 2px solid #1a2b6d;
 }
 
 div.selectize-dropdown {
@@ -285,6 +285,12 @@ div.selectize-dropdown {
     background: rgba(26, 43, 109, 1);
     border-bottom: 2px solid rgba(26, 43, 109, 1);
     color: white;
+}
+
+
+.dashboard-panel{
+    padding:10px;
+    background: white;
 }
 
 /*.table{*/

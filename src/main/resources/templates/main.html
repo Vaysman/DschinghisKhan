@@ -56,8 +56,7 @@
 <nav class="logist-tabs">
     <div>
         <ul class="ml-md-auto flex-row nav container nav-fill" id="nav-tabs" role="tablist">
-            <li id="tab-all-orders-link" class="nav-item"
-                sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+            <li id="tab-all-orders-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-all-orders"><i
                         class="fa fa-" aria-hidden="true"></i> Все заявки</a>
             </li>
