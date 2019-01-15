@@ -98,6 +98,8 @@ public class InfoController {
         Hibernate.initialize(order.getTransport());
         Hibernate.initialize(order.getDriver());
         Hibernate.initialize(order.getFiles());
+        Hibernate.initialize(order.getAdditionalDrivers());
+        Hibernate.initialize(order.getAdditionalTransports());
         if (order.getDriver() != null) {
             Hibernate.initialize(order.getDriver().getFiles());
         }

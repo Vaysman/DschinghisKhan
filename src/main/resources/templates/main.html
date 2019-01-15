@@ -524,7 +524,7 @@
                                 <div class="col-4">
                                     Водитель:<br>
                                     <span v-if="offer.driver"><a v-bind:href="'info/drivers/'+offer.driver.id">{{offer.driver.name}}</a> <span
-                                            class="badge badge-danger" v-if="offer.driver.isNew">New</span> </span>
+                                            class="badge badge-danger" v-if="offer.driver.isNew">New</span></span>
                                     <span v-else>Не указан</span><br>
                                     <div v-if="offer.additionalDrivers.length>0">
                                         Дополнительные водители:<br>
@@ -534,7 +534,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    Транспорт:<br><span v-if="offer.transport">{{offer.transport.number}} ({{offer.transport.type}})</span><br>
+                                    Транспорт:<br><span v-if="offer.transport">{{offer.transport.number}} ({{offer.transport.type}})</span>
                                     <span v-else>Не указан</span><br>
                                     <div v-if="offer.additionalTransports.length>0">
                                         Дополнительный транспорт:<br>
@@ -645,7 +645,7 @@
                                 </div>
                                 <div class="col-4">
                                     Водитель:<br>
-                                    <span v-if="offer.driver"><a v-bind:href="'info/drivers/'+offer.driver.id">{{offer.driver.name}}</a> </span>
+                                    <span v-if="offer.driver"><a v-bind:href="'info/drivers/'+offer.driver.id">{{offer.driver.name}}</a></span>
                                     <span v-else>Не указан</span><br>
                                     Транспорт:<br><span v-if="offer.transport">{{offer.transport.number}}/{{offer.transport.type}}</span>
                                     <span v-else>Не указан</span><br><br>

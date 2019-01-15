@@ -51,9 +51,30 @@
                             <span th:if="${order.getDriver().isTracked}" th:text="${'Номер для отслеживания: '+order.getDriver().getTrackingNumber()}"></span>
                         </div>
                     </div>
+                    <div th:if="${order.getAdditionalDrivers().size()>0}">
+                        <h4>Дополнительные водители:</h4>
+                        <ul>
+                            <th:block th:each="additionalDriver : ${order.getAdditionalDrivers()}">
+                                <li>
+                                    <a th:href="@{../drivers/}+${additionalDriver.id}" th:text="${additionalDriver.name}"></a>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </div>
                 </div>
                 <div class="col-6" >
                     <div th:if="${order.getTransport()!=null}">
+                        <h4>Транспорт</h4>
+                        <div th:text="${'Номер: '+order.getTransport().getNumber()}"></div>
+                        <div th:if="${order.getTransport().getType()!=null}" th:text="${'Тип: '+order.getTransport().getType().getName()}"></div>
+                    </div>
+                    <div th:if="${order.getAdditionalTransports().size()>0}">
+                        <h4>Дополнительный транспорт</h4>
+                        <ul>
+                            <th:block th:each="additionalTransport : ${order.getAdditionalTransports()}">
+                                <li th:text="${additionalTransport.getNumber()+' ('+additionalTransport.getType().getName()+')'}"></li>
+                            </th:block>
+                        </ul>
                     </div>
                 </div>
                 <div class="col-4">
