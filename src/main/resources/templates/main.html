@@ -9,8 +9,8 @@
     <th:block th:include="fragments/header :: scripts"></th:block>
 
     <script src="/media/DataTables/numeric-plugin.js"></script>
-    <!--<script src="/media/vue.min.js"></script>-->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="/media/vue.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/all-orders.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
             src="/orders/js/orders-in-work-dispatcher.js"></script>
@@ -56,9 +56,10 @@
 <nav class="logist-tabs">
     <div>
         <ul class="ml-md-auto flex-row nav container nav-fill" id="nav-tabs" role="tablist">
-            <li id="tab-all-orders-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
+            <li id="tab-all-orders-link" class="nav-item"
+                sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-all-orders"><i
-                        class="fa fa-" aria-hidden="true"></i> Все заявки</a>
+                        class="fa fa-" aria-hidden="true"></i> Заявки</a>
             </li>
 
             <li id="tab-pending-orders-link" class="nav-item" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
@@ -88,7 +89,7 @@
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_DISPATCHER')">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders-map">
-                    <i class="fa fa-map" aria-hidden="true"></i> На карте
+                    <i class="fa fa-map" aria-hidden="true"></i> Карта
                 </a>
             </li>
             <li id="tab-routes-link" class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
@@ -112,13 +113,13 @@
                     <span class="badge badge-warning" th:if="${pendingOpinions!=null && pendingOpinions>0}"
                           th:text="${pendingOpinions}"></span>
                     <i class="fa fa-compass" aria-hidden="true"></i>
-                    Ревью маршрутов
+                    Котировки
                 </a>
             </li>
             <li class="nav-item" sec:authorize='hasAuthority("ROLE_DISPATCHER")'>
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-reviews">
                     <i class="fa fa-compass" aria-hidden="true"></i>
-                    Ревью
+                    Котировки
                 </a>
             </li>
 
@@ -199,7 +200,7 @@
          th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? '' : 'in active' "
          class="tab-pane">
         <div class="spaced-container white container-fluid" style="overflow-x: scroll">
-            <h4>Все заявки</h4>
+            <h4>Заявки</h4>
             <div>
                 <table class="table table-sm table-striped " id="orderTable">
                     <thead>
@@ -239,10 +240,10 @@
             <div class="row" id="ordersInWorkMap">
                 <div class="col-3">
                     <!--<div class="input-group">-->
-                        <!--<input  class="form-control">-->
-                        <!--<div class="input-group-append">-->
-                            <!--<span class="input-group-text"><i class="fa fa-search"></i></span>-->
-                        <!--</div>-->
+                    <!--<input  class="form-control">-->
+                    <!--<div class="input-group-append">-->
+                    <!--<span class="input-group-text"><i class="fa fa-search"></i></span>-->
+                    <!--</div>-->
                     <!--</div>-->
                     <div class="list-group">
 
@@ -262,11 +263,15 @@
                         </a>
                         <nav aria-label="Page navigation example">
                             <ul class="pagination" v-if="pageRange">
-                                <li class="page-item" v-if="previous"><a class="page-link"  @click="previousPage()" href="#"><i class="fa fa-arrow-left"></i></a></li>
-                                <li class="page-item" v-for="page in pageRange" :key="page" v-bind:class="{active : (page==pageNumber)}">
+                                <li class="page-item" v-if="previous"><a class="page-link" @click="previousPage()"
+                                                                         href="#"><i class="fa fa-arrow-left"></i></a>
+                                </li>
+                                <li class="page-item" v-for="page in pageRange" :key="page"
+                                    v-bind:class="{active : (page==pageNumber)}">
                                     <span class="page-link" @click="loadPage(page)" href="#">{{page+1}}</span>
                                 </li>
-                                <li class="page-item" v-if="next"><a class="page-link" @click="nextPage()" href="#"><i class="fa fa-arrow-right"></i></a></li>
+                                <li class="page-item" v-if="next"><a class="page-link" @click="nextPage()" href="#"><i
+                                        class="fa fa-arrow-right"></i></a></li>
                             </ul>
                         </nav>
                     </div>
@@ -296,7 +301,8 @@
                             </div>
                             <div v-if="orderInfo.order.company">
                                 Перевозчик: {{orderInfo.order.company.name}}<br>
-                                <span v-if="orderInfo.order.driver">Водитель: {{orderInfo.order.driver.name}}<br></span>
+                                <span v-if="orderInfo.order.driver">Водитель: <a
+                                        v-bind:href="'info/drivers/'+orderInfo.order.driver.id">{{orderInfo.order.driver.name}}</a><br></span>
                                 <span v-if="orderInfo.order.transport">Транспорт: {{orderInfo.order.transport.number}}<br></span>
                             </div>
                         </div>
@@ -368,7 +374,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-7" id="pendingOrderInfo">
+                <div class="col-8" id="pendingOrderInfo">
                     <h5 v-if="order" class="red-first-letter">{{order.number}}</h5>
                     <div class="row" v-if="order">
                         <div class="col-4">
@@ -413,23 +419,26 @@
                         </div>
                         <div class="col-4">
 
-                            Пункты:
+                            Пункты маршрута:
                             <div class="row" v-for="routePoint in order.route.routePoints">
-                                <div class="col-4">
-                                    {{routePoint.queueNumber==0 ? 'Склад отправки' : ('Разгрузка '+routePoint.queueNumber)}}
+                                <div class="col-5">
+                                    {{routePoint.queueNumber==0 ? 'Склад отправки' : ('Разгрузка
+                                    '+routePoint.queueNumber)}}
 
                                 </div>
-                                <div class="col-6">
+                                <div class="col-7">
                                     {{routePoint.point.name}}
-                                    {{routePoint.point.address}}
+                                    <br>
+                                    <span class="text-muted">{{routePoint.point.address}}</span>
                                 </div>
                             </div>
+                            <br>
                             Дата исполнения:<br>
                             {{order.dispatchDate}}
                         </div>
                     </div>
                 </div>
-                <div class="col-3" id="pendingOrderAcceptForm" :hidden="(order==null)">
+                <div class="col-2" id="pendingOrderAcceptForm" :hidden="(order==null)">
                     <div class="form-group">
                         <label for="orderTransportSelect">Транспорт</label>
                         <input id="orderTransportSelect">
@@ -510,7 +519,8 @@
                                 </div>
                                 <div class="col-4">
                                     Водитель:<br>
-                                    <span v-if="offer.driver">{{offer.driver.name}} <span class="badge badge-danger" v-if="offer.driver.isNew">New</span> </span>
+                                    <span v-if="offer.driver"><a v-bind:href="'info/drivers/'+offer.driver.id">{{offer.driver.name}}</a> <span
+                                            class="badge badge-danger" v-if="offer.driver.isNew">New</span> </span>
                                     <span v-else>Не указан</span><br>
                                     Транспорт:<br><span v-if="offer.transport">{{offer.transport.number}}/{{offer.transport.type}}</span>
                                     <span v-else>Не указан</span><br><br>
@@ -615,7 +625,7 @@
                                 </div>
                                 <div class="col-4">
                                     Водитель:<br>
-                                    <span v-if="offer.driver">{{offer.driver.name}} </span>
+                                    <span v-if="offer.driver"><a v-bind:href="'info/drivers/'+offer.driver.id">{{offer.driver.name}}</a> </span>
                                     <span v-else>Не указан</span><br>
                                     Транспорт:<br><span v-if="offer.transport">{{offer.transport.number}}/{{offer.transport.type}}</span>
                                     <span v-else>Не указан</span><br><br>
@@ -770,12 +780,12 @@
     </div>
     <div id="tab-pending-opinions" class="tab-pane">
         <div class="container-fluid spaced-container white">
-            <h4>Ревью маршрутов</h4>
+            <h4>Котировки</h4>
             <br>
             <br>
             <div class="row">
                 <div class="col-6">
-                    <h5>Ожидают ревью</h5>
+                    <h5>Ожидают ответа</h5>
                     <div class="list-group">
                         <div class="input-group">
                             <input class="form-control">
@@ -784,7 +794,8 @@
                             </div>
                         </div>
                         <th:block th:each="opinion : ${opinions}">
-                            <a th:if="${opinion.getPrice()==null}" class="list-group-item list-group-item-action list-group-item-warning"
+                            <a th:if="${opinion.getPrice()==null}"
+                               class="list-group-item list-group-item-action list-group-item-warning"
                                target="_blank"
                                th:text="${opinion.getReview().getCompany().getName()+' / '+opinion.getReview().getRoute().getName()}"
                                th:href="${'/info/review/'+opinion.getReview().getId()}"></a>
@@ -792,7 +803,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <h5>Прошедшие ревью</h5>
+                    <h5>Ответ отправлен</h5>
 
                     <div class="list-group">
                         <div class="input-group">
@@ -814,7 +825,7 @@
     </div>
     <div id="tab-reviews" class="tab-pane">
         <div class="container-fluid spaced-container white">
-            <h4>Ревью маршрутов</h4>
+            <h4>Котировки</h4>
             <br>
             <br>
             <div class="row">
@@ -828,7 +839,8 @@
                             </div>
                         </div>
                         <th:block th:each="review : ${reviews}">
-                            <a th:if="${review.getStatus().name()=='CREATED'}" class="list-group-item list-group-item-action"
+                            <a th:if="${review.getStatus().name()=='CREATED'}"
+                               class="list-group-item list-group-item-action"
                                target="_blank"
                                th:text="${review.getRoute().getName()}"
                                th:href="${'/info/review/'+review.getId()}"></a>
@@ -846,7 +858,8 @@
                             </div>
                         </div>
                         <th:block th:each="review : ${reviews}">
-                            <a th:if="${review.getStatus().name()=='RESPONDED'}" class="list-group-item list-group-item-action"
+                            <a th:if="${review.getStatus().name()=='RESPONDED'}"
+                               class="list-group-item list-group-item-action"
                                target="_blank"
                                th:text="${review.getRoute().getName()}"
                                th:href="${'/info/review/'+review.getId()}"></a>
@@ -863,7 +876,8 @@
                             </div>
                         </div>
                         <th:block th:each="review : ${reviews}">
-                            <a th:if="${review.getStatus().name()=='COMPLETE'}" class="list-group-item list-group-item-action list-group-item-success"
+                            <a th:if="${review.getStatus().name()=='COMPLETE'}"
+                               class="list-group-item list-group-item-action list-group-item-success"
                                target="_blank"
                                th:text="${review.getRoute().getName()}"
                                th:href="${'/info/review/'+review.getId()}"></a>
@@ -915,35 +929,41 @@
                 <div class="col-6">
                     <div data-editor-template="totalCostNds"></div>
                 </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerBox"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerBoxNds"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerPoint"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerPointNds"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerHour"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerHourNds"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerPallet"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerPalletNds"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerKilometer"></div>
-                </div>
-                <div class="col-6">
-                    <div data-editor-template="costPerKilometerNds"></div>
+                <a class="btn btn-block" data-toggle="collapse" href="#additionalRouteTarification" role="button"
+                   aria-expanded="false" aria-controls="additionalRouteTarification">Дополнительная тарификация</a>
+                <div class="collapse col-12" id="additionalRouteTarification">
+                    <div class="row">
+                        <div class="col-6">
+                            <div data-editor-template="costPerBox"></div>
+                        </div>
+                        <div class="col-6">
+                            <div data-editor-template="costPerBoxNds"></div>
+                        </div>
+                        <div class="col-6">
+                            <div data-editor-template="costPerPoint"></div>
+                        </div>
+                        <div class="col-6">
+                            <div data-editor-template="costPerPointNds"></div>
+                        </div>
+                        <div class="col-6">
+                            <div data-editor-template="costPerHour"></div>
+                        </div>
+                        <div class="col-6">
+                            <div data-editor-template="costPerHourNds"></div>
+                        </div>
+                        <div class="col-6">
+                            <div data-editor-template="costPerPallet"></div>
+                        </div>
+                        <div class="col-6">
+                            <div data-editor-template="costPerPalletNds"></div>
+                        </div>
+                        <div class="col-6">
+                            <div data-editor-template="costPerKilometer"></div>
+                        </div>
+                        <div class="col-6">
+                            <div data-editor-template="costPerKilometerNds"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-12">
                     <div data-editor-template="loadingType"></div>

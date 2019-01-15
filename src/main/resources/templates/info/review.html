@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${'Ревью '+review.getId()}"></title>
+    <title th:text="${'Котировка №'+review.getId()}"></title>
     <th:block th:include="fragments/header :: scripts-no-const"></th:block>
     <script>
         $(document).ready(function () {
@@ -14,7 +14,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-8 container white spaced-container">
-            <h4 th:text="'Ревью №'+${review.getId()}"></h4>
+            <h4 th:text="'Котировка №'+${review.getId()}"></h4>
             <h5 th:text="'Маршрут: '+${review.getRoute().getName()}"></h5>
             <div class="container row">
                 <div class="col-6">
@@ -70,7 +70,7 @@
                 <div class="container row" th:if="${opinion.getCompany().getId()==companyId&&(opinion.price==null)}">
                         <div class="col-6">
                             <form th:action="@{/../../reviews/sendOpinion/}+${opinion.getId()}" method="POST">
-                                <h4>Ваше ревью</h4>
+                                <h4>Ваше предложение</h4>
                                 <div class="form-group">
                                     <label>Ваша цена<sup class="red">*</sup>
                                         <input id="price" name="price" class="form-control">

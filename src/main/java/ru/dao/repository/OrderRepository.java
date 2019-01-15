@@ -30,6 +30,6 @@ public interface OrderRepository extends DataTablesRepository<Order, Integer> {
     Optional<Order> findFirstByOriginatorAndDriverId(Integer originator, Integer driverId);
 
     @RestResource(exported = false)
-    List<Order> findAllByOriginatorAndStatusChangeDateBetween(Integer originator, Date from, Date to);
+    List<Order> findAllByOriginatorAndDispatchDateBetween(Integer originator, Date from, Date to);
 
 }

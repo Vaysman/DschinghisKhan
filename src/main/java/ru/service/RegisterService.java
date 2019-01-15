@@ -29,10 +29,7 @@ import ru.util.Translit;
 import ru.util.generator.RandomStringGenerator;
 
 import javax.mail.MessagingException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class RegisterService {
@@ -286,9 +283,64 @@ public class RegisterService {
         return company;
     }
 
+    public Map<String, String> registerTransportCompanyProgrammatically(Company company){
+        Map<String,String> companyInfoMap = new HashMap<>();
+
+        companyRepository.findFirstByInn(company.getInn()).ifPresent((x) -> {
+            companyInfoMap.put("companyName", company.getName());
+            companyInfoMap.put("error",String.format("Компания с таким ИНН уже существует\n(%s)", x.getName()));
+
+        });
+        if (companyInfoMap.containsKey("error")){
+            return companyInfoMap;
+        }
+
+            company.setShortName(translit.removeAbbreviations(company.getName()));
+        String companyUserLogin = translit.removeSpecialCharacters(translit.cyr2lat(company.getShortName()));
+        while (userRepository.findByLogin(companyUserLogin).isPresent()) {
+            companyUserLogin = companyUserLogin + "1";
+        }
+        String userPassword = RandomStringGenerator.randomAlphaNumeric(8);
+        User user = User.builder()
+                .login(companyUserLogin)
+                .userRole(UserRole.ROLE_TRANSPORT_COMPANY)
+                .username(company.getShortName())
+                .email(company.getEmail())
+                .passAndSalt(userPassword)
+                .build();
+        userRepository.save(user);
+        Set<User> userList = new HashSet<>();
+        userList.add(user);
+        company.setUsers(userList);
+
+        Point point = new Point();
+        pointRepository.save(point);
+        company.setPoint(point);
+
+        Contact contact = Contact.builder()
+                .company(company)
+                .email(company.getEmail())
+                .type(ContactType.PRIMARY)
+                .build();
+
+        contactRepository.save(contact);
+        companyRepository.save(company);
+
+        user.setCompany(company);
+        userRepository.save(user);
+
+        companyInfoMap.put("companyName",company.getName());
+        companyInfoMap.put("login",user.getLogin());
+        companyInfoMap.put("password",userPassword);
+        return companyInfoMap;
+    }
+
     public void resendRegistrationMessage(Company company) {
         company.getUsers().stream().min(Comparator.comparingInt(User::getId));
     }
+
+
+
 
 
 }

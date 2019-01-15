@@ -161,7 +161,7 @@
     <!--</ul>-->
     <ul class="navbar-nav flex-row">
         <li class="nav-item"><a class="nav-link" th:classappend="${#strings.equals(pageName,'orders')} ? 'active' : ''" href="/orders">
-            Заявки
+            Рабочий стол
             <span class="badge badge-primary" th:if="${managedOffers!=null && #lists.size(managedOffers) > 0}" th:text="${#lists.size(managedOffers)}"></span>
             <span class="badge badge-success" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}" th:text="${#lists.size(pendingOrders)}"></span>
 

@@ -171,7 +171,10 @@ $(document).ready(function () {
                         "data": "driver.name",
                         orderable: false,
                         "targets": 6,
-                        defaultContent: ""
+                        defaultContent: "",
+                        render: function (data, type, full) {
+                            return `<a target="_blank" href='info/drivers/${full.driver.id}'>${data}</a>`;
+                        }
                     },
                     {
                         "name": "requirements",

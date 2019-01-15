@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    Highcharts.setOptions({
+        chart: {
+            style: {
+                fontFamily: 'Gerbera Light'
+            }
+        }
+    });
+
     pickmeup('#ordersPeriod',{
         mode: 'range',
         format: 'd/m/Y',
@@ -11,6 +19,7 @@ $(document).ready(function () {
         date:'01/06/2018 - 01/01/2019'
     });
 
+
     $('#reloadOrdersChart').click(function () {
         reloadOrdersChart();
     });
@@ -22,35 +31,85 @@ $(document).ready(function () {
 
         $.get(`chart/orders?to=${to}&from=${from}`, function (ordersPeriodChartData) {
             console.log(ordersPeriodChartData);
+
+
+
+
+// Create the chart
             Highcharts.chart('ordersPeriodChart', {
                 chart: {
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    type: 'pie'
+                    type: 'column'
                 },
                 title: {
-                    text: 'Заявки за период'
+                    text: `Заявки за ${from} - ${to}`
                 },
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.y}</b>'
+                subtitle: {
+                    text: 'Нажмите на колонку для подробностей</a>'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    allowDecimals: false,
+                    title: {
+                        text: 'Кол-во заявок'
+                    }
+
+                },
+                legend: {
+                    enabled: false
                 },
                 plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
+                    series: {
+                        borderWidth: 0,
                         dataLabels: {
-                            enabled: true
-                        },
-                        showInLegend: true
+                            enabled: true,
+                            format: '{point.y}'
+                        }
                     }
                 },
-                series: [{
-                    name: 'Заявки',
-                    colorByPoint: true,
-                    data: ordersPeriodChartData
-                }]
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> <br/>'
+                },
+
+                series: [ordersPeriodChartData.series],
+                drilldown: {
+                    series: ordersPeriodChartData.drilldown
+                }
             });
+
+
+        //     Highcharts.chart('ordersPeriodChart', {
+        //         chart: {
+        //             plotBackgroundColor: null,
+        //             plotBorderWidth: null,
+        //             plotShadow: false,
+        //             type: 'pie'
+        //         },
+        //         title: {
+        //             text: 'Заявки за период'
+        //         },
+        //         tooltip: {
+        //             pointFormat: '{series.name}: <b>{point.y}</b>'
+        //         },
+        //         plotOptions: {
+        //             pie: {
+        //                 allowPointSelect: true,
+        //                 cursor: 'pointer',
+        //                 dataLabels: {
+        //                     enabled: true
+        //                 },
+        //                 showInLegend: true
+        //             }
+        //         },
+        //         series: [{
+        //             name: 'Заявки',
+        //             colorByPoint: true,
+        //             data: ordersPeriodChartData
+        //         }]
+        //     });
         })
 
 

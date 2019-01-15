@@ -690,6 +690,7 @@ $(document).ready(function () {
 
     orderDataTable.on('deselect', function () {
         orderDataTable.button(3).disable();
+        orderDataTable.button(4).disable();
     });
 
     orderEditor.on('preSubmit', function (e, o, action) {

@@ -108,7 +108,7 @@ $(document).ready(function () {
         },
         fields: [
             {
-                label: 'Номер',
+                label: 'Гос. Номер',
                 name: 'number',
                 type: 'text'
             },

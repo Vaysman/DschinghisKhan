@@ -1,7 +1,7 @@
 $(document).ready(function () {
-    $("#editUser").on("click",function () {
+    $("#editUser").on("click", function () {
         $(this).prop("disabled", true);
-        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> "+$(this).text());
+        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> " + $(this).text());
         let that = this;
         let userData = {};
 
@@ -10,17 +10,17 @@ $(document).ready(function () {
         let username = $("#username").val();
         let newPassword = $("#newPassword").val();
 
-        if (userEmail!=null && userEmail!=""){
+        if (userEmail != null && userEmail != "") {
             userData.email = userEmail;
         }
 
-        if(username!=null && username!=""){
+        if (username != null && username != "") {
             userData.username = username;
         }
 
-        if(newPassword!=null && newPassword!=""){
-            userData.passAndSalt=newPassword;
-            userData.salt="";
+        if (newPassword != null && newPassword != "") {
+            userData.passAndSalt = newPassword;
+            userData.salt = "";
         }
 
         $.ajax({
@@ -33,12 +33,13 @@ $(document).ready(function () {
             success: function (response) {
                 $(that).html("<i class='fa fa-check'></i> Обновлено!");
                 $(that).prop("disabled", false);
-            }})
+            }
+        })
     });
 
-    $("#editCompany").on("click",function () {
+    $("#editCompany").on("click", function () {
         $(this).prop("disabled", true);
-        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> "+$(this).text());
+        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> " + $(this).text());
 
         let companyData = {};
 
@@ -55,8 +56,8 @@ $(document).ready(function () {
         companyData.directorFullname = $("#directorFullname").val();
         companyData.chiefAccFullname = $("#chiefAccFullname").val();
 
-        for(let key in companyData){
-            if (companyData[key]==null || companyData[key]==""){
+        for (let key in companyData) {
+            if (companyData[key] == null || companyData[key] == "") {
                 delete companyData[key];
             }
         }
@@ -73,14 +74,15 @@ $(document).ready(function () {
             success: function (response) {
                 $(that).html("<i class='fa fa-check'></i> Обновлено!");
                 $(that).prop("disabled", false);
-            }})
+            }
+        })
 
 
     });
 
     $("#editPoint").on("click", function () {
         $(this).prop("disabled", true);
-        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> "+$(this).text());
+        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> " + $(this).text());
         let that = this;
         let pointData = {};
 
@@ -98,12 +100,13 @@ $(document).ready(function () {
             success: function (response) {
                 $(that).html("<i class='fa fa-check'></i> Обновлено!");
                 $(that).prop("disabled", false);
-            }})
+            }
+        })
     });
 
     $("#editContact").on("click", function () {
         $(this).prop("disabled", true);
-        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> "+$(this).text());
+        $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> " + $(this).text());
         let that = this;
         let contactData = {};
 
@@ -124,25 +127,28 @@ $(document).ready(function () {
             success: function (response) {
                 $(that).html("<i class='fa fa-check'></i> Обновлено!");
                 $(that).prop("disabled", false);
-            }})
+            }
+        })
 
     });
 
     let checkMap;
 
-    ymaps.ready(function () {
-        if (typeof ymaps !== 'undefined') {
-            checkMap = new ymaps.Map('addressCheckMap', {
-                center: [40, 50],
-                zoom: 15
-            }, {
-                searchControlProvider: 'yandex#search'
-            });
-        } else {
-            console.log("ymaps is undefined (????)");
-        }
-    });
-    $("#checkAddress").on("click",function() {
+    if (typeof ymaps !== 'undefined') {
+        ymaps.ready(function () {
+                checkMap = new ymaps.Map('addressCheckMap', {
+                    center: [40, 50],
+                    zoom: 15
+                }, {
+                    searchControlProvider: 'yandex#search'
+                });
+            }
+        )
+    } else {
+        console.log("ymaps is undefined (????)");
+
+    }
+    $("#checkAddress").on("click", function () {
 
         if (typeof ymaps !== 'undefined') {
             let address = $('#pointAddress').val();

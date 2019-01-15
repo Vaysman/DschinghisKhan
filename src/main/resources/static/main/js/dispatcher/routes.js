@@ -253,7 +253,7 @@ $(document).ready(function () {
                     },
                     {
                         extend: "edit",
-                        text: "Отправить на ревью",
+                        text: "Запросить котировки",
                         editor: routeReviewEditor
                     },
                     {

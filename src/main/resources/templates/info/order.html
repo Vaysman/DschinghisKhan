@@ -44,7 +44,7 @@
                     <div th:if="${order.getDriver()!=null}">
                         <h4>Водитель</h4>
                         <div>
-                            ФИО: <div th:text="${order.getDriver().getName()}"></div><br>
+                            ФИО: <div ><a th:text="${order.getDriver().getName()}" target="_blank" th:href="@{../drivers/}+${order.getDriver().getId()}"></a></div><br>
                             Водительское удостверение: <div th:text="${order.getDriver().getLicenseNumber()}"></div><br>
                             Паспорт: <div th:text="${order.getDriver().getPassportNumber()}"></div><br>
                             <span th:if="${order.getDriver().hasMobileApp}" th:text="${'Номер в мобильном приложении: '+order.getDriver().getMobileAppNumber()}"></span><br>

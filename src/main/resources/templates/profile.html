@@ -22,7 +22,10 @@
     <script src="/profile/profile.js"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Highcharts-7.0.1/highcharts.js"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Highcharts-7.0.1/modules/accessibility.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Highcharts-7.0.1/modules/data.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Highcharts-7.0.1/modules/drilldown.js"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Pickmeup/pickmeup.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Pickmeup/jquery.pickmeup.twitter-bootstrap.js"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="/profile/charts.js"></script>
 
 
@@ -51,7 +54,7 @@
         <ul class="ml-md-auto flex-row nav container nav-fill" id='nav-tabs' role="tablist">
 
 
-            <li class="nav-item" id="tab-dashboard-link">
+            <li class="nav-item" id="tab-dashboard-link" sec:authorize="hasAuthority('ROLE_ADMIN')">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-dashboard">
                     <i class="fa fa-dashboard" aria-hidden="true"></i> Dashboard</a>
             </li>
@@ -59,7 +62,7 @@
                 <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-info"><i
                         class="fa fa-user" aria-hidden="true"></i> Профиль</a>
             </li>
-            <li class="nav-item" id="tab-point-link">
+            <li class="nav-item" id="tab-point-link" sec:authorize="hasAuthority('ROLE_DISPATCHER')">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-points"><i
                         class="fa fa-compass" aria-hidden="true"></i> Пункт отправки</a>
             </li>
@@ -106,7 +109,7 @@
     <div id="tab-dashboard" class="tab-pane">
         <div class=" container-fluid spaced-container">
             <div class="row">
-                <div class="col-4">
+                <div class="col-5">
                     <div class="dashboard-panel">
                         <h5>Заявки за период</h5>
                         <div class="input-group mb-3">
@@ -115,7 +118,7 @@
                             <input class=" btn btn-primary" id="reloadOrdersChart" value="Обновить">
                             </div>
                         </div>
-                        <div class="container-fluid" id="ordersPeriodChart"></div>
+                        <div class="container-fluid" style="height:300px" id="ordersPeriodChart"></div>
                     </div>
 
                 </div>
@@ -128,11 +131,16 @@
                                 <input class=" btn btn-primary" id="reloadCompaniesChart" value="Обновить">
                             </div>
                         </div>
-                        <div class="container-fluid" id="companiesChart"></div>
+                        <div class="container-fluid" style="height:300px" id="companiesChart"></div>
                     </div>
                 </div>
-                <div class="col-4 ">
-                    <div  class="dashboard-panel">
+                <div class="col-3">
+
+                    <div class="dashboard-panel" style="height: 50%">
+                        <h4>Здесь будет контент</h4>
+                    </div>
+                    <div class="dashboard-panel" style="height: 45%; margin-top: 20px">
+                        <h4>Здесь тоже</h4>
                     </div>
                 </div>
             </div>
@@ -414,7 +422,7 @@
                     <thead>
                     <tr>
                         <th>id</th>
-                        <th>Номер</th>
+                        <th>Гос. Номер</th>
                         <th>Тип</th>
                         <th>Кузов</th>
                         <th>Погрузка</th>
