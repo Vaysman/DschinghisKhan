@@ -28,7 +28,7 @@ import java.util.Set;
         @Index(name = "orders_transport_id_index", columnList = "transport_id"),
         @Index(name = "orders_route_id_index", columnList = "route_id"),
 })
-@EqualsAndHashCode(exclude = {"route","driver","transport","company","assignedCompanies","offers"})
+@EqualsAndHashCode(exclude = {"route","driver","transport","company","assignedCompanies","offers","files","additionalTransports","additionalDrivers"})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,11 +60,32 @@ public class Order {
     @JoinColumn(name = "DRIVER_ID", referencedColumnName = "ID")
     private Driver driver;
 
+
+
     @JsonView(DataTablesOutput.View.class)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRANSPORT_ID", referencedColumnName = "ID")
     private Transport transport;
 
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "additional_drivers_for_orders",
+            joinColumns = { @JoinColumn(name = "order_id") },
+            inverseJoinColumns = { @JoinColumn(name = "driver_id") },
+            indexes = {@Index(name = "additional_drivers_for_orders_order_id_index", columnList = "order_id")}
+    )
+    private Set<Driver> additionalDrivers;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "additional_transports_for_orders",
+            joinColumns = { @JoinColumn(name = "order_id") },
+            inverseJoinColumns = { @JoinColumn(name = "transport_id") },
+            indexes = {@Index(name = "additional_transports_for_orders_order_id_index", columnList = "order_id")}
+    )
+    private Set<Transport> additionalTransports;
 
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "requirements")
@@ -182,7 +203,7 @@ public class Order {
             indexes = {@Index(name = "files_to_orders_order_id_index", columnList = "order_id"),
                     @Index(name = "files_to_orders_file_id_index", columnList = "file_id")}
     )
-    Set<StoredFile> files;
+    private Set<StoredFile> files;
 
     @PrePersist
     private void setPricing(){

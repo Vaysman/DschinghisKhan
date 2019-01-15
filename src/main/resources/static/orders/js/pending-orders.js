@@ -12,7 +12,9 @@ var orderList = new Vue({
         order: null,
         orderId: null,
         driverId: null,
+        additionalDrivers: [],
         transportId: null,
+        additionalTransports: [],
         proposedPrice: null,
         proposedPriceComment: ""
     },
@@ -39,7 +41,9 @@ var orderList = new Vue({
                             JSON.stringify({
                                 companyId: currentCompanyId,
                                 driverId: this.driverId,
+                                additionalDrivers: this.additionalDrivers,
                                 transportId: this.transportId,
+                                additionalTransports: this.additionalTransports,
                                 proposedPrice: this.proposedPrice,
                                 proposedPriceComment: this.proposedPriceComment
                             }),
@@ -61,8 +65,11 @@ var orderList = new Vue({
                         JSON.stringify({
                             companyId: currentCompanyId,
                             driverId: this.driverId,
+                            additionalDrivers: this.additionalDrivers,
                             transportId: this.transportId,
+                            additionalTransports: this.additionalTransports,
                             proposedPrice: this.proposedPrice,
+
                             proposedPriceComment: this.proposedPriceComment
                         }),
                     success: function (response) {
@@ -132,6 +139,7 @@ var orderList = new Vue({
             valueField: "value",
             loadThrottle: 400,
             preload: true,
+            delimiter: null,
             maxItems: 1,
             create: false,
             load: function (query, callback) {
@@ -148,6 +156,75 @@ var orderList = new Vue({
             },
             onChange: (value) => {
                 this.transportId = value;
+            }
+        });
+
+
+        //Additional transports/drivers
+
+        let additionalDriversSelectize = $("#orderAdditionalDriversSelect").selectize({
+            placeholder: "Доп. Водители",
+            labelField: "label",
+            valueField: "value",
+            loadThrottle: 400,
+            preload: true,
+            delimiter: ",",
+            maxItems: 10,
+            create: false,
+            load: function (query, callback) {
+                $.get(`api/drivers/search/findTop10ByNameContainingAndOriginator/?name=${query}&originator=${currentCompanyId}`,
+                    function (data) {
+                        console.log(data);
+                        var driverOptions = [];
+                        data._embedded.drivers.forEach(function (entry) {
+                            driverOptions.push({"label": entry.name, "value": entry.id});
+                        });
+                        callback(driverOptions);
+                    }
+                );
+            },
+            onChange: (value) => {
+                if(value.trim()===""){
+                    this.additionalDrivers = [];
+                } else {
+                    this.additionalDrivers = value.split(',').map(function (currentValue, index, array) {
+                        return parseInt(currentValue);
+                    });
+                }
+                console.log(JSON.stringify(this.additionalDrivers));
+            }
+        });
+
+        let additionalTransportsSelectize = $("#orderAdditionalTransportsSelect").selectize({
+            placeholder: "Доп. Транспорт",
+            labelField: "label",
+            valueField: "value",
+            loadThrottle: 400,
+            preload: true,
+            delimiter: ",",
+            maxItems: 10,
+            create: false,
+            load: function (query, callback) {
+                $.get(`api/transports/search/findTop10ByNumberContainingAndOriginator/?number=${query}&originator=${currentCompanyId}`,
+                    function (data) {
+                        console.log(data);
+                        var transportOptions = [];
+                        data._embedded.transports.forEach(function (entry) {
+                            transportOptions.push({"label": entry.number, "value": entry.id});
+                        });
+                        callback(transportOptions);
+                    }
+                );
+            },
+            onChange: (value) => {
+                if(value.trim()===""){
+                    this.additionalTransports = [];
+                } else {
+                    this.additionalTransports = value.split(',').map(function (currentValue, index, array) {
+                        return parseInt(currentValue);
+                    });
+                }
+                console.log(JSON.stringify(this.additionalTransports));
             }
         });
     }

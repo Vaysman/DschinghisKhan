@@ -131,6 +131,8 @@ public class InfoController {
         Hibernate.initialize(offer.getTransport());
         Hibernate.initialize(offer.getDriver());
         Hibernate.initialize(offer.getManagerCompany());
+        Hibernate.initialize(offer.getAdditionalTransports());
+        Hibernate.initialize(offer.getAdditionalDrivers());
         modelMap.addAttribute("offer", offer);
         return "info/offer";
     }

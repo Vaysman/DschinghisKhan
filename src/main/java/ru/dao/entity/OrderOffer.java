@@ -6,6 +6,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Data
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
         @Index(name = "order_offers_manager_company_id_index", columnList = "manager_company_id"),
         @Index(name="order_offers_order_id_company_id_index", columnList = "order_id, company_id")
 })
-@EqualsAndHashCode(exclude = {"order","company","transport","driver","managerCompany"})
+@EqualsAndHashCode(exclude = {"order","company","transport","driver","managerCompany","additionalDrivers","additionalTransports"})
 public class OrderOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +47,25 @@ public class OrderOffer {
     @JsonView(DataTablesOutput.View.class)
     @JoinColumn(name = "DRIVER_ID")
     private Driver driver;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "additional_drivers_for_offers",
+            joinColumns = { @JoinColumn(name = "offer_id") },
+            inverseJoinColumns = { @JoinColumn(name = "driver_id") },
+            indexes = {@Index(name = "additional_drivers_for_offers_offer_id_index", columnList = "offer_id")}
+    )
+    private Set<Driver> additionalDrivers;
+
+    @ManyToMany
+    @JoinTable(
+            name = "additional_transports_for_offers",
+            joinColumns = { @JoinColumn(name = "offer_id") },
+            inverseJoinColumns = { @JoinColumn(name = "transport_id") },
+            indexes = {@Index(name = "additional_transports_for_offers_offer_id_index", columnList = "offer_id")}
+    )
+    private Set<Transport> additionalTransports;
 
     @Column
     @JsonView(DataTablesOutput.View.class)

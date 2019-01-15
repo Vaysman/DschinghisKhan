@@ -249,6 +249,8 @@ public class OrderLifecycleService {
         order.setDriver(orderOffer.getDriver());
         order.setTransport(orderOffer.getTransport());
         order.setProposedPrice(orderOffer.getProposedPrice());
+        order.setAdditionalDrivers(orderOffer.getAdditionalDrivers());
+        order.setAdditionalTransports(orderOffer.getAdditionalTransports());
         order.setOffers(new HashSet<>());
         if (order.getStatus().equals(OrderStatus.PRICE_CHANGED)) order.setAssignedCompanies(new HashSet<>());
         order.setStatus(OrderStatus.CONFIRMED);
@@ -281,6 +283,15 @@ public class OrderLifecycleService {
             transport = transportRepository.findById(orderAcceptData.getTransportId()).orElseThrow(()->new IllegalArgumentException("Данного транспорта не существует"));
         }
 
+        Set<Transport> additionalTransports = new HashSet<>();
+        Set<Driver> additionalDrivers = new HashSet<>();
+        if(!orderAcceptData.getAdditionalDrivers().isEmpty()){
+            driverRepository.findAllById(orderAcceptData.getAdditionalDrivers()).forEach(additionalDrivers::add);
+        }
+        if(!orderAcceptData.getAdditionalTransports().isEmpty()){
+            transportRepository.findAllById(orderAcceptData.getAdditionalTransports()).forEach(additionalTransports::add);
+        }
+
 
         if ((order.getStatus().equals(OrderStatus.ASSIGNED) || order.getStatus().equals(OrderStatus.PRICE_CHANGED))
                 && order.getAssignedCompanies().contains(company)) {
@@ -296,7 +307,9 @@ public class OrderLifecycleService {
                     .proposedPriceComment(orderAcceptData.getProposedPriceComment())
                     .orderNumber(order.getNumber())
                     .driver(driver)
+                    .additionalDrivers(additionalDrivers)
                     .transport(transport)
+                    .additionalTransports(additionalTransports)
                     .managerCompany(managerCompany)
                     .offerDatetime(LocalDateTime.now(ZoneId.of("Europe/Moscow")))
                     .build();

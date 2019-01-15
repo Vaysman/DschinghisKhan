@@ -1,6 +1,7 @@
 package ru.constant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
 public enum VehicleType {
     @JsonProperty("Тягач")
@@ -12,6 +13,7 @@ public enum VehicleType {
     @JsonProperty("Полуприцеп")
     HALF_CONT("Полуприцеп");
 
+    @Getter
     private String name;
 
     VehicleType(String name) {
