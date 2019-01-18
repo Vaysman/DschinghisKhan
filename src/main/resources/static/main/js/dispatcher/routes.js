@@ -251,9 +251,16 @@ $(document).ready(function () {
                         editor: routeEditor
                     },
                     {
-                        extend: "edit",
                         text: "Запросить котировки",
-                        editor: routeReviewEditor
+                        action: function (e, dt, node, config) {
+                            routeReviewEditor.edit(routeDataTable.rows('.selected', {select: true}), 'Запросить котировки', {
+                                "label": "Отправить",
+                                "fn": function () {
+                                    this.submit();
+                                }
+                            });
+                        },
+                        enabled: false
                     },
                     {
                         extend: "remove",
@@ -425,7 +432,12 @@ $(document).ready(function () {
             if (type === 'row') {
                 var data = routeDataTable.rows(indexes).data('id');
                 reInitRoutePointTable(data[0].id);
+                routeDataTable.button(2).enable();
             }
+        });
+
+        routeDataTable.on('deselect', function (e, dt, type, indexes) {
+            routeDataTable.button(2).disable();
         });
 
         //I didn't have time to figure out how to change selectize's ajax remoteUrl on the fly;
