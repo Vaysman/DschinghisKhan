@@ -2,7 +2,6 @@ $(document).ready(function () {
 
     $('#tab-routes-link a').one('shown.bs.tab', function () {
 
-;
 
         let routeReviewEditor = new $.fn.dataTable.Editor({
             table: '#routesTable',

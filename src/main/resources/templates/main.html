@@ -26,6 +26,8 @@
             src="/main/js/dispatcher/contacts.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
             src="/main/js/dispatcher/clients.js"></script>
+    <script sec:authorize='hasAuthority("ROLE_DISPATCHER")'
+            src="/main/js/dispatcher/reviews.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'
             src="/orders/js/orders-in-work-company.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'
@@ -422,7 +424,8 @@
                             Пункты маршрута:
                             <div class="row" v-for="routePoint in order.route.routePoints">
                                 <div class="col-5">
-                                    {{routePoint.queueNumber==0 ? 'Склад отправки' : ('Разгрузка '+routePoint.queueNumber)}}
+                                    {{routePoint.queueNumber==0 ? 'Склад отправки' : ('Разгрузка
+                                    '+routePoint.queueNumber)}}
                                 </div>
                                 <div class="col-7">
                                     {{routePoint.point.name}}
@@ -849,7 +852,23 @@
             <br>
             <br>
             <div class="row">
-                <div class="col-4">
+                <div class="col-3">
+                    <h5>Запросить котировки</h5>
+                    <div class="form-group">
+                        <label for="selectRouteForReview"> Маршрут</label>
+                        <input id="selectRouteForReview">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="selectCompaniesForReview"> Компании</label>
+                        <input id="selectCompaniesForReview">
+
+                    </div>
+                    <div class="form-group">
+                        <input id="createNewReview" class="btn btn-primary" value="Запросить котировки" disabled="true">
+                    </div>
+                </div>
+                <div class="col-3">
                     <h5>Ожидают ответа</h5>
                     <div class="list-group">
                         <div class="input-group">
@@ -867,7 +886,7 @@
                         </th:block>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <h5>Есть ответ от перевозчика</h5>
 
                     <div class="list-group">
@@ -886,7 +905,7 @@
                         </th:block>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <h5>Все перевозчики ответили</h5>
                     <div class="list-group">
                         <div class="input-group">
