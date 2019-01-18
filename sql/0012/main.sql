@@ -27,3 +27,6 @@ CREATE TABLE additional_drivers_for_offers
   driver_id int
 );
 CREATE INDEX additional_drivers_for_offers_offer_id_index ON additional_drivers_for_offers (offer_id);
+
+ALTER TABLE users ADD surname VARCHAR(64) NULL;
+ALTER TABLE users ADD patronym VARCHAR(64) NULL;

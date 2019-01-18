@@ -36,6 +36,14 @@ public class User {
     @JsonView(DataTablesOutput.View.class)
     private String username;
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String surname = "";
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String patronym = "";
+
     @Column(unique = true)
     @NotNull
     @JsonView(DataTablesOutput.View.class)

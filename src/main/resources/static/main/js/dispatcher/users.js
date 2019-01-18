@@ -26,7 +26,7 @@ $(document).ready(function () {
                 success: function (response) {
                     resendEditor.close();
                 },
-                error: function (jqXHR, exception) {
+                error: function (jqXHR) {
 
                     console.log(jqXHR);
                     resendEditor.field('email').error(jqXHR.responseJSON.message);
@@ -48,6 +48,7 @@ $(document).ready(function () {
                     let newdata;
 
                     $.each(d.data, function (key, value) {
+                        delete value.repeatPassword;
                         value.originator = currentCompanyId;
                         value.company = currentCompany._links.self.href;
                         value.userRole = "Диспетчер";
@@ -61,8 +62,12 @@ $(document).ready(function () {
                     usersEditor.close();
                     // alert(response.responseText);
                 },
-                error: function (jqXHR, exception) {
-                    alert(response.responseText);
+                error: function (response) {
+                    if(response.responseJSON.cause.cause.message.includes("Duplicate")){
+                        usersEditor.field("login").error("Данный логин уже существует")
+                    } else {
+                        usersEditor.error(response.responseJSON.cause.cause.message);
+                    }
                 }
             },
             edit: {
@@ -72,6 +77,7 @@ $(document).ready(function () {
                 data: function (d) {
                     let newdata;
                     $.each(d.data, function (key, value) {
+                        delete value.repeatPassword;
                         if (value.passAndSalt == "" || value.passAndSalt == "dummy") {
                             delete value["passAndSalt"];
                         } else {
@@ -87,8 +93,12 @@ $(document).ready(function () {
                     usersEditor.close();
                     // alert(response.responseText);
                 },
-                error: function (jqXHR, exception) {
-                    alert(response.responseText);
+                error: function (response) {
+                    if(response.responseJSON.cause.cause.message.includes("Duplicate")){
+                        usersEditor.field("login").error("Данный логин уже существует")
+                    } else {
+                        usersEditor.error(response.responseJSON.cause.cause.message);
+                    }
                 }
             }
             ,
@@ -107,12 +117,22 @@ $(document).ready(function () {
 
         fields: [
             {
-                label: 'Имя', name: 'username', type: 'text', compare: function (a, b) {
+                label: 'Имя<sup class="red">*</sup>', name: 'username', type: 'text', compare: function (a, b) {
                     return (a === b);
                 }
             },
             {
-                label: 'Логин', name: 'login', type: 'text', compare: function (a, b) {
+                label: 'Фамилия', name: 'surname', type: 'text', compare: function (a, b) {
+                    return (a === b);
+                }
+            },
+            {
+                label: 'Отчество', name: 'patronym', type: 'text', compare: function (a, b) {
+                    return (a === b);
+                }
+            },
+            {
+                label: 'Логин<sup class="red">*</sup>', name: 'login', type: 'text', compare: function (a, b) {
                     return (a === b);
                 }
             },
@@ -123,7 +143,12 @@ $(document).ready(function () {
                     return (a === b);
                 }
             },
-            {label: 'E-Mail', name: 'email', type: 'text'},
+            {
+                label: 'Повторите пароль', name: 'repeatPassword', type: 'password', data: function () {
+                    return "dummy";
+                }
+            },
+            {label: 'E-Mail<sup class="red">*</sup>', name: 'email', type: 'text'},
         ]
     });
 
@@ -132,6 +157,7 @@ $(document).ready(function () {
             var username = this.field('username');
             var login = this.field('login');
             var passAndSalt = this.field('passAndSalt');
+            var repeatPassword = this.field('repeatPassword');
             // var userRole = this.field( 'userRole' );
 
             // Only validate user input values - different values indicate that
@@ -142,8 +168,17 @@ $(document).ready(function () {
             if (!login.val()) {
                 login.error("Логин должен быть указан")
             }
-            if (action !== 'edit' && (!passAndSalt.val() || passAndSalt.val() === "dummy")) {
-                passAndSalt.error("Пароль должен быть указан")
+            if (action !== 'edit' ) {
+                if((!passAndSalt.val() || passAndSalt.val() === "dummy")){
+                    passAndSalt.error("Пароль должен быть указан")
+                } else if(passAndSalt.val()!=repeatPassword.val()){
+                    repeatPassword.error("Пароли не совпадают");
+                }
+
+            } else if(action==='edit'){
+                if(!(passAndSalt.val() === "dummy") && passAndSalt.val()!=repeatPassword.val()){
+                    repeatPassword.error("Пароли не совпадают");
+                }
             }
             // if(!userRole.val()){
             //     userRole.error("Роль должна быть указана")
@@ -226,17 +261,21 @@ $(document).ready(function () {
                 }
             ],
             "paging": 10,
-            "columnDefs": [
-                {"name": "id", "data": "id", "targets": 0, visible: false},
-                {"name": "username", "data": "username", "targets": 1},
-                {"name": "login", "data": "login", "targets": 2},
+            "columns": [
+                {"name": "id", "data": "id", "title": "id", visible: false},
+                {
+                    "name": "username", "data": "username", "title": "ФИО", render: function (data, type, full) {
+                        return `${full.surname} ${data} ${full.patronym}`;
+                    }
+                },
+                {"name": "login", "data": "login", "title": "Логин"},
                 {
                     "name": "passAndSalt", "data": "passAndSalt", defaultContent: "dummy", mRender: function () {
                         return "dummy";
                     }, def: "dummy",
-                    "targets": 3, visible: false
+                    "title": "passAndSalt", visible: false
                 },
-                {"name": "email", "data": "email", "targets": 4},
+                {"name": "email", "data": "email", "title": "E-Mail"},
             ]
         }
     );

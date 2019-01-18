@@ -164,14 +164,14 @@
             Рабочий стол
             <span class="badge badge-primary" th:if="${managedOffers!=null && #lists.size(managedOffers) > 0}" th:text="${#lists.size(managedOffers)}"></span>
             <span class="badge badge-success" th:if="${pendingOrders!=null && #lists.size(pendingOrders) > 0}" th:text="${#lists.size(pendingOrders)}"></span>
-
+            <span class="badge badge-warning" th:if="${pendingOpinions!=null && pendingOpinions>0}" th:text="${pendingOpinions}">
         </a>
         </li>
         <!--<li class="nav-item" th:classappend="${#strings.equals(pageName,'routes')} ? 'active' : ''" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_DISPATCHER')"><a class="nav-link" href="/routes"><i class="fa fa-map" aria-hidden="true"></i> Поиск-->
             <!--маршрутов</a></li>-->
         <li class="nav-item" th:classappend="${#strings.equals(pageName,'admin')} ? 'active' : ''" ><a class="nav-link" href="/main" target="_self">
             Настройки
-            <span class="badge badge-warning" th:if="${pendingOpinions!=null && pendingOpinions>0}" th:text="${pendingOpinions}"></span>
+            </span>
         </a></li>
         <li class="nav-item" sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'><a class="nav-link"
                                                                                                 href="/swagger-ui.html"

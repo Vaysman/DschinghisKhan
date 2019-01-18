@@ -14,6 +14,7 @@ class HibernateAwareObjectMapper extends ObjectMapper {
         this.enable(SerializationFeature.INDENT_OUTPUT);
         this.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         this.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        this.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL);
         this.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
         this.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         this.registerModule(module);

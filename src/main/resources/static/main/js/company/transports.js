@@ -16,8 +16,6 @@ $(document).ready(function () {
         // data.append("CustomField", "This is some extra data, testing");
 
         let id = data.get("id");
-        console.log(id);
-        console.log(data);
 
 
         // disabled the submit button
@@ -65,6 +63,12 @@ $(document).ready(function () {
                     let newdata;
                     $.each(d.data, function (key, value) {
                         value.originator = currentCompanyId;
+                        if(value.bodyType==''){
+                            delete value.bodyType;
+                        }
+                        if(value.loadingType==''){
+                            delete value.loadingType;
+                        }
                         newdata = JSON.stringify(value);
                     });
                     return newdata;
@@ -118,8 +122,16 @@ $(document).ready(function () {
                 type: 'selectize',
                 options: vehicleTypeOptions,
                 opts: {
-                    searchField: "label", create: false
-                }
+                    searchField: "label", create: false,
+                    onChange: function (value) {
+                        let fields = ["bodyType","loadingType","tonnage","volume","conics","hydrobort","isGps"];
+                        if(value==="Тягач"){
+                            fields.forEach((item, index, array) => transportEditor.field(item).hide())
+                        } else {
+                            fields.forEach((item, index, array) => transportEditor.field(item).show())
+                        }
+                    }
+                },
             },
             {
                 label: 'Тип кузова',

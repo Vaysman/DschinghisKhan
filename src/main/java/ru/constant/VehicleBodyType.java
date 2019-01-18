@@ -19,4 +19,5 @@ public enum VehicleBodyType {
     VehicleBodyType(String typeName) {
         this.typeName = typeName;
     }
+
 }
