@@ -303,6 +303,23 @@ div.selectize-dropdown {
     /*width: 100%;*/
 /*}*/
 
+.nav-pills .nav-link.active{
+    background-color: inherit;
+    color: #1A2B6D;
+
+}
+
+.nav-pills .nav-link.active:before{
+    content: "»";
+    margin-right: 6px;
+    color: #D41317;
+
+}
+
+.nav-pills a{
+    color: #1A2B6D;
+}
+
 .clipped {
     overflow: hidden;
     display: inline-block;

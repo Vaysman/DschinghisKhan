@@ -1058,7 +1058,13 @@
     <div id="tab-contacts" class="tab-pane">
         <div class=" container-fluid spaced-container white">
             <div class="row">
-                <div class="col-4">
+            <div class="nav flex-column nav-pills col-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-clients-tab" data-toggle="pill" href="#v-pills-clients" role="tab" aria-controls="v-pills-clients" aria-selected="true">Клиенты</a>
+                <a class="nav-link" id="v-pills-contacts-tab" data-toggle="pill" href="#v-pills-contacts" role="tab" aria-controls="v-pills-contacts" aria-selected="false">Контакты</a>
+                <a class="nav-link" id="v-pills-points-tab" data-toggle="pill" href="#v-pills-points" role="tab" aria-controls="v-pills-points" aria-selected="false">Пункты доставки</a>
+            </div>
+            <div class="tab-content col-10" >
+                <div class="tab-pane fade show active" id="v-pills-clients" role="tabpanel" aria-labelledby="v-pills-clients-tab">
                     <h4>Клиенты</h4>
                     <div>
                         <table class="table table-hover table-striped " id="clientsTable">
@@ -1073,10 +1079,14 @@
                         </table>
                     </div>
                 </div>
-                <div class="col-8">
+                <div class="tab-pane fade" id="v-pills-points" role="tabpanel" aria-labelledby="v-pills-points-tab">
                     <h4>Пункты доставки</h4>
+                    <div class="row">
+                        <div class="col-1"><h5 style="position: absolute; bottom:0px;">Клиент: </h5></div>
+                        <div class="col-3"><input id="clientSelectForPoints"></div>
+                    </div>
                     <div>
-                        <table class="table table-hover table-striped " id="pointsTable">
+                        <table class="table table-hover table-striped " style="width: 100%" id="pointsTable">
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -1090,25 +1100,28 @@
                         </table>
                     </div>
                 </div>
-            </div>
-
-        </div>
-        <div class="spaced-container white container-fluid">
-            <h4>Контакты</h4>
-            <div>
-                <table class="table table-hover  table-striped" id="contactsTable">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>Компания</th>
-                        <th>ФИО</th>
-                        <th>Адрес</th>
-                        <th>Телефон</th>
-                        <th>E-mail</th>
-                        <th>Должность</th>
-                    </tr>
-                    </thead>
-                </table>
+                <div class="tab-pane fade" id="v-pills-contacts" role="tabpanel" aria-labelledby="v-pills-contacts-tab">
+                    <h4>Контакты</h4>
+                    <div class="row">
+                        <div class="col-1"><h5 style="position: absolute; bottom:0px;">Клиент: </h5></div>
+                        <div class="col-3"><input id="clientSelectForContacts"></div>
+                    </div>
+                    <div>
+                        <table class="table table-hover  table-striped" style="width: 100%" id="contactsTable">
+                            <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Компания</th>
+                                <th>ФИО</th>
+                                <th>Адрес</th>
+                                <th>Телефон</th>
+                                <th>E-mail</th>
+                                <th>Должность</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
