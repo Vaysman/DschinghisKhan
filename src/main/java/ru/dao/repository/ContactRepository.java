@@ -16,4 +16,5 @@ public interface ContactRepository extends DataTablesRepository<Contact, Integer
     List<Contact> findTop10ByNameContainingAndOriginator(@Param("name") String name,@Param("originator") Integer originator);
     Optional<Contact> findFirstByCompanyAndType(Company company, ContactType contactType);
     List<Contact> findTop10ByClientAndNameContaining(@Param("client") Client client, @Param("name") String name);
+    List<Contact> findTop10ByClientIdAndNameContaining(@Param("clientId") Integer clientId, @Param("name") String name);
 }

@@ -69,6 +69,7 @@ $(document).ready(function () {
                                 if (value['company'] == "") {
                                     delete value['company'];
                                 }
+
                                 newdata = JSON.stringify(value);
                             });
                             console.log(newdata);

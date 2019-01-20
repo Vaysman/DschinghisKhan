@@ -93,7 +93,7 @@ public class DataTablesController {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/points", method = RequestMethod.POST)
     public DataTablesOutput<Point> getPoints(@Valid @RequestBody DataTablesInput input) {
-        return pointRepository.findAll(input);
+        return pointRepository.findAll(input,Points.pointsForUser(AuthToken.getCurrentAuthToken().getCompanyId()));
     }
 
     @JsonView(DataTablesOutput.View.class)
