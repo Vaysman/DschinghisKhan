@@ -1,3 +1,32 @@
+let modelOptions = [
+    {label: "ГАЗ"},
+   {label: "ЗИЛ"},
+   {label: "КАМАЗ"},
+   {label: "МАЗ"},
+   {label: "ПИНГО-АВТО"},
+   {label: "СПЕКТР-АВТО"},
+   {label: "ЦТТМ"},
+   {label: "AVIA"},
+   {label: "BAW"},
+   {label: "DAF"},
+   {label: "FORD"},
+   {label: "FOTON"},
+   {label: "HINO"},
+   {label: "HYUNDAI"},
+   {label: "ISUZU"},
+   {label: "IVECO"},
+   {label: "JAC"},
+   {label: "MAN"},
+   {label: "MERCEDES"},
+   {label: "MITSUBISHI FUSO"},
+   {label: "NAVECO"},
+   {label: "RENAULT"},
+   {label: "SCANIA"},
+   {label: "TATA DAEWOO"},
+   {label: "VOLKSWAGEN"},
+   {label: "VOLVO"}
+];
+
 $(document).ready(function () {
 
     $("#uploadTransportDocument").click(function (event) {
@@ -167,6 +196,9 @@ $(document).ready(function () {
                 label: 'GPS', name: 'isGps', type: "radio", options: [{ label:"Есть", value:true}, {label:"Отсутствует",value:false}]
             },
             {
+                label: 'Модель', name:'model', type: 'selectize', options: modelOptions, opts: {create:false, maxItems:1, searchField: "label", valueField:"label",labelField:"label"}
+            },
+            {
                 label: 'Комментарий', name: 'comment', type: "textarea"
             }
         ]
@@ -294,18 +326,25 @@ $(document).ready(function () {
                         return (data) ? "Есть" : "Нет"
                     }
                 },
+                // {
+                //     "name": "wialonId",
+                //     "data": "wialonId",
+                //     "targets": 10,
+                //     searchable: false,
+                //     orderable: false,
+                //     fieldInfo: "В случае, если есть отслеживание по GPS"
+                // },
                 {
-                    "name": "wialonId",
-                    "data": "wialonId",
-                    "targets": 10,
-                    searchable: false,
-                    orderable: false,
-                    fieldInfo: "В случае, если есть отслеживание по GPS"
+                  "name":"model",
+                  "data":"model",
+                  targets: 10,
+                  searchable: false,
+                  orderable: false
                 },
                 {
                     "name": "comment",
                     "data": "comment",
-                    "targets": 10,
+                    "targets": 11,
                     searchable: false,
                     orderable: false
                 }
@@ -313,3 +352,5 @@ $(document).ready(function () {
         }
     );
 });
+
+

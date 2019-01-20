@@ -30,3 +30,4 @@ CREATE INDEX additional_drivers_for_offers_offer_id_index ON additional_drivers_
 
 ALTER TABLE users ADD surname VARCHAR(64) NULL;
 ALTER TABLE users ADD patronym VARCHAR(64) NULL;
+ALTER TABLE transports ADD model VARCHAR(64) NULL;

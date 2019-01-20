@@ -98,4 +98,9 @@ public class Transport {
     Set<StoredFile> files = new HashSet<>();
 
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String model;
+
+
 }
