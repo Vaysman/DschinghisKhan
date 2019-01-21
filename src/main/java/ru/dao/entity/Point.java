@@ -56,6 +56,10 @@ public class Point {
     @JsonView(DataTablesOutput.View.class)
     private String workTime;
 
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String documentsComment;
+
     @ManyToOne(fetch = FetchType.LAZY)
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "CLIENT_ID")

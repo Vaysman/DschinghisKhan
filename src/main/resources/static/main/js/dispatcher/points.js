@@ -140,7 +140,8 @@ $(document).ready(function () {
                     // fieldInfo: "Для отображения другим диспетчерам и перевозчикам. "
                 },
                 {label: 'Комментарий', name: 'comment', type: 'textarea', attr: {maxlength: 256}},
-                {label: 'Рабочее время', name: 'workTime', type: 'textarea', attr: {maxlength: 128}},
+                {label: 'Рабочее время', name: 'workTime', type: 'text', attr: {maxlength: 128}},
+                {label: 'Дополнение к документам', name: 'documentsComment', type: 'textarea'},
             ]
         });
 
@@ -197,8 +198,9 @@ $(document).ready(function () {
                     {"name": "name", "data": "name", "title": "Наименование"},
                     {"name": "address", "data": "address", "title": "Адрес"},
                     {"name": "fullAddress", "data": "fullAddress", "title": "Полный адрес"},
+                    {"name": "workTime", "data": "workTime", title: "Рабочее время"},
                     {"name": "comment", "data": "comment", "title": "Комментарий"},
-                    {"name": "workTime", "data": "workTime", title: "Рабочее время"}
+                    {"name": "documentsComment", "data": "documentsComment", title: "Дополнение для документов"},
                 ]
             }
         );

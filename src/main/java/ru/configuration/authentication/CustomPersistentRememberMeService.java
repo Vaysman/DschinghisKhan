@@ -61,6 +61,7 @@ public class CustomPersistentRememberMeService implements RememberMeServices {
 
     @Override
     public void loginFail(HttpServletRequest request, HttpServletResponse response) {
+        if(request.getCookies()==null) return;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("remember-me")) {

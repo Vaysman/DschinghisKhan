@@ -42,4 +42,7 @@ ALTER TABLE clients ADD address VARCHAR(512) NULL;
 ALTER TABLE clients ADD contact_id int NULL;
 ALTER TABLE clients ADD comment VARCHAR(512) NULL;
 
+
 ALTER TABLE users ADD has_accepted_cookies TINYINT DEFAULT 0 NOT NULL;
+
+ALTER TABLE points ADD documents_comment TEXT NULL;
