@@ -2,10 +2,13 @@ package ru.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import ru.configuration.authentication.AuthToken;
 import ru.configuration.authentication.CustomPersistentRememberMeService;
 import ru.dao.entity.User;
 import ru.dto.json.user.UserRegistrationData;
@@ -30,6 +33,16 @@ public class RegisterController {
             CustomPersistentRememberMeService rememberMeService) {
         this.registerService = registerService;
         this.rememberMeService = rememberMeService;
+    }
+
+    @PostMapping("/acceptCookies")
+    @ResponseBody
+    public String acceptCookies(){
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        AuthToken authentication = (AuthToken) securityContext.getAuthentication();
+        registerService.acceptCookies(authentication.getUser().getId());
+        authentication.refreshUser();
+        return "success";
     }
 
     @PostMapping("/register")

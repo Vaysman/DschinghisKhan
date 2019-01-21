@@ -146,6 +146,8 @@ public class AuthToken extends AbstractAuthenticationToken {
         return (AuthToken)securityContext.getAuthentication();
     }
 
+
+
     public void refreshPendingOrders(){
         this.pendingOrders = userInfoService.getPendingOrders(this.companyId);
     }
@@ -187,6 +189,10 @@ public class AuthToken extends AbstractAuthenticationToken {
             this.refreshSentContracts();
             this.refreshPoint();
         }
+    }
+
+    public void refreshUser(){
+        this.user = userInfoService.getUser(this.user.getId());
     }
 
 }

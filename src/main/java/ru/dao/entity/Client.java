@@ -43,4 +43,34 @@ public class Client {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COMPANY_ID")
     private Company company;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String inn;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String fullName;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String email;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String mailAddress;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String address;
+
+    @Column
+    @JsonView(DataTablesOutput.View.class)
+    private String comment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CONTACT_ID")
+    @JsonView(DataTablesOutput.View.class)
+    private Contact primaryContact;
+
 }

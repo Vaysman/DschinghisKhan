@@ -31,3 +31,18 @@ CREATE INDEX additional_drivers_for_offers_offer_id_index ON additional_drivers_
 ALTER TABLE users ADD surname VARCHAR(64) NULL;
 ALTER TABLE users ADD patronym VARCHAR(64) NULL;
 ALTER TABLE transports ADD model VARCHAR(64) NULL;
+
+
+#93
+ALTER TABLE clients ADD inn VARCHAR(64) NULL;
+ALTER TABLE clients ADD full_name VARCHAR(256) NULL;
+ALTER TABLE clients ADD email VARCHAR(120) NULL;
+ALTER TABLE clients ADD mail_address VARCHAR(512) NULL;
+ALTER TABLE clients ADD address VARCHAR(512) NULL;
+ALTER TABLE clients ADD contact_id int NULL;
+ALTER TABLE clients ADD comment VARCHAR(512) NULL;
+
+
+ALTER TABLE users ADD has_accepted_cookies TINYINT DEFAULT 0 NOT NULL;
+
+ALTER TABLE points ADD documents_comment TEXT NULL;

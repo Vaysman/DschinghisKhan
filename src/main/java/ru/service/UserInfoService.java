@@ -7,6 +7,7 @@ import ru.constant.OrderObligation;
 import ru.dao.entity.Point;
 import ru.dao.entity.RouteReview;
 import ru.dao.entity.RouteReviewOpinion;
+import ru.dao.entity.User;
 import ru.dao.repository.*;
 
 import java.util.*;
@@ -29,6 +30,10 @@ public class UserInfoService {
         this.opinionRepository = opinionRepository;
         this.reviewRepository = reviewRepository;
         this.contractRepository = contractRepository;
+    }
+
+    public User getUser(Integer userId){
+        return userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("No such user exists"));
     }
 
 

@@ -340,6 +340,11 @@ public class RegisterService {
     }
 
 
+    public void acceptCookies(Integer userId){
+        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("No such user exists"));
+        user.setHasAcceptedCookies(true);
+        userRepository.save(user);
+    }
 
 
 

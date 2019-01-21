@@ -287,6 +287,14 @@ div.selectize-dropdown {
     color: white;
 }
 
+/*I had to do it*/
+col-1-and-half{
+    -webkit-box-flex: 0;
+     -ms-flex: 0 0 13.5%;
+    flex: 0 0 13.5%;
+    max-width: 13.5%;
+}
+
 
 .dashboard-panel{
     padding:10px;
@@ -302,6 +310,23 @@ div.selectize-dropdown {
 /*.table{*/
     /*width: 100%;*/
 /*}*/
+
+.nav-pills .nav-link.active{
+    background-color: inherit;
+    color: #1A2B6D;
+
+}
+
+.nav-pills .nav-link.active:before{
+    content: "»";
+    margin-right: 6px;
+    color: #D41317;
+
+}
+
+.nav-pills a{
+    color: #1A2B6D;
+}
 
 .clipped {
     overflow: hidden;
