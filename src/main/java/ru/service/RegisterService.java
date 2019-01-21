@@ -2,6 +2,7 @@ package ru.service;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.authentication.UserCredentials;
@@ -24,6 +25,7 @@ import ru.dao.repository.CompanyRepository;
 import ru.dao.repository.ContactRepository;
 import ru.dao.repository.PointRepository;
 import ru.dao.repository.UserRepository;
+import ru.dto.json.user.CompanyPasswordResetRequest;
 import ru.dto.json.user.UserRegistrationData;
 import ru.util.Translit;
 import ru.util.generator.RandomStringGenerator;
@@ -43,6 +45,9 @@ public class RegisterService {
     private final SmsService smsService;
     private final Translit translit = new Translit();
     private final CustomAuthenticationManager authenticationManager;
+
+    @Value("${admin-email}")
+    private String adminEmail;
 
     @Autowired
     public RegisterService(CompanyRepository companyRepository, UserRepository userRepository, PointRepository pointRepository, ResourceLoader resourceLoader, ContactRepository contactRepository, UserInfoService userInfoService, MailService mailService, SmsService smsService, CustomAuthenticationManager authenticationManager) {
@@ -283,19 +288,19 @@ public class RegisterService {
         return company;
     }
 
-    public Map<String, String> registerTransportCompanyProgrammatically(Company company){
-        Map<String,String> companyInfoMap = new HashMap<>();
+    public Map<String, String> registerTransportCompanyProgrammatically(Company company) {
+        Map<String, String> companyInfoMap = new HashMap<>();
 
         companyRepository.findFirstByInn(company.getInn()).ifPresent((x) -> {
             companyInfoMap.put("companyName", company.getName());
-            companyInfoMap.put("error",String.format("Компания с таким ИНН уже существует\n(%s)", x.getName()));
+            companyInfoMap.put("error", String.format("Компания с таким ИНН уже существует\n(%s)", x.getName()));
 
         });
-        if (companyInfoMap.containsKey("error")){
+        if (companyInfoMap.containsKey("error")) {
             return companyInfoMap;
         }
 
-            company.setShortName(translit.removeAbbreviations(company.getName()));
+        company.setShortName(translit.removeAbbreviations(company.getName()));
         String companyUserLogin = translit.removeSpecialCharacters(translit.cyr2lat(company.getShortName()));
         while (userRepository.findByLogin(companyUserLogin).isPresent()) {
             companyUserLogin = companyUserLogin + "1";
@@ -329,23 +334,34 @@ public class RegisterService {
         user.setCompany(company);
         userRepository.save(user);
 
-        companyInfoMap.put("companyName",company.getName());
-        companyInfoMap.put("login",user.getLogin());
-        companyInfoMap.put("password",userPassword);
+        companyInfoMap.put("companyName", company.getName());
+        companyInfoMap.put("login", user.getLogin());
+        companyInfoMap.put("password", userPassword);
         return companyInfoMap;
     }
 
-    public void resendRegistrationMessage(Company company) {
-        company.getUsers().stream().min(Comparator.comparingInt(User::getId));
+    public void sendPasswordResetRequest(CompanyPasswordResetRequest request, Integer dispatcherCompanyId) throws MessagingException {
+        Company company = companyRepository.findById(request.getCompanyId()).orElseThrow(() -> new IllegalArgumentException("No such company exist"));
+        if (!company.getType().equals(CompanyType.TRANSPORT)) {
+            throw new IllegalStateException("Password reset request is only allowed for transport companies");
+        }
+        Company dispathcer = companyRepository.findById(dispatcherCompanyId).orElseThrow(() -> new IllegalStateException("Who is sending the request?"));
+        mailService.send(adminEmail, "Запрос на восстановление пароля",
+                "Поступил запрос на восстановление пароля для компании:" + company.getName() +
+                        "\nОт диспетчера:" + dispathcer.getName() +
+                        "\nДанные:\n" +
+                        "\nE-mail:"+request.getEmail()+
+                        "\nТелефон:"+request.getPhoneNumber()+
+                        "\nКонтактное лицо:"+request.getContact()
+        );
     }
 
 
-    public void acceptCookies(Integer userId){
-        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("No such user exists"));
+    public void acceptCookies(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("No such user exists"));
         user.setHasAcceptedCookies(true);
         userRepository.save(user);
     }
-
 
 
 }
