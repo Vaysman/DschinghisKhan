@@ -32,6 +32,9 @@
             src="/orders/js/orders-in-work-company.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'
             src="/main/js/company/dispatched-offers.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/media/Cropper/cropper.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/transports.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/drivers.js"></script>
     <script src="/main/js/listSearch.js" type="text/javascript"></script>
     <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
     <script src="/media/jquery.ba-throttle-debounce.min.js"></script>
@@ -86,7 +89,7 @@
             <li id="tab-orders-in-work-link" class="nav-item">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders-in-work">
                     <i class="fa fa-truck" aria-hidden="true"></i>
-                    Заявки в работе
+                    Заявки
                 </a>
             </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_DISPATCHER')">
@@ -122,6 +125,30 @@
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-reviews">
                     <i class="fa fa-compass" aria-hidden="true"></i>
                     Котировки
+                </a>
+            </li>
+
+            <li id="tab-sent-contracts-link" class="nav-item"
+                sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-sent-contracts">
+                    <i class="fa fa-file-text" aria-hidden="true"></i>
+                    Контракты
+                </a>
+            </li>
+            <li class="nav-item" id="tab-transports-link" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-transports"><i
+                        class="fa fa-truck" aria-hidden="true"></i> Транспорт</a>
+            </li>
+            <li class="nav-item" id="tab-drivers-link" sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-drivers"><i class="fa fa-users"
+                                                                                                   aria-hidden="true"></i>
+                    Водители</a>
+            </li>
+            <li id="tab-received-contracts-link" class="nav-item"
+                sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")'>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-received-contracts">
+                    <i class="fa fa-file-text" aria-hidden="true"></i>
+                    Контракты
                 </a>
             </li>
 
@@ -603,114 +630,10 @@
             </div>
         </div>
     </div>
-    <div id="tab-sent-contracts" class="tab-pane">
-        <div class="spaced-container white container-fluid">
-            <h4>Контракты с перевозчиками</h4>
-            <div class="row" id="sentContracts">
-                <div class="col-2">
-                    <h5 th:if="${contracts==null || #lists.size(contracts) == 0}">
 
-                        <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
-                    </h5>
-                    <div class="list-group">
-                        <div class="input-group">
-                            <input class="form-control">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-search"></i></span>
-                            </div>
-                        </div>
-                        <a href="#" v-bind:class="getOfferColor(managedOffer.isPriceChanged)"
-                           v-for="managedOffer in managedOffers" @click="loadOfferInfo(managedOffer.id)"
-                           class="list-group-item list-group-item-action grey">
-                            {{ managedOffer.orderNumber}}<br>{{managedOffer.companyName }}
-                        </a>
-                    </div>
-                </div>
-                <div v-if="offer" class="col-10" id="managedOfferInfo">
-                    <div class="row">
-                        <div class="col-12">
-                            <h5>Заявка: {{offer.orderNumber}}</h5>
-                            <h5>Компания: {{offer.company.name}}</h5>
-                            <br>
-                        </div>
-                        <div class="col-8">
-                            <div class="row">
-                                <div class="col-4">
-
-                                    Оплата:<br>{{offer.order.paymentType}}<br>
-                                    Обязательность:<br>{{offer.order.orderObligation}}<br><br>
-                                </div>
-                                <div class="col-4">
-                                    Дней для возврата документов:<br>
-                                    {{offer.order.documentReturnDate}} <br>
-                                    Дней для оплаты:<br>
-                                    {{offer.order.paymentDate}}<br><br>
-                                </div>
-                                <div class="col-4">
-                                    Водитель:<br>
-                                    <span v-if="offer.driver"><a v-bind:href="'info/drivers/'+offer.driver.id">{{offer.driver.name}}</a></span>
-                                    <span v-else>Не указан</span><br>
-                                    Транспорт:<br><span v-if="offer.transport">{{offer.transport.number}}/{{offer.transport.type}}</span>
-                                    <span v-else>Не указан</span><br><br>
-                                </div>
-                                <div class="col-4">
-                                    Требования:
-                                    <ul>
-                                        <li v-for="requirement in offer.order.requirements">{{requirement}}</li>
-                                    </ul>
-                                </div>
-                                <div class="col-4">
-                                    Груз:
-                                    <ul>
-                                        <li v-for="cargoUnit in offer.order.cargo">{{cargoUnit}}</li>
-                                    </ul>
-                                </div>
-
-                                <div class="col-4">
-                                    Маршрут: {{offer.order.route.name}}<br>
-                                    Пункты маршрута:
-                                    <ol>
-                                        <li v-for="routePoint in offer.order.route.routePoints">
-                                            {{routePoint.point.name}}<br>
-                                            {{routePoint.point.address}}
-                                        </li>
-                                    </ol>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="row">
-                                <div v-if="offer.dispatcherPrice!=offer.proposedPrice" class="col-12">
-                                    Комментарий перевозчика:<br>
-                                    {{offer.proposedPriceComment}}<br><br>
-                                </div>
-                                <div class="col-6">
-                                    Назначенная диспетчером цена:<br>
-                                    {{offer.dispatcherPrice}}<br><br>
-                                </div>
-                                <div class="col-6">
-                                    Назначенная компанией цена:<br>
-                                    {{offer.proposedPrice}}<br><br>
-                                </div>
-                                <div class="col-12">
-                                    <button class="btn btn-block btn-primary" @click="acceptOffer()"
-                                            :disabled="(offer==null)">Утвердить
-                                    </button>
-                                    <button class="btn btn-block btn-default" @click="rejectOffer()"
-                                            :disabled="(offer==null)">Отклонить
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div id="tab-dispatched-offers" class="tab-pane">
         <div class="spaced-container white container-fluid">
-            <h4>Высланные предложения</h4>
+            <h4>Принятые предложения</h4>
             <div>
                 <table class="table table-striped table-sm" id="dispatchedOffersTable">
                     <thead>
@@ -1058,64 +981,443 @@
     <div id="tab-contacts" class="tab-pane">
         <div class=" container-fluid spaced-container white" style="overflow-x: scroll">
             <div class="row">
-            <div class="nav flex-column nav-pills col-1-and-half" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-link active" id="v-pills-clients-tab" data-toggle="pill" href="#v-pills-clients" role="tab" aria-controls="v-pills-clients" aria-selected="true">Клиенты</a>
-                <a class="nav-link" id="v-pills-contacts-tab" data-toggle="pill" href="#v-pills-contacts" role="tab" aria-controls="v-pills-contacts" aria-selected="false">Контакты</a>
-                <a class="nav-link" id="v-pills-points-tab" data-toggle="pill" href="#v-pills-points" role="tab" aria-controls="v-pills-points" aria-selected="false">Пункты доставки</a>
-            </div>
-            <div class="tab-content col-10" >
-                <div class="tab-pane fade show active" id="v-pills-clients" role="tabpanel" aria-labelledby="v-pills-clients-tab">
-                    <h4>Клиенты</h4>
-                    <div>
-                        <table class="table table-hover table-striped " id="clientsTable">
-                            <!--<thead>-->
-                            <!--<tr>-->
+                <div class="nav flex-column nav-pills col-1-and-half" id="v-pills-tab" role="tablist"
+                     aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-clients-tab" data-toggle="pill" href="#v-pills-clients"
+                       role="tab" aria-controls="v-pills-clients" aria-selected="true">Клиенты</a>
+                    <a class="nav-link" id="v-pills-contacts-tab" data-toggle="pill" href="#v-pills-contacts" role="tab"
+                       aria-controls="v-pills-contacts" aria-selected="false">Контакты</a>
+                    <a class="nav-link" id="v-pills-points-tab" data-toggle="pill" href="#v-pills-points" role="tab"
+                       aria-controls="v-pills-points" aria-selected="false">Пункты доставки</a>
+                </div>
+                <div class="tab-content col-10">
+                    <div class="tab-pane fade show active" id="v-pills-clients" role="tabpanel"
+                         aria-labelledby="v-pills-clients-tab">
+                        <h4>Клиенты</h4>
+                        <div>
+                            <table class="table table-hover table-striped " id="clientsTable">
+                                <!--<thead>-->
+                                <!--<tr>-->
                                 <!--<th>#</th>-->
                                 <!--<th>Наименование</th>-->
                                 <!--<th>Телефон</th>-->
                                 <!--<th>Контактное лицо</th>-->
-                            <!--</tr>-->
-                            <!--</thead>-->
-                        </table>
+                                <!--</tr>-->
+                                <!--</thead>-->
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="v-pills-points" role="tabpanel" aria-labelledby="v-pills-points-tab">
-                    <h4>Пункты доставки</h4>
-                    <div>
-                        <table class="table table-hover table-striped " style="width: 100%" id="pointsTable">
+                    <div class="tab-pane fade" id="v-pills-points" role="tabpanel" aria-labelledby="v-pills-points-tab">
+                        <h4>Пункты доставки</h4>
+                        <div>
+                            <table class="table table-hover table-striped " style="width: 100%" id="pointsTable">
 
-                        </table>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="v-pills-contacts" role="tabpanel" aria-labelledby="v-pills-contacts-tab">
-                    <h4>Контакты</h4>
-                    <div class="row">
-                        <div class="col-1"><h5 style="position: absolute; bottom:0px;">Клиент: </h5></div>
-                        <div class="col-3"><input id="clientSelectForContacts"></div>
-                    </div>
-                    <div>
-                        <table class="table table-hover  table-striped" style="width: 100%" id="contactsTable">
-                            <thead>
-                            <tr>
-                                <th>id</th>
-                                <th>Компания</th>
-                                <th>ФИО</th>
-                                <th>Адрес</th>
-                                <th>Телефон</th>
-                                <th>E-mail</th>
-                                <th>Должность</th>
-                            </tr>
-                            </thead>
-                        </table>
+                    <div class="tab-pane fade" id="v-pills-contacts" role="tabpanel"
+                         aria-labelledby="v-pills-contacts-tab">
+                        <h4>Контакты</h4>
+                        <div class="row">
+                            <div class="col-1"><h5 style="position: absolute; bottom:0px;">Клиент: </h5></div>
+                            <div class="col-3"><input id="clientSelectForContacts"></div>
+                        </div>
+                        <div>
+                            <table class="table table-hover  table-striped" style="width: 100%" id="contactsTable">
+                                <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>Компания</th>
+                                    <th>ФИО</th>
+                                    <th>Адрес</th>
+                                    <th>Телефон</th>
+                                    <th>E-mail</th>
+                                    <th>Должность</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div th:insert="fragments/header :: footer"></div>
+    <div id="tab-sent-contracts" class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Контракты с перевозчиками</h4>
+            <div class="row" id="sentContracts">
+                <div class="col-2">
+                    <h5 th:if="${sentContracts==null || #lists.size(sentContracts) == 0}">
+
+                        <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
+                    </h5>
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <a href="#" v-for="contract in sentContracts"
+                           @click="loadContractInfo(contract.id)"
+                           class="list-group-item list-group-item-action grey">
+                            {{contract.contractName}}<br>{{contract.companyName}}
+                        </a>
+                    </div>
+                </div>
+                <div v-if="contract" class="col-10" id="contractInfo">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Контракт: {{contract.file.fileName}}</h5>
+                            <h5>Компания: {{contract.company.name}}</h5>
+                            <br>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-4">
+
+                                    Полное название:<br>{{contract.company.name}}<br>
+                                    Краткое наззвание:<br>{{contract.company.shortName}}<br>
+                                    E-mail:<br>
+                                    {{contract.company.email}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    ИНН:<br>
+                                    {{contract.company.inn}} <br>
+                                    ФИО директора:<br>
+                                    {{contract.company.directorFullname}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    Налогообложение:<br>
+                                    {{contract.company.taxationType}}<br>
+                                    ФИО глав. бухгалтера:<br>
+                                    {{contract.company.chiefAccFullname}}<br>
+                                    Наименование банка:<br>
+                                    {{contract.company.bankName}}<br>
+                                    Корреспондентский счет:<br>
+                                    {{contract.company.corresAccount}}<br>
+                                    Рассчетный счет:<br>
+                                    {{contract.company.curAccount}}<br>
+                                </div>
+                                <div class="col-4">
+                                    <a class="btn btn-block btn-secondary"
+                                       :href="'/upload/getFile/'+contract.file.path">
+                                        Скачать контракт
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    БИК:<br>
+                                    {{contract.company.bik}}<br>
+                                    КПП:<br>
+                                    {{contract.company.kpp}}<br>
+                                    ОКПО:<br>
+                                    {{contract.company.okpo}}<br>
+                                </div>
+                                <div class="col-6">
+                                    ОГРН:<br>
+                                    {{contract.company.bik}}<br>
+                                    ОГРН:<br>
+                                    {{contract.company.bik}}<br>
+                                    ОКВЕД:<br>
+                                    {{contract.company.ocved}}<br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-received-contracts" class="tab-pane">
+        <div class="spaced-container white container-fluid">
+            <h4>Контракты с диспетчерами</h4>
+            <div class="row" id="receivedContracts">
+                <div class="col-2">
+                    <h5 th:if="${receivedContracts==null || #lists.size(receivedContracts) == 0}">
+
+                        <small class="text-muted">Контракты с компаниями будут выведены здесь</small>
+                    </h5>
+                    <div class="list-group">
+                        <div class="input-group">
+                            <input class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <a href="#" v-for="contract in receivedContracts"
+                           @click="loadContractInfo(contract.id)"
+                           class="list-group-item list-group-item-action grey">
+                            {{contract.contractName}}<br>
+                            <small class="text-muted">{{contract.companyName}}</small>
+                        </a>
+                    </div>
+                </div>
+                <div v-if="contract" class="col-10">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Контракт: {{contract.file.fileName}}</h5>
+                            <h5>Компания: {{contract.initiativeCompany.name}}</h5>
+                            <br>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-4">
+
+                                    Полное название:<br>{{contract.initiativeCompany.name}}<br>
+                                    Краткое наззвание:<br>{{contract.initiativeCompany.shortName}}<br>
+                                    E-mail:<br>
+                                    {{contract.initiativeCompany.email}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    ИНН:<br>
+                                    {{contract.initiativeCompany.inn}} <br>
+                                    ФИО директора:<br>
+                                    {{contract.initiativeCompany.directorFullname}}<br><br>
+                                </div>
+                                <div class="col-4">
+                                    Налогообложение:<br>
+                                    {{contract.initiativeCompany.taxationType}}<br>
+                                    ФИО глав. бухгалтера:<br>
+                                    {{contract.initiativeCompany.chiefAccFullname}}<br>
+                                    Наименование банка:<br>
+                                    {{contract.initiativeCompany.bankName}}<br>
+                                    Корреспондентский счет:<br>
+                                    {{contract.initiativeCompany.corresAccount}}<br>
+                                    Рассчетный счет:<br>
+                                    {{contract.initiativeCompany.curAccount}}<br>
+                                </div>
+                                <div class="col-4">
+                                    <a class="btn btn-block btn-secondary"
+                                       :href="'/upload/getFile/'+contract.file.path">
+                                        Скачать контракт
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    БИК:<br>
+                                    {{contract.initiativeCompany.bik}}<br>
+                                    КПП:<br>
+                                    {{contract.initiativeCompany.kpp}}<br>
+                                    ОКПО:<br>
+                                    {{contract.initiativeCompany.okpo}}<br>
+                                </div>
+                                <div class="col-6">
+                                    ОГРН:<br>
+                                    {{contract.initiativeCompany.bik}}<br>
+                                    ОГРН:<br>
+                                    {{contract.initiativeCompany.bik}}<br>
+                                    ОКВЕД:<br>
+                                    {{contract.initiativeCompany.ocved}}<br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-transports" class="tab-pane" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
+
+        <div class="container-fluid spaced-container white">
+            <h4>Транспорт</h4>
+            <div>
+                <table class="table table-hover  table table-striped table-bordered" style="width: 100%"
+                       id="transportDataTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Гос. Номер</th>
+                        <th>Тип</th>
+                        <th>Кузов</th>
+                        <th>Погрузка</th>
+                        <th>Тоннаж</th>
+                        <th>Объем</th>
+                        <th>Коники</th>
+                        <th>Гидроборт</th>
+                        <th>GPS</th>
+                        <th>Модель</th>
+                        <th>Комментарий</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="modal" id="transportDocumentUploadModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Загрузить документ</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="transportDocumentUploadForm">
+
+                            <input id="transportIdInput" name="id" hidden>
+                            <div class="row">
+                                <div class="col-4">Название файла<sup class="red">*</sup></div>
+                                <div class="col-8"><input class="form-control" type="text" name="fileName"></div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-4">Файл<sup class="red">*</sup></div>
+                                <div class="col-8"><input type="file" name="file"></div>
+                            </div>
+                            <div class="red" id="transportDocumentUploadError">
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="uploadTransportDocument" class="btn btn-primary">Загрузить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-drivers" class="tab-pane" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
+
+        <div class="container-fluid spaced-container white">
+            <h4>Водители</h4>
+            <div>
+                <table class="table table-hover table table-striped table-bordered" id="driverDataTable">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>ФИО</th>
+                        <th>Телефон</th>
+                        <th>Паспорт</th>
+                        <th>Водительское удостверение</th>
+                        <th>Рейтинг</th>
+                        <th>Мобильное приложение</th>
+                        <th>Номер для приложения</th>
+                        <th>Отслеживание по телефону</th>
+                        <th>Номер для отслеживания</th>
+                        <th>В штате</th>
+                        <th>Оплата</th>
+                        <th>Комментарий</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div id="driversForm" style="display: flex">
+                <div class="row form-group">
+                    <div class="col-12">
+                        <div data-editor-template="name"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="phone"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="passportNumber"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="licenseNumber"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="rating"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="hasMobileApp"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="isTracked"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="mobileAppNumber"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="trackingNumber"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="paymentType"></div>
+                    </div>
+                    <div class="col-6">
+                        <div data-editor-template="isHired"></div>
+                    </div>
+                    <div class="col-12">
+                        <div data-editor-template="comment"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modal" id="driverDocumentUploadModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Загрузить документ</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="driverDocumentUploadForm">
+                            <div class="row">
+                                <div class="col-4">Название файла<sup class="red">*</sup></div>
+                                <div class="col-8"><input class="form-control" type="text" name="fileName"></div>
+                                <br>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-4">Файл<sup class="red">*</sup></div>
+                                <div class="col-8"><input type="file" name="file"></div>
+                            </div>
+                            <div class="red" id="driverDocumentUploadError">
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="uploadDriverDocument" class="btn btn-primary">Загрузить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal  fade" id="driverPhotoUpload" tabindex="-1" role="dialog"
+             aria-labelledby="uploadDriverPhotoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadDriverPhotoLabel">Загрузка фотографии</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input id="driverPhotoInput" type="file" accept="image/png,image/jpeg">
+                        <div class="img-container">
+                            <img id="driverPhoto" th:src="@{../error/images/no-image-icon.png}">
+                        </div>
+                        <div class="alert" role="alert"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="cropDriverPhoto">Загрузить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:insert="fragments/header :: footer"></div>
 </body>
 <script sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")' src="/orders/js/managed-offers.js"></script>
 <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")' src="/orders/js/pending-orders.js"></script>
 <script sec:authorize="hasAnyAuthority('ROLE_DISPATCHER')" src="/orders/js/orders-in-work-map.js"></script>
+<script sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")' src="/main/js/dispatcher/contracts.js"></script>
+<script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")' src="/main/js/company/contracts.js"></script>
 </html>
