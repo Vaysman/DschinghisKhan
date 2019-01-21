@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .failureUrl("/login-error")
                 .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
-                .defaultSuccessUrl("/main", false)
+                .defaultSuccessUrl("/successfulLogin", false)
                 .and()
                 .rememberMe().rememberMeServices(rememberMeServices())
                 .and()

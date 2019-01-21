@@ -1,4 +1,19 @@
 $(document).ready(function () {
+    $("#acceptCookiesButton").click(function () {
+        $(this).attr("disabled","disabled");
+        $.ajax({
+            url: `/acceptCookies`,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function () {
+                $("#cookieAcceptWindow").slideUp();
+            }
+        });
+
+    });
+
+
     $("#editUser").on("click", function () {
         $(this).prop("disabled", true);
         $(this).html("<i class='fa fa-refresh fa-spin' aria-hidden='true'></i> " + $(this).text());

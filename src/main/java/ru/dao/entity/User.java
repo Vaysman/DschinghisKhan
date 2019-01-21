@@ -80,6 +80,9 @@ public class User {
     @JoinColumn(name = "COMPANY_ID", referencedColumnName = "ID")
     private Company company;
 
+    @Column
+    private Boolean hasAcceptedCookies;
+
     @PrePersist
     private void prePersist(){
         if(!passAndSalt.isEmpty()) {

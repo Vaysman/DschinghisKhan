@@ -31,6 +31,9 @@ public class AuthorizedController {
     private final RouteReviewRepository reviewRepository;
     private final ContractRepository contractRepository;
 
+
+
+
     @Autowired
     public AuthorizedController(CompanyRepository companyRepository, UserRepository userRepository, ContactRepository contactRepository, RouteReviewOpinionRepository opinionRepository, RouteReviewRepository reviewRepository, ContractRepository contractRepository) {
         this.companyRepository = companyRepository;
@@ -55,6 +58,7 @@ public class AuthorizedController {
         modelAndView.addAttribute("point", point);
         return "profile";
     }
+
 
     @GetMapping("/routes")
     public String routes() {

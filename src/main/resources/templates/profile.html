@@ -21,13 +21,14 @@
     <script src="/main/js/listSearch.js" type="text/javascript"></script>
     <script src="/profile/profile.js"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Highcharts-7.0.1/highcharts.js"></script>
-    <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Highcharts-7.0.1/modules/accessibility.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_DISPATCHER')"
+            src="media/Highcharts-7.0.1/modules/accessibility.js"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Highcharts-7.0.1/modules/data.js"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Highcharts-7.0.1/modules/drilldown.js"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Pickmeup/pickmeup.js"></script>
-    <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Pickmeup/jquery.pickmeup.twitter-bootstrap.js"></script>
+    <script sec:authorize="hasAuthority('ROLE_DISPATCHER')"
+            src="media/Pickmeup/jquery.pickmeup.twitter-bootstrap.js"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="/profile/charts.js"></script>
-
 
 
     <script>
@@ -115,7 +116,7 @@
                         <div class="input-group mb-3">
                             <input class="form-control" id="ordersPeriod" value="">
                             <div class="input-group-append">
-                            <input class=" btn btn-primary" id="reloadOrdersChart" value="Обновить">
+                                <input class=" btn btn-primary" id="reloadOrdersChart" value="Обновить">
                             </div>
                         </div>
                         <div class="container-fluid" style="height:300px" id="ordersPeriodChart"></div>
@@ -155,11 +156,11 @@
                     <table class="table table-hover table-striped " id="usersTable">
                         <!--<thead>-->
                         <!--<tr>-->
-                            <!--<th>id</th>-->
-                            <!--<th>Имя</th>-->
-                            <!--<th>Логин</th>-->
-                            <!--<th>Пароль</th>-->
-                            <!--<th>E-Mail</th>-->
+                        <!--<th>id</th>-->
+                        <!--<th>Имя</th>-->
+                        <!--<th>Логин</th>-->
+                        <!--<th>Пароль</th>-->
+                        <!--<th>E-Mail</th>-->
                         <!--</tr>-->
                         <!--</thead>-->
                     </table>
@@ -207,8 +208,32 @@
         </div>
     </div>
     <div id="tab-info" class="tab-pane in active">
+        <div class="spaced-container grey" id="cookieAcceptWindow" style="width: 100%;"
+             th:if="${!currentUser.hasAcceptedCookies}">
+            <div class="card">
+                <div class="card-header">
+                    Cookie use notification
+                </div>
+                <div class="card-body">
+                    Cookies and IP addresses allow us to deliver and improve our web content and to provide you with a
+                    personalized experience.
+                    Our website uses cookies and collects your IP address for these purposes.
+                    <br>Kurulway may use cookies and my IP address to
+                    collect individual statistics and to provide me with
+                    personalized offers and ads subject to the Privacy
+                    Policy and the Terms of Use.
+                    <br>Kurulway may use
+                    third-party services for this purpose. I can revoke
+                    my consent at any time by visiting the Opt-Out page.<br>
+                    <br>
+                    <button class="btn btn-outline-dark" id="acceptCookiesButton">Yes, I agree</button>
+                </div>
+            </div>
+        </div>
         <div class="spaced-container container-fluid">
+
             <div class="row">
+
                 <div class="col-2">
                     <div class="card">
 
