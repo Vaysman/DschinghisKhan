@@ -22,9 +22,6 @@ public enum  OrderStatus {
     @JsonProperty("Отказано")
     REJECTED("Отказано", ""),
 
-    @JsonProperty("Доставлено")
-    FINISHED("Доставлено", ""),
-
     @JsonProperty("Изменена стоимость")
     PRICE_CHANGED("Изменена стоимость", ""),
 

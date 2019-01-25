@@ -223,6 +223,7 @@ $(document).ready(function () {
         var routeDataTable = $("#routesTable").DataTable({
                 processing: true,
                 serverSide: true,
+                scrollX:true,
                 searchDelay: 800,
 
                 ajax: {

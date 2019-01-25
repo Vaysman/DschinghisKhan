@@ -63,7 +63,8 @@ $(document).ready(function () {
                     // alert(response.responseText);
                 },
                 error: function (response) {
-                    if(response.responseJSON.cause.cause.message.includes("Duplicate")){
+                    let message = response.responseJSON.cause.cause.message;
+                    if(message.includes("Duplicate") || message.includes("Unique")){
                         usersEditor.field("login").error("Данный логин уже существует")
                     } else {
                         usersEditor.error(response.responseJSON.cause.cause.message);
@@ -265,7 +266,7 @@ $(document).ready(function () {
                 {"name": "id", "data": "id", "title": "id", visible: false},
                 {
                     "name": "username", "data": "username", "title": "ФИО", render: function (data, type, full) {
-                        return `${full.surname} ${data} ${full.patronym}`;
+                        return `${(full.surname) ? full.surname : ''} ${data} ${(full.patronym) ? full.patronym : ""}`;
                     }
                 },
                 {"name": "login", "data": "login", "title": "Логин"},

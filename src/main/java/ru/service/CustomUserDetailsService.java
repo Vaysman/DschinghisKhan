@@ -17,6 +17,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * @param username A username of registered user
+     * @return returns {@link UserDetails} of a user with such username
+     * @throws UsernameNotFoundException thrown when there's no such username in the database
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(username).orElseThrow(()->new UsernameNotFoundException("Username not found"));

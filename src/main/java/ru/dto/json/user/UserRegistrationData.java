@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.util.Translit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +27,11 @@ public class UserRegistrationData {
     private String directorFullname;
 
 
+    /**
+     * @return Returns map of format: "ErrorName":"Error description"
+     * Checks provided data for incorrect values, such as incorrect or empty email, empty INN, empty phone, et cetera.
+     */
     public Map<String,String> check(){
-        Translit translit = new Translit();
         Map<String, String> errors = new HashMap<>();
         if (inn.isEmpty()) errors.put("innError", "Не указан ИНН");
         Pattern mailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);

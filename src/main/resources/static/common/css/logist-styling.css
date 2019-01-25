@@ -13,6 +13,15 @@ body{
     color: #000;
 }
 
+.dt-buttons.btn-group{
+    display: block;
+}
+
+table.dataTable.table-sm > thead > tr > th{
+    text-align: center;
+    vertical-align: middle;
+}
+
 .badge{
     font-weight: normal;
 }

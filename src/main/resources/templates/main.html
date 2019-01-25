@@ -6,14 +6,14 @@
     <title>Заявки</title>
 
     <link type="text/css" rel="stylesheet" href="/media/DataTables/tooltip.css">
+    <link href="/media/DataTables/FixedColumns-3.2.4/css/fixedColumns.bootstrap4.css" type="text/css" rel="stylesheet">
     <th:block th:include="fragments/header :: scripts"></th:block>
 
     <script src="/media/DataTables/numeric-plugin.js"></script>
     <!--<script src="/media/vue.min.js"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/all-orders.js"></script>
-    <script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'
-            src="/orders/js/orders-in-work-dispatcher.js"></script>
+    <!--<script sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")' src="/orders/js/orders-in-work-dispatcher.js"></script>-->
     <script src="/orders/js/all-companies-dispatcher.js"
             sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")'></script>
     <script src="/orders/js/all-companies-admin.js"
@@ -37,15 +37,17 @@
     <script sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')" src="/main/js/company/drivers.js"></script>
     <script src="/main/js/listSearch.js" type="text/javascript"></script>
     <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
-    <script src="/media/jquery.ba-throttle-debounce.min.js"></script>
-
+    <!--<script src="/media/jquery.ba-throttle-debounce.min.js"></script>-->
+    <script src="/media/DataTables/FixedColumns-3.2.4/js/dataTables.fixedColumns.js" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
             // Javascript to enable link to tab
             var url = document.location.toString();
             if (url.match('#')) {
                 $('#nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
-                console.log(`shown ${url.split('#')[1]} tab`);
+
+            } else {
+                $('#nav-tabs a[href="#tab-all-orders"]').tab('show');
             }
 
             // Change hash for page-reload
@@ -63,8 +65,8 @@
         <ul class="ml-md-auto flex-row nav container nav-fill" id="nav-tabs" role="tablist">
             <li id="tab-all-orders-link" class="nav-item"
                 sec:authorize='hasAnyAuthority("ROLE_ADMIN","ROLE_DISPATCHER")'>
-                <a class="nav-link active" data-toggle="tab" aria-selected="false" href="#tab-all-orders"><i
-                        class="fa fa-" aria-hidden="true"></i> Заявки</a>
+                <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-all-orders">
+                    <i class="fa fa-list" aria-hidden="true"></i> Заявки</a>
             </li>
 
             <li id="tab-pending-orders-link" class="nav-item" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
@@ -86,7 +88,7 @@
                     <i class="fa fa-wpforms" aria-hidden="true"></i> Предложения
                 </a>
             </li>
-            <li id="tab-orders-in-work-link" class="nav-item">
+            <li id="tab-orders-in-work-link" class="nav-item" sec:authorize="hasAuthority('ROLE_TRANSPORT_COMPANY')">
                 <a class="nav-link" data-toggle="tab" aria-selected="false" href="#tab-orders-in-work">
                     <i class="fa fa-truck" aria-hidden="true"></i>
                     Заявки
@@ -228,10 +230,10 @@
     <div id="tab-all-orders"
          th:classappend="(${#authorization.expression('hasRole(''ROLE_TRANSPORT_COMPANY'')')})? '' : 'in active' "
          class="tab-pane">
-        <div class="spaced-container white container-fluid" style="overflow-x: scroll">
+        <div class="spaced-container white container-fluid" style="width:100%">
             <h4>Заявки</h4>
             <div>
-                <table class="table table-sm table-striped " id="orderTable">
+                <table class="table table-sm table-striped" id="orderTable">
                     <thead>
                     <tr>
                         <th>id</th>
@@ -258,6 +260,32 @@
                         <th>Дата исполнения</th>
                     </tr>
                     </thead>
+                    <tfoot>
+                    <tr>
+                        <th>id</th>
+                        <th>Номер</th>
+                        <th>Статус</th>
+                        <th>Предложения</th>
+                        <th>Маршрут</th>
+                        <th>ТК</th>
+                        <th>Транспорт</th>
+                        <th>Водитель</th>
+                        <th>Требования</th>
+                        <th>Груз</th>
+                        <th>Описание груза</th>
+                        <th>Вес груза</th>
+                        <th>Объем груза</th>
+                        <th>Кол-во паллет</th>
+                        <th>Размеры груза</th>
+                        <th>Догруз</th>
+                        <th>Дни для оплаты</th>
+                        <th>Дни для возврата<br>документов</th>
+                        <th>Рейтинг</th>
+                        <th>Обязательность</th>
+                        <th>Оплата</th>
+                        <th>Дата исполнения</th>
+                    </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>

@@ -162,14 +162,10 @@ public class OrderLifecycleTest {
 
 //        assertThat(orderRepository.findFirstByIdAndStatusIn(order.getId(), OrderStatus.getChangeableStatuses()).isPresent()).isEqualTo(false);
 
-        orderLifecycleService.changeStatus(order,OrderStatus.DOCUMENT_RETURN);
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.DOCUMENT_RETURN);
 
         orderLifecycleService.confirmDocumentDelivery(dispatcherUser,order.getId());
         assertThat(order.getStatus()).isEqualTo(OrderStatus.DOCS_RECEIVED);
 
-        orderLifecycleService.changeStatus(order, OrderStatus.PAY_PENDING);
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAY_PENDING);
 
         orderLifecycleService.claimPayment(dispatcherUser,order.getId());
         assertThat(order.getStatus()).isEqualTo(OrderStatus.PAYED);

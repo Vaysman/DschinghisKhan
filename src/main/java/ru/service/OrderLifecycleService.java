@@ -1,8 +1,6 @@
 package ru.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +14,13 @@ import ru.dto.json.order.OrderAssignData;
 import ru.util.generator.RandomIntGenerator;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+/**
+ * This service provides methods for every step of an order lifecycle
+ */
 @Service
 @Transactional
 public class OrderLifecycleService {
@@ -30,7 +30,7 @@ public class OrderLifecycleService {
     private final TransportRepository transportRepository;
     private final OrderHistoryRepository orderHistoryRepository;
     private final OrderOfferRepository orderOfferRepository;
-    private final JavaMailSender sender;
+    private final MailService mailService;
 
     @Autowired
     public OrderLifecycleService(
@@ -39,18 +39,26 @@ public class OrderLifecycleService {
             DriverRepository driverRepository,
             TransportRepository transportRepository,
             OrderHistoryRepository orderHistoryRepository,
-            OrderOfferRepository orderOfferRepository, JavaMailSender sender) {
+            OrderOfferRepository orderOfferRepository, MailService mailService) {
         this.orderRepository = orderRepository;
         this.companyRepository = companyRepository;
         this.driverRepository = driverRepository;
         this.transportRepository = transportRepository;
         this.orderHistoryRepository = orderHistoryRepository;
         this.orderOfferRepository = orderOfferRepository;
-        this.sender = sender;
+        this.mailService = mailService;
     }
 
 
-    public Order duplicateOrder(User currentUser, Integer orderId){
+    /**
+     * @param orderId ID of an order to be duplicated
+     * @return Brand new order, containing the same:
+     * {@link Route},
+     * {@link ru.constant.OrderObligation},
+     * documentReturn date, paymentDate, paymentType,
+     * routePrice, originator, afterLoad, requirements and rating
+     */
+    public Order duplicateOrder(Integer orderId){
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Заявки не существует"));
@@ -74,6 +82,10 @@ public class OrderLifecycleService {
 
     }
 
+    /**
+     * @param currentUser User that attempts to confirm payment
+     * @param orderId ID of an order, status of which will be changed from one of delivered statues to PAYMENT_CONFD
+     */
     public void confirmPayment(User currentUser, Integer orderId) {
         Order order = orderRepository.findFirstByIdAndStatusIn(orderId, OrderStatus.getDeliveredStatuses())
                 .orElseThrow(() -> new IllegalArgumentException("Не может быть изменен статус заявки:\n– Оплата уже была подтверждена\n– Доставка еще не была доставлена\n- Заявки не существует"));
@@ -83,6 +95,10 @@ public class OrderLifecycleService {
         saveActionHistory(OrderLifecycleActions.PAYMENT_RECEIVED, currentUser, order);
     }
 
+    /**
+     * @param currentUser User that attempts to claim that payment for order wasn't received
+     * @param orderId ID of an order, status of which will be changed from PAYED to NOT_PAYED
+     */
     public void claimNonPayment(User currentUser, Integer orderId){
         Order order = orderRepository.findFirstByIdAndStatusIn(orderId, new OrderStatus[]{OrderStatus.PAYED})
                 .orElseThrow(() -> new IllegalArgumentException("Невозможно заявить о неоплате:\n- О неоплате заявил другой пользователь\n- Пользователь ТК заявил о получении оплаты\n- Заявки не существует"));
@@ -91,6 +107,12 @@ public class OrderLifecycleService {
         saveActionHistory(OrderLifecycleActions.PAYMENT_REJECTED,currentUser,order);
     }
 
+    /**
+     * @param currentUser User that attempts to claim
+     *                    that payment for order was sent
+     * @param orderId ID of an order, status of which will be changed
+     *                from PAY_PENDING to PAYED
+     */
     public void claimPayment(User currentUser, Integer orderId){
         Order order = orderRepository.findFirstByIdAndStatusIn(orderId, new OrderStatus[]{OrderStatus.PAY_PENDING})
                 .orElseThrow(() -> new IllegalArgumentException("Невозможно заявить о оплате:\n- О оплате заявил другой диспетчер\n- Пользователь ТК заявил о получении оплаты\n- Заявки не существует"));
@@ -99,6 +121,12 @@ public class OrderLifecycleService {
         saveActionHistory(OrderLifecycleActions.PAYMENT_CONFIRMED,currentUser,order);
     }
 
+    /**
+     * @param currentUser User that attempts to claim that
+     *                    documents for order were delivered
+     * @param orderId ID of an order, status of which will be changed
+     *                from DOCUMENT_RETURN/DELIVERY_CONFDS to DOCS_RECEIVED
+     */
     public void confirmDocumentDelivery(User currentUser, Integer orderId){
         Order order = orderRepository.findFirstByIdAndStatusIn(orderId, new OrderStatus[]{OrderStatus.DOCUMENT_RETURN, OrderStatus.DELIVERY_CONFD})
                 .orElseThrow(() -> new IllegalArgumentException("Невозможно подтвердить получение документов:\n- Получение документов подтвердил другой диспетчер\n- Пользователь ТК заявил о получении оплаты\n- Заявки не существует"));
@@ -108,8 +136,11 @@ public class OrderLifecycleService {
     }
 
 
-
-    //Is not meant to be called from outside, but doesn't schedule if private
+    /**
+     * It's not meant to be called outside the service,
+     * but {@link Scheduled} annotation
+     * requires it to be public
+     */
     @Scheduled(fixedRate = 3600000)
     public void changeStatusToPaymentReception() {
         try {
@@ -122,7 +153,11 @@ public class OrderLifecycleService {
         }
     }
 
-    //Is not meant to be called from outside, but doesn't schedule if private
+    /**
+     * It's not meant to be called outside the service,
+     * but {@link Scheduled} annotation
+     * requires it to be public
+     */
     @Scheduled(fixedRate = 3600000)
     public void findAndChangeOrdersToDocumentReturn() {
         try {
@@ -135,6 +170,11 @@ public class OrderLifecycleService {
         }
     }
 
+    /**
+     * It's not meant to be called outside the service,
+     * but {@link Scheduled} annotation
+     * requires it to be public
+     */
     @Scheduled(fixedRate = 300000)
     public void clearUnfinishedOffers(){
         try{
@@ -148,25 +188,36 @@ public class OrderLifecycleService {
         }
     }
 
+    /**
+     * Notifies company of a declined offer
+     *
+     * @param offer offer that is to be declined
+     */
     @Transactional
     void notifyCompanyOfDecline(OrderOffer offer){
         try {
-            MimeMessage message = sender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, false);
-            helper.setFrom("tarificationsquad@gmail.com");
-            helper.setTo(offer.getCompany().getEmail());
-            helper.setText("Вы не заполнили данные в указанный срок для заявки " +
-                    offer.getOrderNumber() +
-                    " компании " + offer.getManagerCompany().getName() +
-                    " по маршруту " + offer.getOrder().getRoute().getName() +
-            ".\nВаше предложение было отклонено автоматически.");
-            helper.setSubject("Предложение отклонено");
+            mailService.send(
+                    offer.getCompany().getEmail(),
+                    "Предложение отклонено",
+                    "Вы не заполнили данные в указанный срок для заявки " +
+                            offer.getOrderNumber() +
+                            " компании " + offer.getManagerCompany().getName() +
+                            " по маршруту " + offer.getOrder().getRoute().getName() +
+                            ".\nВаше предложение было отклонено автоматически."
+                    );
         } catch (MessagingException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * @param currentUser User that attempts to claim that
+     *                    order was delivered.
+     * @param orderId ID of an order, status of which will be changed
+     *                from one of interchangeable statuses to DELIVERED.
+     *                If user has role ROLE_DISPATCHER - it will be changed to DELIVERY_CONFDS
+     */
     public void confirmDelivery(User currentUser, Integer orderId) {
         Order order = orderRepository.findFirstByIdAndStatusIn(orderId, OrderStatus.getChangeableStatuses())
                 .orElseThrow(() -> new IllegalArgumentException("Не может быть изменен статус заявки:\n– Доставка была подтверждена\n- Заявки не существует"));
@@ -180,6 +231,12 @@ public class OrderLifecycleService {
         saveActionHistory(OrderLifecycleActions.CONFIRM_DELIVERY, currentUser, order);
     }
 
+    /**
+     * @param currentUser User that attempts to change order's status
+     * @param orderId ID of an order, status of which will be changed
+     *                from one of interchangeable statuses to the one provided
+     * @param orderStatus One of interchangeable statuses
+     */
     public void changeStatus(User currentUser, Integer orderId, OrderStatus orderStatus) {
         Order order = orderRepository.findFirstByIdAndStatusIn(orderId, OrderStatus.getChangeableStatuses()).orElseThrow(() -> new IllegalArgumentException("Не может быть изменен статус заявки:\n– Доставка была подтверждена\n- Заявки не существует"));
         order.setStatus(orderStatus);
@@ -188,14 +245,29 @@ public class OrderLifecycleService {
         saveActionHistory(OrderLifecycleActions.CHANGE_STATUS, currentUser, order);
     }
 
-    //For changing status without user
-    public void changeStatus(Order order, OrderStatus orderStatus) {
+
+    /**
+     * A method to change the status of an order without user
+     * Isn't meant to be public, really
+     *
+     * @param order Order, status of which is to change
+     * @param orderStatus Status which will be assigned to the provided order
+     */
+    private void changeStatus(Order order, OrderStatus orderStatus) {
         order.setStatus(orderStatus);
         saveOrder(order);
         saveActionHistory(OrderLifecycleActions.STATUS_TRANSIT, order);
     }
 
 
+    /**
+     * Declines an offer on an order. If there're no more offers on the order present,
+     * order's status will be changed to CREATED.
+     *
+     * This method is meant to be used by scheduled methods, without user's input
+     *
+     * @param offer offer which is to be declined
+     */
     private void declineOffer(OrderOffer offer){
         Order order = offer.getOrder();
 
@@ -212,7 +284,13 @@ public class OrderLifecycleService {
     }
 
 
-
+    /**
+     * Declines an offer on an order. If there're no more offers on the order present,
+     * order's status will be changed to CREATED.
+     *
+     * @param currentUser User that attempts to decline the offer
+     * @param offerId offerId which is to be declined
+     */
     public void declineOffer(User currentUser, Integer offerId) {
         OrderOffer offer = orderOfferRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку"));
         Order order = offer.getOrder();

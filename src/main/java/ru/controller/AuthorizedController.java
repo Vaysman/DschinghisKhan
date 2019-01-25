@@ -19,6 +19,11 @@ import ru.dao.entity.Point;
 import ru.dao.entity.User;
 import ru.dao.repository.*;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 @Controller
 @Transactional(propagation = Propagation.REQUIRED)
@@ -30,8 +35,6 @@ public class AuthorizedController {
     private final RouteReviewOpinionRepository opinionRepository;
     private final RouteReviewRepository reviewRepository;
     private final ContractRepository contractRepository;
-
-
 
 
     @Autowired
@@ -66,7 +69,6 @@ public class AuthorizedController {
     }
 
 
-
     @RequestMapping(value = "/orders")
     public String orders() {
         return "main";
@@ -82,9 +84,10 @@ public class AuthorizedController {
         authentication.refreshAll();
         if (authentication.getUser().getUserRole() == UserRole.ROLE_TRANSPORT_COMPANY) {
             model.addAttribute("pendingOrders", authentication.getPendingOrders());
-            model.addAttribute("pendingOpinions",authentication.getPendingOpinions());
-            model.addAttribute("opinions", authentication.getOpinions());;
-            model.addAttribute("receivedContracts",authentication.getReceivedContracts());
+            model.addAttribute("pendingOpinions", authentication.getPendingOpinions());
+            model.addAttribute("opinions", authentication.getOpinions());
+            ;
+            model.addAttribute("receivedContracts", authentication.getReceivedContracts());
         } else if (authentication.getUser().getUserRole() == UserRole.ROLE_DISPATCHER) {
             model.addAttribute("managedOffers", authentication.getManagedOffers());
             model.addAttribute("sentContracts", authentication.getSentContracts());
@@ -96,6 +99,25 @@ public class AuthorizedController {
         model.addAttribute("currentUser", authentication.getUser());
 
         model.addAttribute("loadingTypes", LoadingType.values());
+        model.addAttribute("allOrderStatuses", Arrays.stream(OrderStatus.values())
+                .map(x->{
+                    Map<String,String> map = new HashMap<>();
+                    map.put("value",x.name());
+                    map.put("label",x.getStatusName());
+                    return map;
+                })
+                .collect(
+                Collectors.toList())
+        );
+        model.addAttribute("orderPaymentTypeOptions", Arrays.stream(OrderPaymentType.values())
+                .map(x->{
+                    Map<String,String> map = new HashMap<>();
+                    map.put("value",x.name());
+                    map.put("label",x.getDocumentTypeName());
+                    return map;
+                })
+                .collect(Collectors.toList())
+        );
         model.addAttribute("vehicleBodyTypes", VehicleBodyType.values());
         model.addAttribute("paymentTypes", DriverPaymentType.values());
         model.addAttribute("vehicleTypes", VehicleType.values());

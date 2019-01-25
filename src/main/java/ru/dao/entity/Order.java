@@ -141,7 +141,7 @@ public class Order {
     private Date statusChangeDate = new Date();
 
     @Column
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @JsonView(DataTablesOutput.View.class)
     private Date dispatchDate;
 

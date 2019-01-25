@@ -193,6 +193,7 @@ public class RegisterService {
                 .userRole(UserRole.ROLE_DISPATCHER)
                 .phone(registrationData.getPhone())
                 .passAndSalt(userPassword)
+                .hasAcceptedCookies(false)
                 .company(company)
                 .build();
         userRepository.save(user);
@@ -254,6 +255,7 @@ public class RegisterService {
                 .username(company.getShortName())
                 .email(company.getEmail())
                 .passAndSalt(userPassword)
+                .hasAcceptedCookies(false)
                 .build();
         userRepository.save(user);
         Set<User> userList = new HashSet<>();
@@ -312,6 +314,7 @@ public class RegisterService {
                 .username(company.getShortName())
                 .email(company.getEmail())
                 .passAndSalt(userPassword)
+                .hasAcceptedCookies(false)
                 .build();
         userRepository.save(user);
         Set<User> userList = new HashSet<>();

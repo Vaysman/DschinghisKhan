@@ -75,67 +75,7 @@ $(document).ready(function () {
                             });
                         },
                         enabled: false
-                    },
-                    {
-                        text: "Подтвердить доставку",
-                        action: function (e, dt, node, config) {
-                            let id = dt.rows({selected: true}).data()[0].id;
-                            $.ajax({
-                                url: `/orderLifecycle/confirmDelivery/${id}`,
-                                type: "POST",
-                                dataType: "json",
-                                contentType: "application/json; charset=utf-8",
-                                success: function (response) {
-                                    if (response == "Success") {
-                                        dt.draw("page");
-                                    } else {
-                                        alert(response);
-                                    }
-                                }
-                            })
-                        },
-                        enabled: false
-                    },
-                    {
-                        text: "Подтвердить получение документов",
-                        action: function (e, dt, node, config) {
-                            let id = dt.rows({selected: true}).data()[0].id;
-                            $.ajax({
-                                url: `/orderLifecycle/confirmDocumentDelivery/${id}`,
-                                type: "POST",
-                                dataType: "json",
-                                contentType: "application/json; charset=utf-8",
-                                success: function (response) {
-                                    if (response == "Success") {
-                                        dt.draw("page");
-                                    } else {
-                                        alert(response);
-                                    }
-                                }
-                            })
-                        },
-                        enabled: false
-                    },
-                    {
-                        text: "Заявить о оплате",
-                        action: function (e, dt, node, config) {
-                            let id = dt.rows({selected: true}).data()[0].id;
-                            $.ajax({
-                                url: `/orderLifecycle/claimPayment/${id}`,
-                                type: "POST",
-                                dataType: "json",
-                                contentType: "application/json; charset=utf-8",
-                                success: function (response) {
-                                    if (response == "Success") {
-                                        dt.draw("page");
-                                    } else {
-                                        alert(response);
-                                    }
-                                }
-                            })
-                        },
-                        enabled: false
-                    },
+                    }
                 ],
                 "paging": 10,
                 "columnDefs": [{"name": "id", "data": "id", "targets": 0, visible: false},

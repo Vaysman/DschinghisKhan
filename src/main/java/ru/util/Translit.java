@@ -81,6 +81,10 @@ public class Translit {
         return sb.toString();
     }
 
+    /**
+     * @param ch character, latin equivalent of which is needed
+     * @return Latin equivalent of provided character
+     */
     private String cyr2lat(char ch){
         switch (ch){
             case 'А': return "A";
@@ -120,6 +124,10 @@ public class Translit {
         }
     }
 
+    /**
+     * @param s A line which will be translated to it's latin equivalent
+     * @return Latin equivalent for provided string
+     */
     public String cyr2lat(String s){
         StringBuilder sb = new StringBuilder(s.length()*2);
         for(char ch: s.toCharArray()){
@@ -141,10 +149,18 @@ public class Translit {
     }
 
 
+    /**
+     * @param s String that contains not necessarily, but possibly contains special characters (Other than A-Z or 0-9)
+     * @return Provided string with characters other that A-Z and 0-9 removed
+     */
     public String removeSpecialCharacters(String s){
         return s.replaceAll("[^a-zA-Z0-9]", "");
     }
 
+    /**
+     * @param s String that may contain common company name abbreviations
+     * @return Same string, but without common company name abbreviations
+     */
     public String removeAbbreviations(String s){
         String[] abbreviations = {"ОАО","ЗАО","ООО","ИП","\"","'","!","{","}","(",")","<",">"};
         String[] shouldBeAbbreviations = {"Общество с ограниченной ответственностью", "Открытое акционерное общество", "Индивидуальный предпрениматель","Компания","Группа"};
@@ -158,6 +174,10 @@ public class Translit {
         return s.trim();
     }
 
+    /**
+     * @param mail E-mail address to be checked
+     * @return true if E-mail is valid according to RFC 5322, otherwise it's false
+     */
     public boolean isValidEmail(String mail){
         Pattern mailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher mailMatcher = mailPattern.matcher(mail);

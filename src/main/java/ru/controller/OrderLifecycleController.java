@@ -34,7 +34,7 @@ public class OrderLifecycleController {
     @PostMapping(value="/dupeOrder/{orderId}")
     @PreAuthorize("hasAuthority('DISPATCHER')")
     private Order dupeOrder(@PathVariable Integer orderId){
-          return orderLifecycleService.duplicateOrder(getCurrentUser(),orderId);
+          return orderLifecycleService.duplicateOrder(orderId);
     }
 
     @PostMapping(value="/confirmPayment/{orderId}")

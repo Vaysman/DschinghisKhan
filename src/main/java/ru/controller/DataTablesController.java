@@ -108,6 +108,8 @@ public class DataTablesController {
         return contactRepository.findAll(input, Contacts.contactsForClient(clientId));
     }
 
+
+
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/pointsForUser", method = RequestMethod.POST)
     public DataTablesOutput<Point> getPointsForUser(@Valid @RequestBody DataTablesInput input) {
@@ -182,6 +184,7 @@ public class DataTablesController {
             return null;
         }
     }
+
 
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value="/dispatchedOffers", method = RequestMethod.POST)

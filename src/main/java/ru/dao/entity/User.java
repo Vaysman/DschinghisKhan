@@ -80,8 +80,8 @@ public class User {
     @JoinColumn(name = "COMPANY_ID", referencedColumnName = "ID")
     private Company company;
 
-    @Column
-    private Boolean hasAcceptedCookies;
+    @Column(name = "has_accepted_cookies", nullable = false, columnDefinition = "tinyint default 0")
+    private Boolean hasAcceptedCookies = false;
 
     @PrePersist
     private void prePersist(){
