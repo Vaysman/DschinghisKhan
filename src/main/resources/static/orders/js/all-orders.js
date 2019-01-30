@@ -1,4 +1,19 @@
+function openOrderInfoSidebar(orderId) {
+
+    let url = `/info/orders/${orderId}`;
+
+    let orderInfoFrame = $("#orderInfoFrame");
+
+    orderInfoFrame.attr('src', url);
+
+    $('.lss-sidebar').addClass('active');
+    // fade in the overlay
+    $('.overlay').addClass('active');
+}
+
 $(document).ready(function () {
+
+
     let searchDropdownFields = {
         status: {
             options: allOrderStatuses
@@ -20,6 +35,7 @@ $(document).ready(function () {
         }
     };
 
+
     $('#tab-all-orders-link a').one('shown.bs.tab', function () {
 
         $("#uploadOrderDocument").click(function (event) {
@@ -38,8 +54,8 @@ $(document).ready(function () {
             // data.append("CustomField", "This is some extra data, testing");
 
             let id = data.get("id");
-            console.log(id);
-            console.log(data);
+            // console.log(id);
+            // console.log(data);
 
 
             // disabled the submit button
@@ -62,7 +78,7 @@ $(document).ready(function () {
                     $("#orderDocumentUploadError").text("");
                 },
                 error: function (e) {
-                    console.log("ERROR : ", e);
+                    // console.log("ERROR : ", e);
                     $("#uploadOrderDocument").prop("disabled", false);
                     if (e.responseJSON.message.includes("Maximum upload size exceeded")) {
                         $("#orderDocumentUploadError").text("Ошибка: файл слишком большой")
@@ -74,6 +90,8 @@ $(document).ready(function () {
             });
 
         });
+
+
 
 
         let statusChangeEditorOnAllOrders = new $.fn.dataTable.Editor({
@@ -412,7 +430,7 @@ $(document).ready(function () {
                     data: function (d) {
                         return JSON.stringify(d);
                     },
-                    url: "dataTables/ordersForUser", // json datasource
+                    url: "dataTables/ordersForUserBetweenDates", // json datasource
                     type: "POST"  // method  , by default get
                 },
                 dom: 'Btp',
@@ -526,7 +544,7 @@ $(document).ready(function () {
                             document.getElementById("orderDocumentUploadForm").reset();
                             $("#orderIdInput").val(dt.rows({selected: true}).data()[0].id);
                             $("#orderDocumentUploadModal").modal();
-                            console.log(dt.rows({selected: true}).data()[0].id);
+                            // console.log(dt.rows({selected: true}).data()[0].id);
                         }
                     },
                     {
@@ -554,6 +572,12 @@ $(document).ready(function () {
                                 }
                             })
                         }
+                    },
+                    {
+                        text: 'Поиск по дате',
+                        action: function () {
+                            $("#dateRangeSearchModal").modal();
+                        }
                     }
                 ],
                 "paging": 10,
@@ -561,7 +585,8 @@ $(document).ready(function () {
                     {"name": "id", "data": "id", "targets": 0, visible: false},
                     {
                         "name": "number", "data": "number", "targets": 1, render: function (data, type, full) {
-                            return `<a target="_blank" href='info/orders/${full.id}'>${data}</a>`;
+                            // return `<a target="_blank" href='info/orders/${full.id}'>${data}</a>`;
+                            return `<button class="btn btn-link"  onClick="openOrderInfoSidebar('${full.id}')">${data}</button>`
                         }, searchable: true
                     },
 
@@ -757,7 +782,7 @@ $(document).ready(function () {
                     orderDataTable.columns().every(function () {
                         var that = this;
                         let thisColumnData = columnData[this.index()];
-                        console.log(thisColumnData);
+                        // console.log(thisColumnData);
                         if ((thisColumnData.visible || thisColumnData.bVisible) && thisColumnData.searchable) {
                             if (searchDropdownFields.hasOwnProperty(thisColumnData.name)) {
 
@@ -791,7 +816,10 @@ $(document).ready(function () {
                         } else {
                             $('input', this.footer()).attr('disabled', "disabled").css("display", "none");
                         }
+
                     });
+
+                    $('input', orderDataTable.column("dispatchDate:name").footer()).attr('disabled', "disabled").css("display", "none");
 
 
                 }
@@ -800,10 +828,10 @@ $(document).ready(function () {
 
 
         orderDataTable.on('click', 'td button.display-offers', function () {
-            console.log("fgsfds");
+            // console.log("fgsfds");
             var tr = $(this).closest('tr');
             var row = orderDataTable.row(tr);
-            console.log(row.data());
+            // console.log(row.data());
 
             if (row.child.isShown()) {
                 // This row is already open - close it
@@ -879,22 +907,38 @@ $(document).ready(function () {
                     let routeField = this.field('route');
                     if (routeField.val() == '') {
                         routeField.error("Маршрут должнен быть указан при создании");
-                        console.log("error in: " + "route")
+                        // console.log("error in: " + "route")
                     }
                 }
 
                 for (let field of checkedFields) {
                     if (field.val() == '') {
                         field.error('Поле должно быть указано');
-                        console.log("error in: " + "checkedField")
+                        // console.log("error in: " + "checkedField")
                     }
                 }
                 if (this.inError()) {
-                    console.log("inError");
+                    // console.log("inError");
                     return false;
                 }
             }
         });
 
+        pickmeup('#dateRangeInput',{
+            mode: 'range',
+            format: 'd/m/Y',
+            date:'01/06/2018 - 01/01/2019'
+        });
+
+        $("#dateRangeSearch").click(function () {
+            console.log($("#dateRangeInput").val());
+            orderDataTable
+                .column("dispatchDate:name")
+                .search($("#dateRangeInput").val());
+            orderDataTable.draw();
+            $("#dateRangeSearchModal").modal("hide");
+        });
     })
+
+
 });

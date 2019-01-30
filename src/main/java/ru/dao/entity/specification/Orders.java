@@ -9,12 +9,22 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Orders {
     public static Specification<Order> ordersForUser(final Integer originator) {
         return (final Root<Order> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> criteriaBuilder.equal(root.get("originator"),originator);
+    }
+
+    public static Specification<Order> ordersForUserBetweenDates(final Integer originator, final Date from, final Date to) {
+        return (final Root<Order> root, final CriteriaQuery<?> criteriaQuery, final CriteriaBuilder criteriaBuilder) -> {
+            final Predicate[] predicates = new Predicate[2];
+            predicates[0] =(criteriaBuilder.between(root.get("dispatchDate"),from,to));
+            predicates[1] =(criteriaBuilder.equal(root.get("originator"),originator));
+            return criteriaBuilder.and(predicates);
+        };
     }
 
     public static Specification<Order> ordersNotInStatus(OrderStatus[] orderStatuses){

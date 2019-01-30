@@ -149,7 +149,7 @@ $(document).ready(function () {
                     return "dummy";
                 }
             },
-            {label: 'E-Mail<sup class="red">*</sup>', name: 'email', type: 'text'},
+            {label: 'E-Mail', name: 'email', type: 'text'},
         ]
     });
 

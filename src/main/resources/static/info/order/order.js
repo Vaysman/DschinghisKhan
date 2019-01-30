@@ -2,6 +2,7 @@ $(document).ready(function () {
     $("#orderHistoryTable").DataTable({
             processing: true,
             serverSide: true,
+            scrollX:true,
             aaSortingFixed: [[0, 'desc']],
             searchDelay: 800,
             ajax: {

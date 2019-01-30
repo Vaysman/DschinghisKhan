@@ -130,6 +130,8 @@ public class RegisterService {
     }
 
 
+
+    //TODO: crop dispatcher's login to 10 symbols.
     @Transactional
     public User registerDispatcher(UserRegistrationData registrationData) throws Exception {
 

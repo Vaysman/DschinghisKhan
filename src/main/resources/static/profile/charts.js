@@ -7,17 +7,19 @@ $(document).ready(function () {
         }
     });
 
+    pickmeup('#companiesPeriod',{
+        mode: 'range',
+        format: 'd/m/Y',
+        date:'01/06/2018 - 01/01/2019'
+    });
+
     pickmeup('#ordersPeriod',{
         mode: 'range',
         format: 'd/m/Y',
         date:'01/06/2018 - 01/01/2019'
     });
 
-    pickmeup('#companiesPeriod',{
-        mode: 'range',
-        format: 'd/m/Y',
-        date:'01/06/2018 - 01/01/2019'
-    });
+
 
 
     $('#reloadOrdersChart').click(function () {

@@ -16,6 +16,8 @@ import ru.dao.entity.specification.*;
 import ru.dao.repository.*;
 
 import javax.validation.Valid;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 @RestController
 @RequestMapping("/dataTables")
@@ -179,6 +181,27 @@ public class DataTablesController {
     public DataTablesOutput<Order> getOrdersForUser(@Valid @RequestBody DataTablesInput input) {
         try {
             return orderRepository.findAll(input, Orders.ordersForUser(AuthToken.getCurrentAuthToken().getCompanyId()), Orders.ordersNotInStatus(new OrderStatus[]{OrderStatus.DELETED}));
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/ordersForUserBetweenDates", method = RequestMethod.POST)
+    public DataTablesOutput<Order> getOrdersForUserBetweenDates(@Valid @RequestBody DataTablesInput input) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("d/M/yyyy");
+        try {
+            String dates = input.getColumn("dispatchDate").getSearch().getValue();
+            if(!dates.isEmpty() && dates.split(" - ").length>1){
+                input.getColumn("dispatchDate").getSearch().setValue("");
+                Date fromDate = new Date(simpleDateFormat.parse(dates.split(" - ")[0]).getTime());
+                Date toDate = new Date(simpleDateFormat.parse(dates.split(" - ")[1]).getTime());
+                return orderRepository.findAll(input, Orders.ordersForUserBetweenDates(AuthToken.getCurrentAuthToken().getCompanyId(), fromDate, toDate), Orders.ordersNotInStatus(new OrderStatus[]{OrderStatus.DELETED}));
+            } else {
+                return orderRepository.findAll(input, Orders.ordersForUser(AuthToken.getCurrentAuthToken().getCompanyId()), Orders.ordersNotInStatus(new OrderStatus[]{OrderStatus.DELETED}));
+            }
+
         } catch (Exception e){
             e.printStackTrace();
             return null;

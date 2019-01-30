@@ -163,7 +163,7 @@ public class Translit {
      */
     public String removeAbbreviations(String s){
         String[] abbreviations = {"ОАО","ЗАО","ООО","ИП","\"","'","!","{","}","(",")","<",">"};
-        String[] shouldBeAbbreviations = {"Общество с ограниченной ответственностью", "Открытое акционерное общество", "Индивидуальный предпрениматель","Компания","Группа"};
+        String[] shouldBeAbbreviations = {"Общество с ограниченной ответственностью", "Открытое акционерное общество", "Индивидуальный предпрениматель","Компания","Группа","Закрытое акционерное общество"};
 
         for(String abbreviation : abbreviations){
             s = s.replace(abbreviation,"");

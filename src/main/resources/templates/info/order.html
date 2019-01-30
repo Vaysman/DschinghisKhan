@@ -17,8 +17,8 @@
 <body class="grey">
 <div class="container-fluid">
     <div class="row">
-        <div class="col-2"></div>
-        <div class="col-8 container white spaced-container">
+        <!--<div class="col-2"></div>-->
+        <div class="col-12 container white spaced-container">
             <h4 th:text="'Заявка: '+${order.getNumber()}"></h4>
             <br>
             <div class="row">
@@ -126,7 +126,7 @@
                     </th:block>
                 </div>
                 <div class="col-12">
-                    <table class="table table-striped table-borderless table-sm" id="orderHistoryTable">
+                    <table class="table table-striped table-borderless table-sm " style="overflow-x: scroll" id="orderHistoryTable">
                         <thead>
                         <tr>
                             <th>id</th>
@@ -144,7 +144,7 @@
 
             </div>
         </div>
-        <div class="col-2"></div>
+        <!--<div class="col-2"></div>-->
     </div>
 
 </div>
