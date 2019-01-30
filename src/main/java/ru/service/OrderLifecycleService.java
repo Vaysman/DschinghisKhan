@@ -271,7 +271,7 @@ public class OrderLifecycleService {
     private void declineOffer(OrderOffer offer){
         Order order = offer.getOrder();
 
-        if (!order.getStatus().equals(OrderStatus.ACCEPTED) && !order.getStatus().equals(OrderStatus.PRICE_CHANGED))
+        if (Arrays.stream(OrderStatus.getStatusesWithOffers()).noneMatch(orderStatus -> orderStatus.equals(order.getStatus())))
             throw new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку");
 
         order.getOffers().remove(offer);
@@ -294,7 +294,7 @@ public class OrderLifecycleService {
     public void declineOffer(User currentUser, Integer offerId) {
         OrderOffer offer = orderOfferRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку"));
         Order order = offer.getOrder();
-        if (!order.getStatus().equals(OrderStatus.ACCEPTED) && !order.getStatus().equals(OrderStatus.PRICE_CHANGED))
+        if (Arrays.stream(OrderStatus.getStatusesWithOffers()).noneMatch(orderStatus -> orderStatus.equals(order.getStatus())))
             throw new IllegalArgumentException("Предложение не может быть отклонено: \nДругой диспетчер утвердил/отклонил заявку");
 
         order.getOffers().remove(offer);
@@ -320,7 +320,7 @@ public class OrderLifecycleService {
     public void confirm(User currentUser, Integer offerId) {
         OrderOffer orderOffer = orderOfferRepository.findById(offerId).orElseThrow(() -> new IllegalArgumentException("Заявка не может быть утверждена: \nДругой диспетчер утвердил/отклонил заявку"));
         Order order = orderOffer.getOrder();
-        if (!order.getStatus().equals(OrderStatus.ACCEPTED) && !order.getStatus().equals(OrderStatus.PRICE_CHANGED))
+        if (Arrays.stream(OrderStatus.getStatusesWithOffers()).noneMatch(orderStatus -> orderStatus.equals(order.getStatus())))
             throw new IllegalArgumentException("Заявка не может быть утверждена: \nДругой диспетчер утвердил/отклонил заявку");
 
         order.setCompany(orderOffer.getCompany());

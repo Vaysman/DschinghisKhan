@@ -597,8 +597,8 @@ $(document).ready(function () {
                         searchable: false,
                         orderable: false,
                         render: function (data, type, full) {
-                            if (full.status === "Принято") {
-                                return `<button class="btn display-offers"><i class="fa fa-plus"></i></button>`;
+                            if (statusesWithOffers.includes(full.status)) {
+                                return `<button class="btn btn-link display-offers"><i class="fa fa-plus"></i></button>`;
                             } else {
                                 return "";
                             }
@@ -765,11 +765,6 @@ $(document).ready(function () {
                     // {"name": "comment", "data": "comment", searchable:false, orderable: false, defaultContent: ""},
                 ],
                 initComplete: function () {
-                    new $.fn.dataTable.FixedColumns(orderDataTable, {
-                        leftColumns: 2,
-                        heightMatch: 'auto'
-                    });
-
 
                     $('.dataTables_scrollFootInner tfoot th').each(function () {
                         var title = $(this).text();
@@ -837,8 +832,10 @@ $(document).ready(function () {
                 // This row is already open - close it
                 row.child.hide();
                 tr.removeClass('shown');
+                $(this).html("<i class='fa fa-plus'></i>");
             }
             else {
+                $(this).html("<i class='fa fa-minus'></i>");
                 let orderId = row.data().id;
                 // Open this row
                 var list = "";

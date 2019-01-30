@@ -155,6 +155,13 @@ public enum  OrderStatus {
         };
     }
 
+    public static OrderStatus[] getStatusesWithOffers(){
+        return new OrderStatus[]{
+                OrderStatus.ACCEPTED,
+                OrderStatus.PRICE_CHANGED
+        };
+    }
+
     OrderStatus(String statusName, String chartColor) {
         this.statusName = statusName;
         this.chartColor = chartColor;

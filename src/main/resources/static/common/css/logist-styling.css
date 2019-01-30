@@ -46,6 +46,16 @@ iframe{
     z-index: 1051;
 }
 
+.dataTables_scrollBody table.dataTable thead .sorting:before, .dataTables_scrollBody table.dataTable thead .sorting_asc:before, .dataTables_scrollBody table.dataTable thead .sorting_desc:before, .dataTables_scrollBody table.dataTable thead .sorting_asc_disabled:before, .dataTables_scrollBody table.dataTable thead .sorting_desc_disabled:before {
+    right: 1em;
+    content: none;
+}
+
+.DTFC_LeftBodyLiner table.dataTable thead .sorting:before, .DTFC_LeftBodyLiner table.dataTable thead .sorting_asc:before, .DTFC_LeftBodyLiner table.dataTable thead .sorting_desc:before, .DTFC_LeftBodyLiner table.dataTable thead .sorting_asc_disabled:before, .DTFC_LeftBodyLiner table.dataTable thead .sorting_desc_disabled:before {
+    right: 1em;
+    content: none;
+}
+
 .overlay {
     display: none;
     position: fixed;

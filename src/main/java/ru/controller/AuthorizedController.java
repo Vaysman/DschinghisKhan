@@ -130,6 +130,7 @@ public class AuthorizedController {
         model.addAttribute("statusesForDispatcher", UserRole.ROLE_DISPATCHER.getOrderStatuses());
         model.addAttribute("statusesForCompany", UserRole.ROLE_TRANSPORT_COMPANY.getOrderStatuses());
         model.addAttribute("deliveredStatuses", OrderStatus.getDeliveredStatuses());
+        model.addAttribute("statusesWithOffers",OrderStatus.getStatusesWithOffers());
         return model;
     }
 }
