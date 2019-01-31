@@ -420,7 +420,7 @@ $(document).ready(function () {
         var orderDataTable = $("table#orderTable").DataTable({
                 scrollX: true,
                 scrollCollapse: true,
-
+                scrollY: "440px",
                 processing: true,
                 serverSide: true,
                 searchDelay: 800,
