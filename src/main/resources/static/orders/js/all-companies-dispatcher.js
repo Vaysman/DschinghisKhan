@@ -50,7 +50,34 @@ $(document).ready(function () {
                 }
             });
 
-        })
+        });
+
+
+        let passwordResetEditor = new $.fn.dataTable.Editor({
+            ajax: {
+                edit: {
+                    contentType: 'application/json',
+                    type: 'POST',
+                    url: 'api/companies/_id_',
+                    data: function (d) {
+                        let newdata;
+                        $.each(d.data, function (key, value) {
+                            newdata = JSON.stringify(value);
+                        });
+                        console.log(newdata);
+                        return newdata;
+                    },
+                    success: function (response) {
+                        companiesTable.draw();
+                        companyEditor.close();
+                    },
+                    error: function (jqXHR, exception) {
+                        alert(response.responseText);
+                    }
+                }
+
+            }
+        });
 
         let companyInfoEditor = new $.fn.dataTable.Editor({
             ajax: {
@@ -174,7 +201,7 @@ $(document).ready(function () {
                             });
                         },
                         onChange: (value) => {
-                            if(suggestions.hasOwnProperty(value)) {
+                            if (suggestions.hasOwnProperty(value)) {
                                 let hid = value;
                                 // $("#companyName").val(suggestions[value].unrestricted_value);
                                 companyEditor.field('name').set(suggestions[hid].unrestricted_value);
@@ -192,19 +219,19 @@ $(document).ready(function () {
                                     console.log("fh");
 
                                 }
-                                if(fetchedData.okved!=null){
+                                if (fetchedData.okved != null) {
                                     companyEditor.field("ocved").set(fetchedData.okved)
                                 }
-                                if(fetchedData.kpp!=null){
+                                if (fetchedData.kpp != null) {
                                     companyEditor.field("kpp").set(fetchedData.kpp)
                                 }
-                                if(fetchedData.ogrn!=null){
+                                if (fetchedData.ogrn != null) {
                                     companyEditor.field("ogrn").set(fetchedData.ogrn);
                                 }
-                                if(fetchedData.okpo!=null){
+                                if (fetchedData.okpo != null) {
                                     companyEditor.field("ocpo").set(fetchedData.okpo)
                                 }
-                                if(fetchedData.management!=null && fetchedData.management.name!=null){
+                                if (fetchedData.management != null && fetchedData.management.name != null) {
                                     companyEditor.field("directorFullname").set(fetchedData.management.name);
                                 }
                             }
@@ -248,7 +275,7 @@ $(document).ready(function () {
                     if (this.field('inn').val() == '') {
                         this.field('inn').error("ИНН должен быть указан");
                     }
-                    if(this.field('email').val()==''){
+                    if (this.field('email').val() == '') {
                         this.field('email').error('E-Mail должен быть указан')
                     }
                 }
@@ -314,6 +341,9 @@ $(document).ready(function () {
                         attr: {
                             'data-toggle': 'button'
                         }
+                    },
+                    {
+                        text: "Сброс пароля",
                     }
                 ],
                 "paging": 10,
