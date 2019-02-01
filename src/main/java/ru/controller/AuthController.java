@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.configuration.authentication.AuthToken;
+import ru.constant.UserRole;
 import ru.service.GeocodingService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +45,12 @@ public class AuthController {
         AuthToken authentication = (AuthToken) securityContext.getAuthentication();
 
         if(authentication.getUser().getHasAcceptedCookies()){
-            return "redirect:/orders";
+            if (authentication.getUser().getUserRole().equals(UserRole.ROLE_DISPATCHER)){
+                return "redirect:/main#tab-dashboard";
+            } else {
+                return "redirect:/orders";
+            }
+
         } else {
             return "redirect:/main";
         }

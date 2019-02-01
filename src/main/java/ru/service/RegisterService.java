@@ -131,7 +131,6 @@ public class RegisterService {
 
 
 
-    //TODO: crop dispatcher's login to 10 symbols.
     @Transactional
     public User registerDispatcher(UserRegistrationData registrationData) throws Exception {
 
@@ -181,6 +180,9 @@ public class RegisterService {
         pointRepository.save(point);
 
         String companyUserLogin = translit.removeSpecialCharacters(translit.cyr2lat(company.getShortName()));
+        if(companyUserLogin.length()>10){
+            companyUserLogin = companyUserLogin.substring(0,10);
+        }
         while (userRepository.findByLogin(companyUserLogin).isPresent()) {
             companyUserLogin = companyUserLogin + "1";
         }
