@@ -11,10 +11,34 @@
 body{
     font-family: "Gerbera Light", serif;
     color: #000;
+    font-size: 14px;
 }
+
+table.dataTable td{
+    font-size: 13px;
+}
+
 
 #tab-all-orders{
     position: relative;
+}
+
+.dataTables_wrapper{
+    color: #1A2B6D;
+}
+
+/*.table-sm td, .table-sm th {*/
+    /*padding: 0 18px;*/
+/*}*/
+
+
+.dataTables_scrollFootInner th{
+    border: thin solid #c5c5c5;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border: thin solid #c5c5c5;
 }
 
 table.dataTable tbody tr.selected .btn-link, table.dataTable tbody th.selected .btn-link, table.dataTable tbody td.selected .btn-link{
@@ -97,6 +121,10 @@ iframe{
     display: block;
 }
 
+.dt-buttons.btn-group .btn-default{
+    color: #1A2B6D;
+}
+
 table.dataTable.table-sm > thead > tr > th{
     text-align: center;
     vertical-align: middle;
@@ -117,12 +145,13 @@ table.dataTable.table-sm > thead > tr > th{
 /*input.form-control:matches([type=text], [type=password]){*/
     /*border: none;*/
     /*border-radius: 0;*/
-    /*border-bottom: 2px solid rgba(26, 43, 109, 1);*/
+    /*border-bottom: 2px solid #1A2B6D*/
 /*}*/
 input.form-control{
     border: none;
     border-radius: 0;
-    border-bottom: 2px solid rgba(26, 43, 109, 1);
+    border-bottom: 2px solid #1A2B6D;
+    font-size: 14px;
 }
 
 .img-container img {
@@ -150,18 +179,18 @@ input.form-control.error-red{
 div.selectize-input{
     border: none;
     border-radius: 0;
-    border-bottom: 2px solid rgba(26, 43, 109, 1);
+    border-bottom: 2px solid #1A2B6D;
     box-shadow: none;
 }
 
 /*input{*/
     /*border: none;*/
     /*border-radius: 0;*/
-    /*border-bottom: 2px solid rgba(26, 43, 109, 1);*/
+    /*border-bottom: 2px solid #1A2B6D*/
 /*}*/
 
 .nav-link.active .badge-light{
-    background: rgba(26, 43, 109, 1);
+    background: #1A2B6D;
     color: white;
 }
 
@@ -196,11 +225,11 @@ div.selectize-input{
 }
 
 .logist-navbar{
-    background: rgba(26, 43, 109, 1);
+    background: #1A2B6D;
 }
 
 .logist-tabs{
-    background: rgba(26, 43, 109, 1);
+    background: #1A2B6D;
     border-bottom: none;
 }
 
@@ -210,7 +239,7 @@ div.selectize-input{
 
 .logist-tabs .nav-link.active{
     background: rgb(239,239,239);
-    color: rgba(26, 43, 109, 1);
+    color: #1A2B6D
 }
 
 .logist-navbar .navbar-nav .nav-link:hover{
@@ -223,13 +252,13 @@ div.selectize-input{
     font-size: 14px;
     /*font-weight: bold;*/
     background-color: inherit;
-    /*color: rgba(26, 43, 109, 1);*/
+    /*color: #1A2B6D*/
     border: none;
     /*border-color: #ccc;*/
 }
 
 .btn-primary {
-    background-color: rgba(26, 43, 109, 1);
+    background-color: #1A2B6D;
     border: none;
 }
 
@@ -238,7 +267,7 @@ div.selectize-input{
 }
 
 .btn-default{
-    /*color: rgba(26, 43, 109, 1);*/
+    /*color: #1A2B6D*/
     color: black;
     background: transparent;
     border: none;
@@ -247,7 +276,7 @@ div.selectize-input{
 .btn-default.disabled{
     background: transparent;
     color: black;
-    /*color: rgba(26, 43, 109, 1);*/
+    /*color: #1A2B6D*/
     border:none;
 }
 
@@ -367,12 +396,12 @@ div.selectize-dropdown {
 .field-inline-button{
     border-radius: 0;
     border: none;
-    border-bottom: 2px solid rgba(26, 43, 109, 1);
+    border-bottom: 2px solid #1A2B6D
 }
 
 .field-inline-button:hover{
-    background: rgba(26, 43, 109, 1);
-    border-bottom: 2px solid rgba(26, 43, 109, 1);
+    background: #1A2B6D;
+    border-bottom: 2px solid #1A2B6D;
     color: white;
 }
 

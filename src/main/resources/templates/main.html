@@ -39,7 +39,7 @@
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')" src="media/Pickmeup/pickmeup.js"></script>
     <script src="/main/js/listSearch.js" type="text/javascript"></script>
     <script src="http://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
-    <!--<script src="/media/jquery.ba-throttle-debounce.min.js"></script>-->
+    <script src="/media/jquery.ba-throttle-debounce.min.js"></script>
     <script src="/media/DataTables/FixedColumns-3.2.4/js/dataTables.fixedColumns.js" type="text/javascript"></script>
     <script sec:authorize="hasAuthority('ROLE_DISPATCHER')">
         $(document).ready(function () {
@@ -52,6 +52,11 @@
                 $('#nav-tabs a[href="#tab-all-orders"]').tab('show');
             }
 
+            // $('#tab-all-orders-link a').on('shown.bs.tab', function (e) {
+            //     console.log('fgsfds');
+            //     $('#orderTable').DataTable().columns.adjust()
+            // });
+
             // Change hash for page-reload
             $('#nav-tabs a').on('shown.bs.tab', function (e) {
                 window.location.hash = e.target.hash;
@@ -63,6 +68,7 @@
                 // hide overlay
                 $('.overlay').removeClass('active');
             });
+            $('#orderTable').DataTable().columns.adjust()
         });
     </script>
 
@@ -83,6 +89,7 @@
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
             });
+
         });
     </script>
 
@@ -1503,7 +1510,10 @@
     </div>
 
     <div th:insert="fragments/header :: footer"></div>
+</div>
 </body>
+<script>
+</script>
 <script sec:authorize='hasAnyAuthority("ROLE_DISPATCHER")' src="/orders/js/managed-offers.js"></script>
 <script sec:authorize='hasAnyAuthority("ROLE_TRANSPORT_COMPANY")' src="/orders/js/pending-orders.js"></script>
 <script sec:authorize="hasAnyAuthority('ROLE_DISPATCHER')" src="/orders/js/orders-in-work-map.js"></script>

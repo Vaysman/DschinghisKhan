@@ -11,32 +11,37 @@ function openOrderInfoSidebar(orderId) {
     $('.overlay').addClass('active');
 }
 
+
 $(document).ready(function () {
+    $('#tab-all-orders-link a').one('shown.bs.tab', function (e) {
+
+        let searchDropdownFields = {
+            status: {
+                options: allOrderStatuses
+            },
+            afterLoad: {
+                options: [
+                    {label: "Отдельная машина", value: false},
+                    {label: "Возможен догруз", value: true}
+                ]
+            },
+            orderObligation: {
+                options: [
+                    {label: "Обязательная", value: "MANDATORY"},
+                    {label: "Не обязательная", value: "NON_MANDATORY"}
+                ]
+            },
+            paymentType: {
+                options: orderPaymentTypeOptions
+            }
+        };
 
 
-    let searchDropdownFields = {
-        status: {
-            options: allOrderStatuses
-        },
-        afterLoad: {
-            options: [
-                {label: "Отдельная машина", value: false},
-                {label: "Возможен догруз", value: true}
-            ]
-        },
-        orderObligation: {
-            options: [
-                {label: "Обязательная", value: "MANDATORY"},
-                {label: "Не обязательная", value: "NON_MANDATORY"}
-            ]
-        },
-        paymentType: {
-            options: orderPaymentTypeOptions
-        }
-    };
+        // $('#tab-all-orders-link a').one('shown.bs.tab', function (e) {
+        //     window.location.hash = e.target.hash;
+        //
+        // });
 
-
-    $('#tab-all-orders-link a').one('shown.bs.tab', function () {
 
         $("#uploadOrderDocument").click(function (event) {
 
@@ -90,8 +95,6 @@ $(document).ready(function () {
             });
 
         });
-
-
 
 
         let statusChangeEditorOnAllOrders = new $.fn.dataTable.Editor({
@@ -420,6 +423,7 @@ $(document).ready(function () {
         var orderDataTable = $("table#orderTable").DataTable({
                 scrollX: true,
                 scrollCollapse: true,
+                autoWidth: true,
                 scrollY: "440px",
                 processing: true,
                 serverSide: true,
@@ -791,36 +795,45 @@ $(document).ready(function () {
                                 $('input', this.footer()).replaceWith(optionSelectTemplate);
 
                                 $('select', this.footer()).on('change', function () {
+
                                     if (that.search() !== this.value) {
                                         that
                                             .search(this.value)
                                             .draw();
                                     }
+
+
                                 });
 
 
                             } else {
-                                $('input', this.footer()).on('keyup change', function () {
-                                    if (that.search() !== this.value) {
-                                        that
-                                            .search(this.value)
-                                            .draw();
-                                    }
-                                });
+                                $('input', this.footer()).on('keyup change', $.debounce(200, function () {
+                                        if (that.search() !== this.value) {
+                                            that
+                                                .search(this.value)
+                                                .draw();
+                                        }
+
+                                }));
                             }
                         } else {
                             $('input', this.footer()).attr('disabled', "disabled").css("display", "none");
                         }
+
 
                     });
 
                     $('input', orderDataTable.column("dispatchDate:name").footer()).attr('disabled', "disabled").css("display", "none");
 
 
+                    window.setTimeout(function () {
+                        $('#orderTable').DataTable().columns.adjust();
+                    }, 200);
+
+
                 }
             }
         );
-
 
         orderDataTable.on('click', 'td button.display-offers', function () {
             // console.log("fgsfds");
@@ -921,10 +934,10 @@ $(document).ready(function () {
             }
         });
 
-        pickmeup('#dateRangeInput',{
+        pickmeup('#dateRangeInput', {
             mode: 'range',
             format: 'd/m/Y',
-            date:'01/06/2018 - 01/01/2019'
+            date: '01/06/2018 - 01/01/2019'
         });
 
         $("#dateRangeSearch").click(function () {
@@ -935,7 +948,7 @@ $(document).ready(function () {
             orderDataTable.draw();
             $("#dateRangeSearchModal").modal("hide");
         });
-    })
 
+    });
 
 });
