@@ -308,6 +308,9 @@ public class RegisterService {
 
         company.setShortName(translit.removeAbbreviations(company.getName()));
         String companyUserLogin = translit.removeSpecialCharacters(translit.cyr2lat(company.getShortName()));
+        if(companyUserLogin.length()>10){
+            companyUserLogin = companyUserLogin.substring(0,10);
+        }
         while (userRepository.findByLogin(companyUserLogin).isPresent()) {
             companyUserLogin = companyUserLogin + "1";
         }
@@ -347,19 +350,19 @@ public class RegisterService {
         return companyInfoMap;
     }
 
-    public void sendPasswordResetRequest(CompanyPasswordResetRequest request, Integer dispatcherCompanyId) throws MessagingException {
-        Company company = companyRepository.findById(request.getCompanyId()).orElseThrow(() -> new IllegalArgumentException("No such company exist"));
+    public void sendPasswordResetRequest(CompanyPasswordResetRequest request, Integer companyId, Integer dispatcherCompanyId) throws MessagingException {
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new IllegalArgumentException("No such company exist"));
         if (!company.getType().equals(CompanyType.TRANSPORT)) {
             throw new IllegalStateException("Password reset request is only allowed for transport companies");
         }
         Company dispathcer = companyRepository.findById(dispatcherCompanyId).orElseThrow(() -> new IllegalStateException("Who is sending the request?"));
         mailService.send(adminEmail, "Запрос на восстановление пароля",
-                "Поступил запрос на восстановление пароля для компании:" + company.getName() +
-                        "\nОт диспетчера:" + dispathcer.getName() +
+                "Поступил запрос на восстановление пароля для компании: " + company.getName() +
+                        "\nОт диспетчера: " + dispathcer.getName() +
                         "\nДанные:\n" +
-                        "\nE-mail:"+request.getEmail()+
-                        "\nТелефон:"+request.getPhoneNumber()+
-                        "\nКонтактное лицо:"+request.getContact()
+                        "\nE-mail: "+request.getEmail()+
+                        "\nТелефон: "+request.getPhoneNumber()+
+                        "\nКонтактное лицо: "+request.getContact()
         );
     }
 

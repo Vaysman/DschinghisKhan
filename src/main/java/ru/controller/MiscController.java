@@ -2,6 +2,7 @@ package ru.controller;
 
 import org.hibernate.Hibernate;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -57,10 +58,12 @@ public class MiscController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/resetCompanyPassword")
+    @PostMapping(value = "/resetCompanyPassword/{companyId}")
     @PreAuthorize("hasAuthority('DISPATCHER')")
-    private String resetCompanyPassword(@RequestBody @Valid CompanyPasswordResetRequest request) throws MessagingException {
-        registerService.sendPasswordResetRequest(request, 1);
+    private String resetCompanyPassword(@RequestBody @Valid CompanyPasswordResetRequest request, @PathVariable Integer companyId) throws MessagingException {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        AuthToken authentication = (AuthToken) securityContext.getAuthentication();
+        registerService.sendPasswordResetRequest(request, companyId,authentication.getCompanyId());
         return "Success";
     }
 }

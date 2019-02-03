@@ -58,7 +58,7 @@ $(document).ready(function () {
                 edit: {
                     contentType: 'application/json',
                     type: 'POST',
-                    url: 'api/companies/_id_',
+                    url: 'misc/resetCompanyPassword/_id_',
                     data: function (d) {
                         let newdata;
                         $.each(d.data, function (key, value) {
@@ -68,15 +68,24 @@ $(document).ready(function () {
                         return newdata;
                     },
                     success: function (response) {
-                        companiesTable.draw();
-                        companyEditor.close();
+                        // companiesTable.draw();
+                        alert("Администратору отправлен запрос на восстановление. " +
+                            "\nПосле рассмотра запроса на указанный адрес будут отправлены новые данные для входа");
+                        passwordResetEditor.close();
                     },
-                    error: function (jqXHR, exception) {
-                        alert(response.responseText);
+                    error: function (e) {
+                        alert(e.responseJSON.message);
                     }
                 }
 
-            }
+            },
+            table: '#transportCompaniesTable',
+            idSrc: 'id',
+            fields: [
+                {label: 'Контактное лицо', name: 'contact', type: 'text'},
+                {label: 'E-mail контакта', name: 'email', type: 'text'},
+                {label: 'Номер контакта', name: 'phoneNumber', type: 'text'}
+            ]
         });
 
         let companyInfoEditor = new $.fn.dataTable.Editor({
@@ -102,6 +111,8 @@ $(document).ready(function () {
                     }
                 }
             },
+            table: '#transportCompaniesTable',
+            idSrc: 'id',
             fields: [
                 {label: 'Кол-во наемного  транспорта', name: 'numberOfTransports', type: 'mask', mask: "###"},
                 {label: 'Код ati.su', name: 'atiCode', type: 'text'},
@@ -117,8 +128,6 @@ $(document).ready(function () {
                 },
                 {label: 'Город', name: 'city', type: 'text'},
             ],
-            table: '#transportCompaniesTable',
-            idSrc: 'id',
         });
 
 
@@ -344,6 +353,8 @@ $(document).ready(function () {
                     },
                     {
                         text: "Сброс пароля",
+                        extend: "edit",
+                        editor: passwordResetEditor
                     }
                 ],
                 "paging": 10,
